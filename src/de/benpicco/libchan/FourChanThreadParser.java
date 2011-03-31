@@ -32,9 +32,11 @@ public class FourChanThreadParser implements ThreadParser {
 					} else
 						user = StringUtils.substringBetween(str, ">", "<").trim();
 					date = StringUtils.substringAfter(str, "</span> ").trim();
-				} else if (str.contains("id=\"norep"))
+				} else if (str.contains("id=\"norep")) {
 					id = Integer.parseInt(StringUtils.substringBetween(str, "id=\"norep", "\""));
-				else if (str.contains("replytitle\">")) {
+				} else if (str.contains("id=\"nothread")) {
+					id = Integer.parseInt(StringUtils.substringBetween(str, "id=\"nothread", "\""));
+				} else if (str.contains("replytitle\">") || str.contains("filetitle\">")) {
 					title = StringUtils.substringBetween(str, ">", "<");
 					if (title != null)
 						title = title.trim();
