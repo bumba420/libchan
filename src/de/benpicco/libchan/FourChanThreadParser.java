@@ -5,13 +5,16 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 public class FourChanThreadParser implements ThreadParser {
 
 	private Post parsePost(String s) {
 		String imgUrl = null;
 		String thumbnail = null;
 		String filename = null;
-		String mail = ""; // TODO: parse
+		String mail = "";
 		String title = "";
 		String user = "";
 		String date = "";
@@ -21,44 +24,41 @@ public class FourChanThreadParser implements ThreadParser {
 
 		for (String str : s.split("<span ")) {
 			try {
-				if (str.contains("form"))
-					continue;
-				if (str.contains("File"))
-					imgUrl = str.split("<a href=\"")[1].split("\"")[0];
-				if (str.contains("postername")) {
-					user = str.split(">")[1].split("<")[0];
-					String[] spans = str.split("</span>");
-					if (spans[1].trim().length() > 0) // </span></span> issue
-						date = str.split("</span>")[1];
-					else
-						date = str.split("</span>")[2];
+				if (str.contains("postername\">")) {
+					mail = StringUtils.substringBetween(str, "<a href=\"mailto:", "\"");
+					if (mail != null) {
+						mail = mail.trim();
+						user = StringUtils.substringBetween(str, "class=\"linkmail\">", "</a>").trim();
+					} else
+						user = StringUtils.substringBetween(str, ">", "<").trim();
+					date = StringUtils.substringAfter(str, "</span> ").trim();
+				} else if (str.contains("id=\"norep"))
+					id = Integer.parseInt(StringUtils.substringBetween(str, "id=\"norep", "\""));
+				else if (str.contains("replytitle\">")) {
+					title = StringUtils.substringBetween(str, ">", "<");
+					if (title != null)
+						title = title.trim();
+					if (title.length() == 0)
+						title = null;
+				} else if (str.contains("title=")) {
+					filename = StringUtils.substringBetween(str, "\"", "\"");
+					thumbnail = StringUtils.substringBetween(str, "<img src=", " ");
+					imgUrl = StringUtils.substringBetween(str, "<a href=\"", "\"");
 				}
-				if (str.contains("norep")) {
-					String sid = str.split("id=\"norep")[1].split("\">")[0];
-					id = Integer.parseInt(sid);
-				}
-				if (str.contains("replytitle"))
-					title = str.split(">")[1].split("<")[0];
-				else if (str.contains("title"))
-					filename = str.split(">")[1].split("<")[0];
-
-				if (str.contains("img src"))
-					thumbnail = str.split("img src=")[1].split(" border")[0];
-				if (str.contains("blockquote")) {
-					message = str.split("blockquote>")[1].split("</blockquote")[0];
-					message = message.replace("<br />", "\n");
+				if (str.contains("<blockquote>")) {
+					message = StringUtils.substringBetween(str, "<blockquote>", "</blockquote>").trim();
+					message = message.replace("<br />", "\n").replaceAll("\\<.*?>", "");
+					message = StringEscapeUtils.unescapeHtml4(message);
 				}
 			} catch (Exception e) {
-				System.err.print(e);
+				e.printStackTrace();
 			}
 		}
 
 		if (imgUrl != null)
 			images.add(new Image(thumbnail, imgUrl, filename));
 
-		return new Post(id, date.trim(), (title.length() == 0 ? null
-				: title.trim()), user.trim(), (mail.length() == 0 ? null
-				: mail.trim()), message.trim(), images);
+		return new Post(id, date, title, user, mail, message, images);
 	}
 
 	public void parseThread(InputStream responseStream, PostReceiver receiver) {
