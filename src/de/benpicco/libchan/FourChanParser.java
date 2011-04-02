@@ -35,7 +35,6 @@ class FourChanThreadParser implements IParseDataReceiver {
 
 	private PostReceiver	receiver;
 	private MutablePost		currentPost		= null;
-	private boolean			firstpost		= false;
 
 	public void parseThread(InputStream responseStream, PostReceiver receiver) {
 		this.receiver = receiver;
@@ -52,7 +51,7 @@ class FourChanThreadParser implements IParseDataReceiver {
 		try {
 			parser.parseStream(responseStream);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Parsing thread failed:");
 			e.printStackTrace();
 		}
 		receiver.parsingDone();
