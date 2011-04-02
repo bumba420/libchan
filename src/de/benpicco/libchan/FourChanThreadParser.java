@@ -10,7 +10,8 @@ import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.util.StreamParser;
+import de.benpicco.libchan.streamparser.IParseDataReceiver;
+import de.benpicco.libchan.streamparser.StreamParser;
 
 public class FourChanThreadParser implements ThreadParser {
 
@@ -106,13 +107,39 @@ public class FourChanThreadParser implements ThreadParser {
 	}
 
 	public void getThreads(InputStream responseStream, PostReceiver receiver) {
-		StreamParser parser = new StreamParser();
-		parser.addTag(23, "[<a href=\"res/", "\"");
+		(new ThreadsParser()).getThreads(responseStream, receiver);
+	}
+}
+
+class ThreadsParser implements IParseDataReceiver {
+
+	final static int		THREAD_URL	= 0;
+	private PostReceiver	receiver;
+
+	public void getThreads(InputStream responseStream, PostReceiver receiver) {
+		this.receiver = receiver;
+		StreamParser parser = new StreamParser(this);
+
+		parser.addTag(THREAD_URL, "[<a href=\"res/", "\"");
+
 		try {
 			parser.parseStream(responseStream);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void parsedString(int id, String data) {
+		switch (id) {
+		case THREAD_URL:
+			receiver.addThread(new Thread(null, "res/" + data, 0));
+			break;
+
+		default:
+			break;
+		}
+
 	}
 }
