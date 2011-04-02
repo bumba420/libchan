@@ -8,21 +8,21 @@ import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import de.benpicco.libchan.IImageBoardParser;
+import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.Image;
-import de.benpicco.libchan.ImageBoardParser;
 import de.benpicco.libchan.Post;
-import de.benpicco.libchan.PostReceiver;
 import de.benpicco.libchan.Thread;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 
-public class FourChanParser implements ImageBoardParser {
+public class FourChanParser implements IImageBoardParser {
 
-	public void parseThread(InputStream responseStream, PostReceiver receiver) {
+	public void parseThread(InputStream responseStream, IPostReceiver receiver) {
 		new FourChanThreadParser().parseThread(responseStream, receiver);
 	}
 
-	public void getThreads(InputStream responseStream, PostReceiver receiver) {
+	public void getThreads(InputStream responseStream, IPostReceiver receiver) {
 		new FourChanThreadsParser().getThreads(responseStream, receiver);
 	}
 }
@@ -38,19 +38,19 @@ class FourChanThreadParser implements IParseDataReceiver {
 	final static int		POST_DATE		= 6;
 	final static int		POST_MESSAGE	= 7;
 
-	private PostReceiver	receiver;
+	private IPostReceiver	receiver;
 	private MutablePost		currentPost		= null;
 
-	public void parseThread(InputStream responseStream, PostReceiver receiver) {
+	public void parseThread(InputStream responseStream, IPostReceiver receiver) {
 		this.receiver = receiver;
 		StreamParser parser = new StreamParser(this);
 		parser.addTag(POST_ID, "<input type=checkbox name=\"", "\"");
-		parser.addTag(POST_USER, "postername\">", "</span>");
+		parser.addTag(POST_USER, "postername\">", "</sp");
 		parser.addTag(POST_TITLE, "title\">", "</span>");
 		parser.addTag(POST_THUMBNAIL, "<img src=", " ");
 		parser.addTag(POST_IMGURL, "<br><a href=\"", "\"");
 		parser.addTag(POST_FILENAME, "<span title=\"", "\"");
-		parser.addTag(POST_DATE, "</span> ", " <");
+		parser.addTag(POST_DATE, "an> ", " <");
 		parser.addTag(POST_MESSAGE, "<blockquote>", "</blockquote>");
 
 		try {
@@ -161,12 +161,12 @@ class FourChanThreadParser implements IParseDataReceiver {
 	}
 }
 
-class FourChanThreadsParser implements PostReceiver {
+class FourChanThreadsParser implements IPostReceiver {
 
 	final static int		THREAD_URL	= 0;
-	private PostReceiver	receiver;
+	private IPostReceiver	receiver;
 
-	public void getThreads(InputStream responseStream, PostReceiver receiver) {
+	public void getThreads(InputStream responseStream, IPostReceiver receiver) {
 		this.receiver = receiver;
 		new FourChanThreadParser().parseThread(responseStream, this);
 	}

@@ -9,21 +9,21 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.Image;
-import de.benpicco.libchan.ImageBoardParser;
+import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.Post;
-import de.benpicco.libchan.PostReceiver;
+import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 
-public class KrautchanParser implements ImageBoardParser {
+public class KrautchanParser implements IImageBoardParser {
 
 	@Override
-	public void parseThread(InputStream in, PostReceiver rec) {
+	public void parseThread(InputStream in, IPostReceiver rec) {
 		new KrautchanThreadParser().parseThread(in, rec);
 	}
 
 	@Override
-	public void getThreads(InputStream in, PostReceiver rec) {
+	public void getThreads(InputStream in, IPostReceiver rec) {
 		// TODO Auto-generated method stub
 
 	}
@@ -40,11 +40,11 @@ class KrautchanThreadParser implements IParseDataReceiver {
 	final static int		POST_DATE		= 6;
 	final static int		POST_MESSAGE	= 7;
 
-	private PostReceiver	receiver;
+	private IPostReceiver	receiver;
 	private MutablePost		currentPost		= null;
 	private Image			currentImage	= null;
 
-	public void parseThread(InputStream responseStream, PostReceiver receiver) {
+	public void parseThread(InputStream responseStream, IPostReceiver receiver) {
 		this.receiver = receiver;
 		StreamParser parser = new StreamParser(this);
 		parser.addTag(POST_ID, "<input name=\"post_", "\"");
