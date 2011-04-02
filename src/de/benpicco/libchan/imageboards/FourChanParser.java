@@ -40,6 +40,7 @@ class FourChanThreadParser implements IParseDataReceiver {
 
 	private IPostReceiver	receiver;
 	private MutablePost		currentPost		= null;
+	String					firstPost		= "";
 
 	public void parseThread(InputStream responseStream, IPostReceiver receiver) {
 		this.receiver = receiver;
@@ -116,6 +117,8 @@ class FourChanThreadParser implements IParseDataReceiver {
 		case POST_MESSAGE:
 			if (currentPost == null)
 				return;
+			if (currentPost.isFirstPost)
+				firstPost = "http://boards.4chan.org/soc/res/" + currentPost.id;
 			currentPost.message = data;
 			receiver.addPost(currentPost.toPost());
 			currentPost = null;
@@ -156,7 +159,7 @@ class FourChanThreadParser implements IParseDataReceiver {
 			if (title.length() == 0)
 				title = null;
 
-			return new Post(id, isFirstPost, date, title, user, mail, message, images);
+			return new Post(id, isFirstPost, firstPost + "#" + id, date, title, user, mail, message, images);
 		}
 	}
 }

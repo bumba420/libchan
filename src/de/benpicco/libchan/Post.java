@@ -12,10 +12,12 @@ public class Post {
 	public final String			message;
 	public final String			date;
 	public final List<Image>	images;
+	public final String			url;
 
-	public Post(int id, boolean isFirstPost, String date, String title, String user, String mail, String message, List<Image> images) {
+	public Post(int id, boolean isFirstPost, String url, String date, String title, String user, String mail, String message, List<Image> images) {
 		this.id = id;
 		this.isFirstPost = isFirstPost;
+		this.url = url;
 		this.title = title;
 		this.user = user;
 		this.mail = mail;

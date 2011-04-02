@@ -1,6 +1,6 @@
 package de.benpicco.libchan;
 
-public interface PostReceiver {
+public interface IPostReceiver {
 	public void addPost(Post post);
 
 	public void addThread(Thread thread);

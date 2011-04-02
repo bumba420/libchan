@@ -8,10 +8,10 @@ import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.Image;
 import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.Post;
 import de.benpicco.libchan.IPostReceiver;
+import de.benpicco.libchan.Image;
+import de.benpicco.libchan.Post;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 
@@ -143,7 +143,7 @@ class KrautchanThreadParser implements IParseDataReceiver {
 			if (title.length() == 0)
 				title = null;
 
-			return new Post(id, isFirstPost, date, title, user, mail, message, images);
+			return new Post(id, isFirstPost, "", date, title, user, mail, message, images);
 		}
 	}
 }
