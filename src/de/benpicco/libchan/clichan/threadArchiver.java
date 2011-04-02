@@ -11,12 +11,12 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.FourChanParser;
 import de.benpicco.libchan.Image;
 import de.benpicco.libchan.ImageBoardParser;
 import de.benpicco.libchan.Post;
 import de.benpicco.libchan.PostReceiver;
 import de.benpicco.libchan.Thread;
+import de.benpicco.libchan.imageboards.FourChanParser;
 
 public class threadArchiver {
 	public static void main(String[] args) {

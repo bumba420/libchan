@@ -4,7 +4,7 @@ package de.benpicco.libchan;
  * This class is used to hold the url of an image as the url for it's thumbnail.
  */
 public class Image {
-	public final String	thumbnailUrl;
+	public String		thumbnailUrl;
 	public final String	url;
 	public final String	filename;
 

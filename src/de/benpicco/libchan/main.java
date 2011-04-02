@@ -7,12 +7,14 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.benpicco.libchan.imageboards.KrautchanParser;
+
 public class main {
 	public static void main(final String[] args) {
 		try {
-			ImageBoardParser parser = new FourChanParser();
-			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/").openStream());
-			parser.getThreads(in, new SimplePostReceiver(parser));
+			ImageBoardParser parser = new KrautchanParser();
+			InputStream in = new BufferedInputStream(new URL("http://krautchan.net/b/thread-2828069.html").openStream());
+			parser.parseThread(in, new SimplePostReceiver(parser));
 
 			// InputStream in = new BufferedInputStream(new
 			// URL("http://boards.4chan.org/soc/0").openStream());
