@@ -11,8 +11,8 @@ public class main {
 	public static void main(final String[] args) {
 		try {
 			ImageBoardParser parser = new FourChanParser();
-			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/res/3021779").openStream());
-			parser.parseThread(in, new SimplePostReceiver(parser));
+			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/").openStream());
+			parser.getThreads(in, new SimplePostReceiver(parser));
 
 			// InputStream in = new BufferedInputStream(new
 			// URL("http://boards.4chan.org/soc/0").openStream());
@@ -25,7 +25,7 @@ public class main {
 
 class SimplePostReceiver implements PostReceiver {
 
-	List<Post>		posts;
+	List<Post>			posts;
 	ImageBoardParser	parser;
 
 	public SimplePostReceiver(ImageBoardParser parser) {
@@ -36,7 +36,6 @@ class SimplePostReceiver implements PostReceiver {
 	@Override
 	public void addPost(final Post post) {
 		posts.add(post);
-
 		System.out.println(post);
 	}
 

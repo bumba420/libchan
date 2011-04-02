@@ -5,6 +5,7 @@ import java.util.List;
 
 public class Post {
 	public final int			id;
+	public final boolean		isFirstPost;
 	public final String			title;
 	public final String			user;
 	public final String			mail;
@@ -12,8 +13,9 @@ public class Post {
 	public final String			date;
 	public final List<Image>	images;
 
-	public Post(int id, String date, String title, String user, String mail, String message, List<Image> images) {
+	public Post(int id, boolean isFirstPost, String date, String title, String user, String mail, String message, List<Image> images) {
 		this.id = id;
+		this.isFirstPost = isFirstPost;
 		this.title = title;
 		this.user = user;
 		this.mail = mail;

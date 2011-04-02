@@ -78,15 +78,23 @@ class FourChanThreadParser implements IParseDataReceiver {
 			currentPost.date = data;
 			break;
 		case POST_FILENAME:
-			if (!firstpost) {
-				firstpost = true;
+			// opening post gets this parsed first
+			if (currentPost == null) {
 				currentPost = new MutablePost();
+				currentPost.isFirstPost = true;
 			}
+
 			if (currentPost == null)
 				return;
 			currentPost.filename = data;
 			break;
 		case POST_IMGURL:
+			// on main page we don't have a filename
+			if (currentPost == null) {
+				currentPost = new MutablePost();
+				currentPost.isFirstPost = true;
+			}
+
 			if (currentPost == null)
 				return;
 			currentPost.imgUrl = data;
@@ -106,6 +114,7 @@ class FourChanThreadParser implements IParseDataReceiver {
 				return;
 			currentPost.message = data;
 			receiver.addPost(currentPost.toPost());
+			currentPost = null;
 			break;
 		default:
 			System.err.println("unhandled case " + id + ": " + data);
@@ -114,6 +123,7 @@ class FourChanThreadParser implements IParseDataReceiver {
 	}
 
 	class MutablePost {
+		boolean		isFirstPost	= false;
 		String		imgUrl		= null;
 		String		thumbnail	= null;
 		String		filename	= null;
@@ -126,52 +136,50 @@ class FourChanThreadParser implements IParseDataReceiver {
 		List<Image>	images		= new LinkedList<Image>();
 
 		public Post toPost() {
-			if (imgUrl != null)
+			if (imgUrl != null) {
+				if (filename == null)
+					filename = imgUrl.substring(imgUrl.lastIndexOf('/') + 1);
 				images.add(new Image(thumbnail, imgUrl, filename));
+			}
 
 			message = message.replace("<br />", "\n").replaceAll("\\<.*?>", "");
 			message = StringEscapeUtils.unescapeHtml4(message);
 
 			mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
-			user = StringEscapeUtils.unescapeHtml4(user);
+			user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
 			title = StringEscapeUtils.unescapeHtml4(title);
 
 			if (title.length() == 0)
 				title = null;
 
-			return new Post(id, date, title, user, mail, message, images);
+			return new Post(id, isFirstPost, date, title, user, mail, message, images);
 		}
 	}
 }
 
-class FourChanThreadsParser implements IParseDataReceiver {
+class FourChanThreadsParser implements PostReceiver {
 
 	final static int		THREAD_URL	= 0;
 	private PostReceiver	receiver;
 
 	public void getThreads(InputStream responseStream, PostReceiver receiver) {
 		this.receiver = receiver;
-		StreamParser parser = new StreamParser(this);
+		new FourChanThreadParser().parseThread(responseStream, this);
+	}
 
-		parser.addTag(THREAD_URL, "[<a href=\"res/", "\"");
-
-		try {
-			parser.parseStream(responseStream);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	@Override
+	public void addPost(Post post) {
+		if (post.isFirstPost) {
+			String board = StringUtils.substringBetween(post.images.get(0).url, "http://images.4chan.org", "src");
+			receiver.addThread(new Thread(post, "http://boards.4chan.org" + board + "res/" + post.id, 0));
 		}
 	}
 
 	@Override
-	public void parsedString(int id, String data) {
-		switch (id) {
-		case THREAD_URL:
-			receiver.addThread(new Thread(null, "res/" + data, 0));
-			break;
+	public void addThread(Thread thread) {
+	}
 
-		default:
-			break;
-		}
+	@Override
+	public void parsingDone() {
 	}
 }
