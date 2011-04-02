@@ -2,11 +2,15 @@ package de.benpicco.libchan;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import de.benpicco.libchan.util.StreamParser;
 
 public class FourChanThreadParser implements ThreadParser {
 
@@ -28,9 +32,11 @@ public class FourChanThreadParser implements ThreadParser {
 					mail = StringUtils.substringBetween(str, "<a href=\"mailto:", "\"");
 					if (mail != null) {
 						mail = mail.trim();
-						user = StringUtils.substringBetween(str, "class=\"linkmail\">", "</a>").trim();
+						user = StringUtils.substringBetween(str, "class=\"linkmail\">", "</a>");
 					} else
-						user = StringUtils.substringBetween(str, ">", "<").trim();
+						user = StringUtils.substringBetween(str, ">", "<");
+					if (user != null)
+						user = user.trim();
 					date = StringUtils.substringAfter(str, "</span> ").trim();
 				} else if (str.contains("id=\"norep")) {
 					id = Integer.parseInt(StringUtils.substringBetween(str, "id=\"norep", "\""));
@@ -53,6 +59,9 @@ public class FourChanThreadParser implements ThreadParser {
 					message = StringEscapeUtils.unescapeHtml4(message);
 				}
 			} catch (Exception e) {
+				System.out.println("-----[cut here]-----");
+				System.out.println(str);
+				System.out.println("-----[/cut here]-----");
 				e.printStackTrace();
 			}
 		}
@@ -71,11 +80,15 @@ public class FourChanThreadParser implements ThreadParser {
 			do {
 				byte[] buffer = new byte[2048];
 				read = responseStream.read(buffer);
-				builder.append(new String(buffer));
+				if (read > 0) {
+					ByteBuffer bb = ByteBuffer.wrap(buffer, 0, read);
+					builder.append(Charset.defaultCharset().decode(bb));
+				}
 			} while (read > 0);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			System.err.println("Failed downloading thread:");
 			e.printStackTrace();
+			return;
 		}
 
 		String data = builder.toString();
@@ -93,23 +106,13 @@ public class FourChanThreadParser implements ThreadParser {
 	}
 
 	public void getThreads(InputStream responseStream, PostReceiver receiver) {
-		StringBuilder builder = new StringBuilder();
-		int read = 0;
+		StreamParser parser = new StreamParser();
+		parser.addTag(23, "[<a href=\"res/", "\"");
 		try {
-			do {
-				byte[] buffer = new byte[2048];
-				read = responseStream.read(buffer);
-				builder.append(new String(buffer));
-			} while (read > 0);
+			parser.parseStream(responseStream);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-		String data = builder.toString();
-		for (String s : data.split("[<a href")) {
-			String url = s.split("\"")[1].split("\"")[0];
-			receiver.addThread(new Thread(null, url, 0));
 		}
 	}
 }
