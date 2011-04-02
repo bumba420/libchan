@@ -21,6 +21,9 @@ public class StreamParser {
 		while (character >= 0) {
 			character = stream.read();
 
+			if (character < 0)
+				break;
+
 			if (match != null) {
 				builder.append((char) character);
 				if (match.match((char) character)) {

@@ -10,12 +10,13 @@ import java.util.List;
 public class main {
 	public static void main(final String[] args) {
 		try {
-			ThreadParser parser = new FourChanThreadParser();
-			// InputStream in = new FileInputStream("/tmp/thread");
-			// parser.parseThread(in, new SimplePostReceiver(parser));
+			ImageBoardParser parser = new FourChanParser();
+			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/res/3021779").openStream());
+			parser.parseThread(in, new SimplePostReceiver(parser));
 
-			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/0").openStream());
-			parser.getThreads(in, new SimplePostReceiver(parser));
+			// InputStream in = new BufferedInputStream(new
+			// URL("http://boards.4chan.org/soc/0").openStream());
+			// parser.getThreads(in, new SimplePostReceiver(parser));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -25,9 +26,9 @@ public class main {
 class SimplePostReceiver implements PostReceiver {
 
 	List<Post>		posts;
-	ThreadParser	parser;
+	ImageBoardParser	parser;
 
-	public SimplePostReceiver(ThreadParser parser) {
+	public SimplePostReceiver(ImageBoardParser parser) {
 		posts = new LinkedList<Post>();
 		this.parser = parser;
 	}
