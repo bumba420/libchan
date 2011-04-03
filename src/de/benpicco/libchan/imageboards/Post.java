@@ -38,10 +38,11 @@ public class Post {
 		message = StringEscapeUtils.unescapeHtml4(message);
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
-		user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
+		if (user != null)
+			user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
 		title = StringEscapeUtils.unescapeHtml4(title);
 
-		if (title.length() == 0)
+		if (title != null && title.length() == 0)
 			title = null;
 	}
 }

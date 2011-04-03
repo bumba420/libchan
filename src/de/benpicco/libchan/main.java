@@ -16,11 +16,11 @@ public class main {
 		// names.add("Pokechu");
 		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		IImageBoardParser parser = (new ChanSpecification("chans/krautchan.chan")).getImageBoardParser();
+		IImageBoardParser parser = (new ChanSpecification("chans/420chan.chan")).getImageBoardParser();
 
 		try {
 			InputStream in = new BufferedInputStream(
-					new URL("http://krautchan.net/int/thread-4209173.html").openStream());
+					new URL("http://boards.420chan.org/psy/res/422393.php").openStream());
 			parser.getMessages(in, new SimplePostReceiver(parser));
 		} catch (IOException e) {
 			e.printStackTrace();
