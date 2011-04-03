@@ -16,7 +16,7 @@ public class main {
 		// names.add("Pokechu");
 		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		String url = "http://krautchan.net/b/thread-2831611.html";
+		String url = "http://boards.420chan.org/psy/res/422460.php";
 		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
 		try {

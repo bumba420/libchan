@@ -17,7 +17,6 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	private Image				currentImage	= null;
 
 	private final String		url;
-	private final List<Tags>	threadStarter;
 	private final List<Tags>	postStarter;
 	private final List<Tags>	postEnder;
 	private final List<Tags>	imageEnder;
@@ -32,10 +31,9 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		return relUrl.startsWith("/") ? url + relUrl : relUrl;
 	}
 
-	public GenericImageBoardParser(String url, List<Tags> threadStarter, List<Tags> postStarter, List<Tags> postEnder,
-			List<Tags> imageEnder, StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix) {
+	public GenericImageBoardParser(String url, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
+			StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix) {
 		this.url = url;
-		this.threadStarter = threadStarter;
 		this.postStarter = postStarter;
 		this.postEnder = postEnder;
 		this.imageEnder = imageEnder;
@@ -66,12 +64,9 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	public void parsedString(Tags tag, String data) {
 
 		if (currentPost == null)
-			if (threadStarter.contains(tag)) {
+			if (postStarter.contains(tag))
 				currentPost = new Post();
-				currentPost.isFirstPost = true;
-			} else if (postStarter.contains(tag)) {
-				currentPost = new Post();
-			} else
+			else
 				return;
 
 		switch (tag) {
@@ -107,6 +102,9 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			break;
 		case POST_MESSAGE:
 			currentPost.message = data;
+			break;
+		case POST_THREAD:
+			currentPost.isFirstPost = true;
 			break;
 		default:
 			System.err.println("unhandled case " + tag + ": " + data);

@@ -66,7 +66,7 @@ class ParseItem {
 	public boolean match(char c) {
 		char[] tag = open ? end : start;
 
-		if (tag[count] == c)
+		if (tag.length > 0 && tag[count] == c)
 			++count;
 		else
 			count = 0;

@@ -7,7 +7,8 @@ POST_THUMBNAIL	"<img src=\""			"\""
 POST_IMGURL	"File:  <a target=\"_blank\" href=\""	"\""
 POST_MESSAGE	"<blockquote>"			"</blockquote>"
 
-START_THREAD	POST_FILENAME
+POST_THREAD	"title=\"Report Thread"	""
+
 START_POST	POST_ID
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE

@@ -17,7 +17,6 @@ import de.benpicco.libchan.util.Tuple;
 
 public class ChanSpecification implements IParseDataReceiver {
 
-	private List<Tags>					threadStarter	= new ArrayList<Tags>();
 	private List<Tags>					postStarter		= new ArrayList<Tags>();
 	private List<Tags>					postEnder		= new ArrayList<Tags>();
 	private List<Tags>					imageEnder		= new ArrayList<Tags>();
@@ -27,7 +26,11 @@ public class ChanSpecification implements IParseDataReceiver {
 	private String						imgPrefix		= "";
 	private String						countryPrefix	= "";
 
+	private final String				file;
+
 	public ChanSpecification(String file) {
+		this.file = file;
+
 		StreamParser configParser = new StreamParser();
 		for (Tags t : Tags.values())
 			configParser.addTag(t, t.toString(), "\n");
@@ -55,9 +58,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case BOARD_URL:
 			supported.add(new Tuple<String, String>(first, second));
 			break;
-		case START_THREAD:
-			threadStarter.add(Tags.valueOf(data.trim()));
-			break;
+		// case START_THREAD:
+		// threadStarter.add(Tags.valueOf(data.trim()));
+		// break;
 		case START_POST:
 			postStarter.add(Tags.valueOf(data.trim()));
 			break;
@@ -78,7 +81,7 @@ public class ChanSpecification implements IParseDataReceiver {
 			break;
 		default:
 			if (first == null || second == null) {
-				System.err.println("Malformed configuration for " + tag);
+				System.err.println("Malformed configuration for " + tag + " in " + file);
 				return;
 			}
 			parser.addTag(tag, first, second);
@@ -93,8 +96,8 @@ public class ChanSpecification implements IParseDataReceiver {
 		for (Tuple<String, String> chan : supported)
 			if (key.startsWith(chan.first) || key.equals(chan.second)) {
 				System.out.println("using " + chan.second + " parser");
-				return new GenericImageBoardParser(chan.first, threadStarter, postStarter, postEnder, imageEnder,
-						parser, imgPrefix, thumbPrefix, countryPrefix);
+				return new GenericImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser, imgPrefix,
+						thumbPrefix, countryPrefix);
 			}
 		return null;
 	}
