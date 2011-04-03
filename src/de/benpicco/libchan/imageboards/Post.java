@@ -33,7 +33,7 @@ public class Post {
 
 	protected void cleanup() {
 
-		message = message.replace("<br />", "\n").replaceAll("\\<.*?>", "").trim();
+		message = message.replaceAll("(<br>|<br />)", "\n").replaceAll("\\<.*?>", "").trim();
 		message = StringEscapeUtils.unescapeHtml4(message);
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");

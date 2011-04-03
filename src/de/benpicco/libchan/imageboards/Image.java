@@ -1,6 +1,5 @@
 package de.benpicco.libchan.imageboards;
 
-
 /**
  * This class is used to hold the url of an image as the url for it's thumbnail.
  */
@@ -17,6 +16,9 @@ public class Image {
 		if (url != null) {
 			if (filename == null)
 				filename = url.substring(url.lastIndexOf('/') + 1);
+
+			if (thumbnailUrl == null)
+				thumbnailUrl = url;
 		}
 	}
 }
