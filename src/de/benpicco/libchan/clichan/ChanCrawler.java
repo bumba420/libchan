@@ -8,12 +8,11 @@ import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.imageboards.FourChanParser;
 import de.benpicco.libchan.imageboards.Post;
 
 public class ChanCrawler {
 	public static void lookFor(List<String> names, final String board) {
-		IImageBoardParser parser = new FourChanParser();
+		IImageBoardParser parser = new ChanManager("chans/").getParser(board);
 		for (int i = 0; i < 15; i++)
 			new Thread(new PageCrawler(board + i, parser, names)).run();
 	}

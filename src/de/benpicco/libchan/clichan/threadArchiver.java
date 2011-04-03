@@ -14,7 +14,6 @@ import java.util.List;
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.Thread;
-import de.benpicco.libchan.imageboards.FourChanParser;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -45,8 +44,11 @@ public class threadArchiver {
 
 		System.out.println("Saving pictures from " + thread + " to " + target);
 
-		IImageBoardParser parser = new FourChanParser();
-		parser.getMessages(in, new PostArchiver(target));
+		IImageBoardParser parser = new ChanManager("chans/").getParser(thread);
+		if (parser == null)
+			System.err.println("URL scheme not supported by any parser");
+		else
+			parser.getMessages(in, new PostArchiver(target));
 	}
 }
 

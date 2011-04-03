@@ -13,18 +13,19 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
+import de.benpicco.libchan.util.Tuple;
 
 public class ChanSpecification implements IParseDataReceiver {
 
-	private List<Tags>		threadStarter	= new ArrayList<Tags>();
-	private List<Tags>		postStarter		= new ArrayList<Tags>();
-	private List<Tags>		postEnder		= new ArrayList<Tags>();
-	private List<Tags>		imageEnder		= new ArrayList<Tags>();
-	private List<String>	supported		= new ArrayList<String>();
-	private StreamParser	parser			= new StreamParser();
-	private String			thumbPrefix		= "";
-	private String			imgPrefix		= "";
-	private String			countryPrefix	= "";
+	private List<Tags>					threadStarter	= new ArrayList<Tags>();
+	private List<Tags>					postStarter		= new ArrayList<Tags>();
+	private List<Tags>					postEnder		= new ArrayList<Tags>();
+	private List<Tags>					imageEnder		= new ArrayList<Tags>();
+	private List<Tuple<String, String>>	supported		= new ArrayList<Tuple<String, String>>();
+	private StreamParser				parser			= new StreamParser();
+	private String						thumbPrefix		= "";
+	private String						imgPrefix		= "";
+	private String						countryPrefix	= "";
 
 	public ChanSpecification(String file) {
 		StreamParser configParser = new StreamParser();
@@ -33,7 +34,7 @@ public class ChanSpecification implements IParseDataReceiver {
 		try {
 			configParser.parseStream(new FileInputStream(file), this);
 		} catch (FileNotFoundException e) {
-			System.err.println("File " + file + "does not exist.");
+			System.err.println("File " + file + " does not exist.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -52,7 +53,7 @@ public class ChanSpecification implements IParseDataReceiver {
 
 		switch (tag) {
 		case BOARD_URL:
-			supported.add(first);
+			supported.add(new Tuple<String, String>(first, second));
 			break;
 		case START_THREAD:
 			threadStarter.add(Tags.valueOf(data.trim()));
@@ -84,9 +85,17 @@ public class ChanSpecification implements IParseDataReceiver {
 		}
 	}
 
-	public IImageBoardParser getImageBoardParser() {
-		String url = supported.get(0); // XXX
-		return new GenericImageBoardParser(url, threadStarter, postStarter, postEnder, imageEnder, parser, imgPrefix,
-				thumbPrefix, countryPrefix);
+	public List<Tuple<String, String>> getSupported() {
+		return supported;
+	}
+
+	public IImageBoardParser getImageBoardParser(String key) {
+		for (Tuple<String, String> chan : supported)
+			if (key.startsWith(chan.first) || key.equals(chan.second)) {
+				System.out.println("using " + chan.second + " parser");
+				return new GenericImageBoardParser(chan.first, threadStarter, postStarter, postEnder, imageEnder,
+						parser, imgPrefix, thumbPrefix, countryPrefix);
+			}
+		return null;
 	}
 }

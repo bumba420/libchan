@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.imageboards.ChanSpecification;
+import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.imageboards.Post;
 
 public class main {
@@ -16,11 +16,11 @@ public class main {
 		// names.add("Pokechu");
 		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		IImageBoardParser parser = (new ChanSpecification("chans/420chan.chan")).getImageBoardParser();
+		String url = "http://krautchan.net/b/thread-2831611.html";
+		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
 		try {
-			InputStream in = new BufferedInputStream(
-					new URL("http://boards.420chan.org/psy/res/422393.php").openStream());
+			InputStream in = new BufferedInputStream(new URL(url).openStream());
 			parser.getMessages(in, new SimplePostReceiver(parser));
 		} catch (IOException e) {
 			e.printStackTrace();

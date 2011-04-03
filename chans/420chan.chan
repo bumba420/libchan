@@ -1,11 +1,11 @@
 BOARD_URL	"http://boards.420chan.org"	"420chan"
 
 POST_ID		"name=\"delete\" value=\""	"\""
-POST_USER	"postername\">"	"</span>"
-POST_TITLE	"title\">"	"</span>"
-POST_THUMBNAIL	"<img src=\""	"\""
+POST_USER	"postername\">"			"</span>"
+POST_TITLE	"title\">"			"</span>"
+POST_THUMBNAIL	"<img src=\""			"\""
 POST_IMGURL	"File:  <a target=\"_blank\" href=\""	"\""
-POST_MESSAGE	"<blockquote>"	"</blockquote>"
+POST_MESSAGE	"<blockquote>"			"</blockquote>"
 
 START_THREAD	POST_FILENAME
 START_POST	POST_ID
