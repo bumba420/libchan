@@ -8,8 +8,9 @@ POST_IMGURL	"<br><a href=\""		"\""
 POST_FILENAME	"<span title=\""		"\""
 POST_DATE	"an> "				" <"
 POST_MESSAGE	"<blockquote>"			"</blockquote>"
-
 POST_THREAD	" id=\"nothread"		""
+
+URL_SCHEME	"res/"				""
 
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL

@@ -1,9 +1,13 @@
 package de.benpicco.libchan;
 
-import java.io.InputStream;
+import java.io.IOException;
+
+import de.benpicco.libchan.imageboards.Post;
 
 public interface IImageBoardParser {
-	public void getMessages(InputStream in, IPostReceiver rec);
+	public void getMessages(String url, IPostReceiver rec) throws IOException;
 
-	public void getThreads(InputStream in, IPostReceiver rec);
+	public void getThreads(String url, IThreadReceiver rec) throws IOException;
+
+	public String composeUrl(String url, Post post);
 }

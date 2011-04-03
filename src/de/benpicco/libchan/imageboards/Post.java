@@ -15,8 +15,8 @@ public class Post {
 	public String				message;
 	public String				date;
 	public final List<Image>	images;
-	public String				url;
 	public String				countryball;
+	public int					op;
 
 	public Post() {
 		this.images = new LinkedList<Image>();
@@ -34,7 +34,7 @@ public class Post {
 
 	protected void cleanup() {
 
-		message = message.replaceAll("(<br>|<br />)", "\n").replaceAll("\\<.*?>", "").trim();
+		message = message.replaceAll("(<br>|<br />|<p>|</p>)", "\n").replaceAll("\\<.*?>", "").trim();
 		message = StringEscapeUtils.unescapeHtml4(message);
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");

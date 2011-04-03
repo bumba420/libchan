@@ -8,8 +8,9 @@ POST_IMGURL	"<span class=\"filename\"><a href=\""	"\""
 POST_COUNTRY	"<img src=\"/images/balls/"		"\""
 POST_DATE	"<span class=\"postdate\">"		"</span>"
 POST_MESSAGE	"<blockquote>"				"</blockquote>"
-
 POST_THREAD	"<div class=\"file_thread\">"		""
+
+URL_SCHEME		"thread-"			".html"
 
 THUMBNAIL_PREFIX	"/thumbnails/"
 COUNTRY_PREFIX		"/images/balls/"

@@ -1,9 +1,6 @@
 package de.benpicco.libchan;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,14 +11,13 @@ public class main {
 	public static void main(final String[] args) {
 		// List<String> names = new ArrayList<String>();
 		// names.add("Pokechu");
-		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
+		// ChanCrawler.lookFor(names, "");
 
-		String url = "http://boards.420chan.org/psy/res/422460.php";
+		String url = "http://krautchan.net/e/";
 		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
 		try {
-			InputStream in = new BufferedInputStream(new URL(url).openStream());
-			parser.getMessages(in, new SimplePostReceiver(parser));
+			parser.getThreads(url, new SimplePostReceiver(parser));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -43,7 +39,7 @@ public class main {
 	}
 }
 
-class SimplePostReceiver implements IPostReceiver {
+class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
 	List<Post>			posts;
 	IImageBoardParser	parser;
@@ -54,18 +50,23 @@ class SimplePostReceiver implements IPostReceiver {
 	}
 
 	@Override
-	public void addPost(final Post post) {
+	public void onAddPost(final Post post) {
 		posts.add(post);
 		System.out.println(post);
 	}
 
 	@Override
-	public void parsingDone() {
+	public void onPostParsingDone() {
 		System.out.println("Thread with " + posts.size() + " posts received.");
 	}
 
 	@Override
-	public void addThread(Thread thread) {
+	public void onAddThread(Thread thread) {
 		System.out.println(thread.getUrl());
+
+	}
+
+	@Override
+	public void onThreadParsingDone() {
 	}
 }

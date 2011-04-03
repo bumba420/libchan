@@ -25,6 +25,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	private String						thumbPrefix		= "";
 	private String						imgPrefix		= "";
 	private String						countryPrefix	= "";
+	private Tuple<String, String>		threadURL		= null;
 
 	private final String				file;
 
@@ -58,9 +59,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case BOARD_URL:
 			supported.add(new Tuple<String, String>(first, second));
 			break;
-		// case START_THREAD:
-		// threadStarter.add(Tags.valueOf(data.trim()));
-		// break;
+		case URL_SCHEME:
+			threadURL = new Tuple<String, String>(first, second);
+			break;
 		case START_POST:
 			postStarter.add(Tags.valueOf(data.trim()));
 			break;
@@ -97,7 +98,7 @@ public class ChanSpecification implements IParseDataReceiver {
 			if (key.startsWith(chan.first) || key.equals(chan.second)) {
 				System.out.println("using " + chan.second + " parser");
 				return new GenericImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser, imgPrefix,
-						thumbPrefix, countryPrefix);
+						thumbPrefix, countryPrefix, threadURL);
 			}
 		return null;
 	}

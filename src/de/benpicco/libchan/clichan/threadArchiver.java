@@ -4,16 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.LinkedList;
-import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.Thread;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -32,14 +28,6 @@ public class threadArchiver {
 			thread = args[0];
 		}
 
-		InputStream in = null;
-		try {
-			in = new BufferedInputStream(new URL(thread).openStream());
-		} catch (IOException e) {
-			System.err.println("Invalid URL " + thread);
-			return;
-		}
-
 		target = target + File.separator + thread.substring(thread.lastIndexOf('/') + 1);
 
 		System.out.println("Saving pictures from " + thread + " to " + target);
@@ -48,25 +36,28 @@ public class threadArchiver {
 		if (parser == null)
 			System.err.println("URL scheme not supported by any parser");
 		else
-			parser.getMessages(in, new PostArchiver(target));
+			try {
+				parser.getMessages(thread, new PostArchiver(target));
+			} catch (IOException e) {
+				System.out.println("Unable to parse " + thread + ", " + e);
+			}
 	}
 }
 
 class PostArchiver implements IPostReceiver {
 
-	List<Post>		posts;
+	int				count	= 0;
 	final String	targetDir;
 
 	public PostArchiver(String targetDir) {
-		posts = new LinkedList<Post>();
 		this.targetDir = targetDir.endsWith(File.separator) ? targetDir : targetDir + File.separator;
 
 		new File(targetDir).mkdir();
 	}
 
 	@Override
-	public void addPost(final Post post) {
-		posts.add(post);
+	public void onAddPost(final Post post) {
+		++count;
 
 		final String dir = targetDir + post.user + File.separator;
 
@@ -100,12 +91,7 @@ class PostArchiver implements IPostReceiver {
 	}
 
 	@Override
-	public void parsingDone() {
-		System.out.println("Thread with " + posts.size() + " posts received.");
-	}
-
-	@Override
-	public void addThread(Thread thread) {
-		// TODO: implement
+	public void onPostParsingDone() {
+		System.out.println("Thread with " + count + " posts received.");
 	}
 }
