@@ -10,25 +10,24 @@ import de.benpicco.libchan.imageboards.Post;
 
 public class ChanCrawler {
 	public static void lookFor(List<String> names, final String board) {
-		IImageBoardParser parser = new ChanManager("chans/").getParser(board);
 		for (int i = 0; i < 15; i++)
-			new Thread(new PageCrawler(board + i, parser, names)).run();
+			new Thread(new PageCrawler(board + i, names)).run();
 	}
 }
 
 class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
-	private final String			page;
-	private final IImageBoardParser	parser;
-	private final List<String>		names;
+	private final String		page;
+	private final List<String>	names;
+	IImageBoardParser			parser	= null;
 
-	public PageCrawler(String page, IImageBoardParser parser, List<String> names) {
+	public PageCrawler(String page, List<String> names) {
 		this.page = page;
-		this.parser = parser;
 		this.names = names;
 	}
 
 	@Override
 	public void run() {
+		parser = new ChanManager("chans/").getParser(page);
 		try {
 			parser.getThreads(page, this);
 		} catch (IOException e) {
@@ -51,6 +50,7 @@ class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
 
 			@Override
 			public void run() {
+				IImageBoardParser parser = new ChanManager("chans/").getParser(page);
 				try {
 					parser.getMessages(thread.getUrl(), PageCrawler.this);
 				} catch (IOException e) {
@@ -62,9 +62,11 @@ class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
 
 	@Override
 	public void onPostParsingDone() {
+		System.out.print(".");
 	}
 
 	@Override
 	public void onThreadParsingDone() {
+		System.out.print("!");
 	}
 }

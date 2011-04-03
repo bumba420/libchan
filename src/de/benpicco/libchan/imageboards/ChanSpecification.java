@@ -95,11 +95,9 @@ public class ChanSpecification implements IParseDataReceiver {
 
 	public IImageBoardParser getImageBoardParser(String key) {
 		for (Tuple<String, String> chan : supported)
-			if (key.startsWith(chan.first) || key.equals(chan.second)) {
-				System.out.println("using " + chan.second + " parser");
+			if (key.startsWith(chan.first) || key.equals(chan.second))
 				return new GenericImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser, imgPrefix,
 						thumbPrefix, countryPrefix, threadURL);
-			}
 		return null;
 	}
 }

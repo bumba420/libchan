@@ -1,26 +1,26 @@
 package de.benpicco.libchan;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.imageboards.Post;
 
 public class main {
 	public static void main(final String[] args) {
-		// List<String> names = new ArrayList<String>();
-		// names.add("Pokechu");
-		// ChanCrawler.lookFor(names, "");
+		List<String> names = new ArrayList<String>();
+		names.add("Pokechu");
+		ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		String url = "http://krautchan.net/e/";
-		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
-
-		try {
-			parser.getThreads(url, new SimplePostReceiver(parser));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// String url = "http://boards.4chan.org/soc";
+		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
+		//
+		// try {
+		// parser.getThreads(url, new SimplePostReceiver(parser));
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 		// try {
 		// IImageBoardParser parser = new KrautchanParser();
