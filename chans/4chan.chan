@@ -1,0 +1,12 @@
+BOARD_URL	"http://boards.4chan.org"	"4chan"
+
+POST_ID		"<input type=checkbox name=\""	 "\""
+POST_USER	"postername\">"			"</sp"
+POST_TITLE	"title\">"			"</span>"
+POST_THUMBNAIL	"<img src="			" "
+POST_IMGURL	"<br><a href=\""		"\""
+POST_FILENAME	"<span title=\""		"\""
+POST_DATE	"an> "				" <"
+POST_MESSAGE	"<blockquote>"			"</blockquote>"
+
+END_POST	POST_MESSAGE
