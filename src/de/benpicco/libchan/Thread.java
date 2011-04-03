@@ -1,5 +1,7 @@
 package de.benpicco.libchan;
 
+import de.benpicco.libchan.imageboards.Post;
+
 public class Thread {
 	private int				replies;
 	private final String	url;

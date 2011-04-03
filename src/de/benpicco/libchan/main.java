@@ -1,9 +1,14 @@
 package de.benpicco.libchan;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.imageboards.ChanParser;
+import de.benpicco.libchan.imageboards.ChanSpecification;
+import de.benpicco.libchan.imageboards.Post;
 
 public class main {
 	public static void main(final String[] args) {
@@ -11,7 +16,15 @@ public class main {
 		// names.add("Pokechu");
 		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		new ChanParser("chans/4chan.chan");
+		IImageBoardParser parser = (new ChanSpecification("chans/4chan.chan")).getImageBoardParser();
+
+		try {
+			InputStream in = new BufferedInputStream(new URL("http://boards.4chan.org/soc/res/3053975").openStream());
+			parser.getMessages(in, new SimplePostReceiver(parser));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		// try {
 		// IImageBoardParser parser = new KrautchanParser();
 		//

@@ -10,15 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.Image;
-import de.benpicco.libchan.Post;
 import de.benpicco.libchan.Thread;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 
 public class FourChanParser implements IImageBoardParser {
 
-	public void parseThread(InputStream responseStream, IPostReceiver receiver) {
+	public void getMessages(InputStream responseStream, IPostReceiver receiver) {
 		new FourChanThreadParser().parseThread(responseStream, receiver);
 	}
 

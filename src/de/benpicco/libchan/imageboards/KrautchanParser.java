@@ -10,15 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.Image;
-import de.benpicco.libchan.Post;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 
 public class KrautchanParser implements IImageBoardParser {
 
 	@Override
-	public void parseThread(InputStream in, IPostReceiver rec) {
+	public void getMessages(InputStream in, IPostReceiver rec) {
 		new KrautchanThreadParser().parseThread(in, rec);
 	}
 

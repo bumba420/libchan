@@ -5,16 +5,16 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StreamParser {
-	private final List<ParseItem>		tags;
-	private final IParseDataReceiver	receiver;
+import de.benpicco.libchan.imageboards.Tags;
 
-	public StreamParser(IParseDataReceiver receiver) {
+public class StreamParser {
+	private final List<ParseItem>	tags;
+
+	public StreamParser() {
 		tags = new ArrayList<ParseItem>();
-		this.receiver = receiver;
 	}
 
-	public void parseStream(InputStream stream) throws IOException {
+	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
 		int character = 0;
 		ParseItem match = null;
 		StringBuilder builder = new StringBuilder();
@@ -29,7 +29,7 @@ public class StreamParser {
 				if (match.match((char) character)) {
 					builder.delete(builder.length() - match.trailing(), builder.length());
 
-					receiver.parsedString(match.id, builder.toString());
+					receiver.parsedString(match.tag, builder.toString());
 
 					builder = new StringBuilder();
 					match = null;
@@ -44,8 +44,8 @@ public class StreamParser {
 		}
 	}
 
-	public void addTag(int id, String start, String end) {
-		tags.add(new ParseItem(id, start, end));
+	public void addTag(Tags tag, String start, String end) {
+		tags.add(new ParseItem(tag, start, end));
 	}
 }
 
@@ -53,14 +53,14 @@ class ParseItem {
 	int					count	= 0;
 	boolean				open	= false;
 
-	public final int	id;
+	public final Tags	tag;
 	final char[]		start;
 	final char[]		end;
 
-	public ParseItem(int id, String start, String end) {
+	public ParseItem(Tags tag, String start, String end) {
 		this.start = start.toCharArray();
 		this.end = end.toCharArray();
-		this.id = id;
+		this.tag = tag;
 	}
 
 	public boolean match(char c) {

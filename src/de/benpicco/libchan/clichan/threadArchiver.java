@@ -11,12 +11,12 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.Image;
 import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.Post;
 import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.Thread;
 import de.benpicco.libchan.imageboards.FourChanParser;
+import de.benpicco.libchan.imageboards.Image;
+import de.benpicco.libchan.imageboards.Post;
 
 public class threadArchiver {
 	public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class threadArchiver {
 		System.out.println("Saving pictures from " + thread + " to " + target);
 
 		IImageBoardParser parser = new FourChanParser();
-		parser.parseThread(in, new PostArchiver(target));
+		parser.getMessages(in, new PostArchiver(target));
 	}
 }
 

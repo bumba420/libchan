@@ -8,8 +8,8 @@ import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.Post;
 import de.benpicco.libchan.imageboards.FourChanParser;
+import de.benpicco.libchan.imageboards.Post;
 
 public class ChanCrawler {
 	public static void lookFor(List<String> names, final String board) {
@@ -57,7 +57,7 @@ class PageCrawler implements Runnable, IPostReceiver {
 			public void run() {
 				try {
 					InputStream in = new BufferedInputStream(new URL(thread.getUrl()).openStream());
-					parser.parseThread(in, PageCrawler.this);
+					parser.getMessages(in, PageCrawler.this);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
