@@ -24,6 +24,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	private StreamParser	parser			= new StreamParser();
 	private String			thumbPrefix		= "";
 	private String			imgPrefix		= "";
+	private String			countryPrefix	= "";
 
 	public ChanSpecification(String file) {
 		StreamParser configParser = new StreamParser();
@@ -71,6 +72,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case IMAGE_PREFIX:
 			imgPrefix = first;
 			break;
+		case COUNTRY_PREFIX:
+			countryPrefix = first;
+			break;
 		default:
 			if (first == null || second == null) {
 				System.err.println("Malformed configuration for " + tag);
@@ -83,6 +87,6 @@ public class ChanSpecification implements IParseDataReceiver {
 	public IImageBoardParser getImageBoardParser() {
 		String url = supported.get(0); // XXX
 		return new GenericImageBoardParser(url, threadStarter, postStarter, postEnder, imageEnder, parser, imgPrefix,
-				thumbPrefix);
+				thumbPrefix, countryPrefix);
 	}
 }

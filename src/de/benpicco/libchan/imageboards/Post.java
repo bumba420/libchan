@@ -16,6 +16,7 @@ public class Post {
 	public String				date;
 	public final List<Image>	images;
 	public String				url;
+	public String				countryball;
 
 	public Post() {
 		this.images = new LinkedList<Image>();

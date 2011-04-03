@@ -19,7 +19,8 @@ public class main {
 		IImageBoardParser parser = (new ChanSpecification("chans/krautchan.chan")).getImageBoardParser();
 
 		try {
-			InputStream in = new BufferedInputStream(new URL("http://krautchan.net/b/thread-2833435.html").openStream());
+			InputStream in = new BufferedInputStream(
+					new URL("http://krautchan.net/int/thread-4209173.html").openStream());
 			parser.getMessages(in, new SimplePostReceiver(parser));
 		} catch (IOException e) {
 			e.printStackTrace();

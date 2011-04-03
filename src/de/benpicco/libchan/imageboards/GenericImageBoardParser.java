@@ -26,9 +26,14 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 	private final String		imgPrefix;
 	private final String		thumbPrefix;
+	private final String		countryPrefix;
+
+	private String absolute(String relUrl) {
+		return relUrl.startsWith("/") ? url + relUrl : relUrl;
+	}
 
 	public GenericImageBoardParser(String url, List<Tags> threadStarter, List<Tags> postStarter, List<Tags> postEnder,
-			List<Tags> imageEnder, StreamParser parser, String imgPrefix, String thumbPrefix) {
+			List<Tags> imageEnder, StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix) {
 		this.url = url;
 		this.threadStarter = threadStarter;
 		this.postStarter = postStarter;
@@ -37,6 +42,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		this.parser = parser;
 		this.imgPrefix = imgPrefix;
 		this.thumbPrefix = thumbPrefix;
+		this.countryPrefix = countryPrefix;
 	}
 
 	@Override
@@ -81,21 +87,20 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		case POST_IMGURL:
 			if (currentImage == null)
 				currentImage = new Image();
-			currentImage.url = imgPrefix + data.trim();
-			if (currentImage.url.startsWith("/"))
-				currentImage.url = url + currentImage.url;
+			currentImage.url = absolute(imgPrefix + data.trim());
 			break;
 		case POST_THUMBNAIL:
 			if (currentImage == null)
 				currentImage = new Image();
-			currentImage.thumbnailUrl = thumbPrefix + data.trim();
-			if (currentImage.thumbnailUrl.startsWith("/"))
-				currentImage.thumbnailUrl = url + currentImage.thumbnailUrl;
+			currentImage.thumbnailUrl = absolute(thumbPrefix + data.trim());
 			break;
 		case POST_FILENAME:
 			if (currentImage == null)
 				currentImage = new Image();
 			currentImage.filename = data.trim();
+			break;
+		case POST_COUNTRY:
+			currentPost.countryball = absolute(countryPrefix + data);
 			break;
 		case POST_TITLE:
 			currentPost.title = data;
