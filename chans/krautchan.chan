@@ -1,0 +1,15 @@
+BOARD_URL	"http://krautchan.net"			"Krautchan"
+
+POST_ID		"<input name=\"post_"	 		"\""
+POST_USER	"<span class=\"postername\">"		"</span>"
+POST_TITLE	"<span class=\"postsubject\">"		"</span>"
+POST_THUMBNAIL	" src=/thumbnails/"			"\n"
+POST_IMGURL	"<span class=\"filename\"><a href=\""	"\""
+POST_DATE	"<span class=\"postdate\">"		"</span>"
+POST_MESSAGE	"<blockquote>"				"</blockquote>"
+
+THUMBNAIL_PREFIX	"/thumbnails/"
+
+START_POST	POST_ID
+END_POST	POST_MESSAGE
+END_IMAGE	POST_THUMBNAIL
