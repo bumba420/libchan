@@ -37,7 +37,7 @@ public class threadArchiver {
 			System.err.println("URL scheme not supported by any parser");
 		else
 			try {
-				parser.getMessages(thread, new PostArchiver(target));
+				parser.getPosts(thread, new PostArchiver(target));
 			} catch (IOException e) {
 				System.out.println("Unable to parse " + thread + ", " + e);
 			}
@@ -69,21 +69,28 @@ class PostArchiver implements IPostReceiver {
 			@Override
 			public void run() {
 				for (Image img : post.images) {
-					try {
-						if ((new File(dir + img.filename)).exists()) {
-							System.out.println(dir + img.filename + " already exists, skipping.");
-							continue;
+					int tries = 5;
+					while (tries-- > 0)
+						try {
+							if ((new File(dir + img.filename)).exists()) {
+								System.out.println(dir + img.filename + " already exists, skipping.");
+								continue;
+							}
+							System.out.println("Saving " + img.url + " as " + dir + img.filename);
+							URL image = new URL(img.url);
+							ReadableByteChannel rbc = Channels.newChannel(new BufferedInputStream(image.openStream()));
+							FileOutputStream fos = new FileOutputStream(dir + img.filename);
+							fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+							System.out.println(dir + img.filename + " saved.");
+							break;
+						} catch (Exception e) {
+							System.err.println("Failed to save " + img.filename + " as " + dir + img.filename);
+							System.out.println("------------------\n" + post + "\n-------------------");
+							if (tries > 0)
+								System.out.println("retrying…");
+							else
+								System.out.println("…giving up");
 						}
-						System.out.println("Saving " + img.url + " as " + dir + img.filename);
-						URL image = new URL(img.url);
-						ReadableByteChannel rbc = Channels.newChannel(new BufferedInputStream(image.openStream()));
-						FileOutputStream fos = new FileOutputStream(dir + img.filename);
-						fos.getChannel().transferFrom(rbc, 0, 1 << 24);
-						System.out.println(dir + img.filename + " saved.");
-					} catch (Exception e) {
-						System.out.println(post);
-						e.printStackTrace();
-					}
 				}
 			}
 		})).start();
@@ -91,7 +98,7 @@ class PostArchiver implements IPostReceiver {
 	}
 
 	@Override
-	public void onPostParsingDone() {
+	public void onPostsParsingDone() {
 		System.out.println("Thread with " + count + " posts received.");
 	}
 }

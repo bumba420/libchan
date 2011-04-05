@@ -52,7 +52,7 @@ class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
 			public void run() {
 				IImageBoardParser parser = new ChanManager("chans/").getParser(page);
 				try {
-					parser.getMessages(thread.getUrl(), PageCrawler.this);
+					parser.getPosts(thread.getUrl(), PageCrawler.this);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -61,12 +61,12 @@ class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
 	}
 
 	@Override
-	public void onPostParsingDone() {
+	public void onPostsParsingDone() {
 		System.out.print(".");
 	}
 
 	@Override
-	public void onThreadParsingDone() {
+	public void onThreadsParsingDone() {
 		System.out.print("!");
 	}
 }

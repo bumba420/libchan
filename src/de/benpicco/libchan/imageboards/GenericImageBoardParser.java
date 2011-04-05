@@ -54,16 +54,22 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void getMessages(String url, IPostReceiver rec) throws MalformedURLException, IOException {
-		InputStream in = new BufferedInputStream(new URL(url).openStream());
+	public void getPosts(String url, IPostReceiver rec) throws MalformedURLException, IOException {
+		int maxtries = 5;
+		while (maxtries-- > 0) {
 
-		receiver = rec;
-		try {
-			parser.parseStream(in, this);
-		} catch (IOException e) {
-			e.printStackTrace();
+			InputStream in = new BufferedInputStream(new URL(url).openStream());
+
+			receiver = rec;
+			try {
+				parser.parseStream(in, this);
+				rec.onPostsParsingDone();
+				return;
+			} catch (IOException e) {
+				System.out.println("Unable to read " + url + ", retrying…");
+			}
 		}
-		rec.onPostParsingDone();
+		System.err.println("Failed downloading " + url);
 	}
 
 	@Override
@@ -141,8 +147,10 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		trec = rec;
 		this.url = url;
 
-		getMessages(url, this);
-		onPostParsingDone();
+		getPosts(url, this);
+
+		onPostsParsingDone();
+		rec.onThreadsParsingDone();
 	}
 
 	@Override
@@ -152,7 +160,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void onPostParsingDone() {
+	public void onPostsParsingDone() {
 		trec = null;
 		url = null;
 	}

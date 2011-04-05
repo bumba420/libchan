@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
+import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 
 public class ChanManager {
@@ -26,6 +27,6 @@ public class ChanManager {
 			if (ret != null)
 				break;
 		}
-		return ret;
+		return new AsyncImageBoardParser(ret);
 	}
 }

@@ -13,11 +13,11 @@ public class main {
 		names.add("Pokechu");
 		ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		// String url = "http://boards.4chan.org/soc";
+		// String url = "http://boards.4chan.org/soc/res/3070758";
 		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 		//
 		// try {
-		// parser.getThreads(url, new SimplePostReceiver(parser));
+		// parser.getPosts(url, new SimplePostReceiver(parser));
 		// } catch (IOException e) {
 		// e.printStackTrace();
 		// }
@@ -56,7 +56,7 @@ class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 	}
 
 	@Override
-	public void onPostParsingDone() {
+	public void onPostsParsingDone() {
 		System.out.println("Thread with " + posts.size() + " posts received.");
 	}
 
@@ -67,6 +67,6 @@ class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 	}
 
 	@Override
-	public void onThreadParsingDone() {
+	public void onThreadsParsingDone() {
 	}
 }

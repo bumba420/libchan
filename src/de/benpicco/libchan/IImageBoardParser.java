@@ -5,7 +5,7 @@ import java.io.IOException;
 import de.benpicco.libchan.imageboards.Post;
 
 public interface IImageBoardParser {
-	public void getMessages(String url, IPostReceiver rec) throws IOException;
+	public void getPosts(String url, IPostReceiver rec) throws IOException;
 
 	public void getThreads(String url, IThreadReceiver rec) throws IOException;
 
