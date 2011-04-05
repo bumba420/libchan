@@ -1,5 +1,6 @@
 package de.benpicco.libchan.imageboards;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -29,9 +30,17 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 			@Override
 			public void run() {
 
-				Message message = messages.poll();
-				if (message == null)
+				Message message = null;
+				try {
+					message = messages.take();
+				} catch (InterruptedException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+				}
+				if (message == null) {
+					System.out.println("Terminating thread");
 					return;
+				}
 
 				try {
 					if (message.type == Type.POST)
@@ -39,11 +48,14 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 					else if (message.type == Type.THREAD)
 						parser.getThreads(message.url, (IThreadReceiver) message.receiver);
 
+				} catch (FileNotFoundException e) {
+					System.err.println(message.url + " does not esist");
+					return; // XXX propagete error
 				} catch (IOException e) {
 					System.err.println(e);
 					try {
 						System.out.println("Retry…");
-						messages.put(message);
+						messages.put(message); // XXX infinite loop
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}

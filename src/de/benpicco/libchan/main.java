@@ -1,20 +1,19 @@
 package de.benpicco.libchan;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.imageboards.Post;
 
 public class main {
 	public static void main(final String[] args) {
-		List<String> names = new ArrayList<String>();
-		names.add("Pokechu");
-		ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
+		// List<String> names = new ArrayList<String>();
+		// names.add("Pokechu");
+		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		// String url = "http://boards.4chan.org/soc/res/3070758";
-		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
+		String url = "http://boards.4chan.org/soc/res/3134485";
+
+		new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 		//
 		// try {
 		// parser.getPosts(url, new SimplePostReceiver(parser));
@@ -41,12 +40,10 @@ public class main {
 
 class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
-	List<Post>			posts;
-	IImageBoardParser	parser;
+	List<Post>	posts;
 
-	public SimplePostReceiver(IImageBoardParser parser) {
+	public SimplePostReceiver() {
 		posts = new LinkedList<Post>();
-		this.parser = parser;
 	}
 
 	@Override
