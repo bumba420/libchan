@@ -15,7 +15,7 @@ import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
 
-public class GenericImageBoardParser implements IImageBoardParser, IParseDataReceiver, IPostReceiver {
+public class GenericImageBoardParser implements IImageBoardParser, IParseDataReceiver {
 
 	private IPostReceiver				receiver;
 
@@ -139,30 +139,30 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		}
 	}
 
-	private IThreadReceiver	trec	= null;
-	private String			url;
-
 	@Override
 	public void getThreads(String url, IThreadReceiver rec) throws IOException {
-		trec = rec;
-		this.url = url;
-
-		getPosts(url, this);
-
-		onPostsParsingDone();
+		getPosts(url, new ThreadParser(url, rec));
 		rec.onThreadsParsingDone();
 	}
 
-	@Override
-	public void onAddPost(Post post) {
-		if (trec != null && post.isFirstPost)
-			trec.onAddThread(new Thread(post, composeUrl(url, post), 0));
-	}
+	class ThreadParser implements IPostReceiver {
+		private IThreadReceiver	rec;
+		private String			url;
 
-	@Override
-	public void onPostsParsingDone() {
-		trec = null;
-		url = null;
+		public ThreadParser(String url, IThreadReceiver rec) {
+			this.rec = rec;
+			this.url = url;
+		}
+
+		@Override
+		public void onAddPost(Post post) {
+			if (post.isFirstPost)
+				rec.onAddThread(new Thread(post, composeUrl(url, post), 0));
+		}
+
+		@Override
+		public void onPostsParsingDone() {
+		}
 	}
 
 	public String composeUrl(String url, Post post) {

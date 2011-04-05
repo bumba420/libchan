@@ -1,8 +1,10 @@
 package de.benpicco.libchan;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.imageboards.Post;
 
 public class main {
@@ -13,13 +15,15 @@ public class main {
 
 		String url = "http://boards.4chan.org/soc/res/3143700";
 
-		new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
-		//
-		// try {
-		// parser.getPosts(url, new SimplePostReceiver(parser));
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
+
+		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
+
+		try {
+			parser.getThreads(url, new SimplePostReceiver());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 		// try {
 		// IImageBoardParser parser = new KrautchanParser();
@@ -65,5 +69,6 @@ class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
 	@Override
 	public void onThreadsParsingDone() {
+		System.exit(0);
 	}
 }

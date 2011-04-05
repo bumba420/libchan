@@ -4,9 +4,9 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
@@ -21,7 +21,8 @@ public class threadArchiver {
 		switch (args.length) {
 		case 0:
 			System.out.println("no thread specified");
-			return;
+			thread = "http://boards.4chan.org/soc/res/3143700"; // XXX
+			break;
 		case 2:
 			target = args[1];
 		default:
@@ -70,32 +71,47 @@ class PostArchiver implements IPostReceiver {
 			public void run() {
 				for (Image img : post.images) {
 					img.filename = img.filename.replace(File.separatorChar, ' ');
-					int tries = 5;
-					while (tries-- > 0)
+					File file = new File(dir + img.filename);
+					int tries = 3;
+					while (--tries > 0)
 						try {
-							if ((new File(dir + img.filename)).exists()) {
+							if (file.exists()) {
 								System.out.println(dir + img.filename + " already exists, skipping.");
-								continue;
+								break;
 							}
 							System.out.println("Saving " + img.url + " as " + dir + img.filename);
-							URL image = new URL(img.url);
-							ReadableByteChannel rbc = Channels.newChannel(new BufferedInputStream(image.openStream()));
-							FileOutputStream fos = new FileOutputStream(dir + img.filename);
-							fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+							downloadFile(img.url, dir + img.filename);
 							System.out.println(dir + img.filename + " saved.");
+
 							break;
 						} catch (Exception e) {
-							System.err.println("Failed to save " + img.filename + " as " + dir + img.filename);
-							System.out.println("------------------\n" + post + "\n-------------------");
+							file.delete();
+							System.err.println("Failed to save " + img.filename + " as " + dir + img.filename + " ("
+									+ e + ")");
+							// System.out.println("------------------\n" + post
+							// + "\n-------------------");
 							if (tries > 0)
 								System.out.println("retrying…");
 							else
-								System.out.println("…giving up");
+								System.err.println("…giving up");
 						}
 				}
 			}
 		})).start();
+	}
 
+	public void downloadFile(String url, String target) throws MalformedURLException, IOException {
+		byte[] buffer = new byte[2048];
+		BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+		OutputStream out = new FileOutputStream(target);
+		int count = 0;
+		do {
+			count = in.read(buffer);
+			if (count > 0)
+				out.write(buffer, 0, count);
+		} while (count > 0);
+		out.close();
+		in.close();
 	}
 
 	@Override
