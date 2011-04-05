@@ -69,6 +69,7 @@ class PostArchiver implements IPostReceiver {
 			@Override
 			public void run() {
 				for (Image img : post.images) {
+					img.filename = img.filename.replace(File.separatorChar, ' ');
 					int tries = 5;
 					while (tries-- > 0)
 						try {

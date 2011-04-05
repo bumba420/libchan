@@ -1,5 +1,8 @@
 BOARD_URL	"http://boards.4chan.org"	"4chan"
 
+BOARDS_LINK	"<li><a href=\""		"\""
+BOARDS_DESC	"class="boardlink" title=\""	"\""
+
 POST_ID		"<input type=checkbox name=\""	 "\""
 POST_USER	"postername\">"			"</sp"
 POST_TITLE	"title\">"			"</span>"

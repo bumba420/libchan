@@ -29,39 +29,40 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 
 			@Override
 			public void run() {
+				while (true) {
 
-				Message message = null;
-				try {
-					message = messages.take();
-				} catch (InterruptedException e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-				}
-				if (message == null) {
-					System.out.println("Terminating thread");
-					return;
-				}
-
-				try {
-					if (message.type == Type.POST)
-						parser.getPosts(message.url, (IPostReceiver) message.receiver);
-					else if (message.type == Type.THREAD)
-						parser.getThreads(message.url, (IThreadReceiver) message.receiver);
-
-				} catch (FileNotFoundException e) {
-					System.err.println(message.url + " does not esist");
-					return; // XXX propagete error
-				} catch (IOException e) {
-					System.err.println(e);
+					Message message = null;
 					try {
-						System.out.println("Retry…");
-						messages.put(message); // XXX infinite loop
-					} catch (InterruptedException e1) {
-						e1.printStackTrace();
+						message = messages.take();
+					} catch (InterruptedException e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
 					}
-				}
+					if (message == null) {
+						System.out.println("Terminating thread");
+						return;
+					}
 
-				run();
+					try {
+						if (message.type == Type.POST)
+							parser.getPosts(message.url, (IPostReceiver) message.receiver);
+						else if (message.type == Type.THREAD)
+							parser.getThreads(message.url, (IThreadReceiver) message.receiver);
+
+					} catch (FileNotFoundException e) {
+						System.err.println(message.url + " does not esist");
+						return; // XXX propagate error
+					} catch (IOException e) {
+						System.err.println(e);
+						try {
+							System.out.println("Retry…");
+							messages.put(message); // XXX infinite loop
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+				}
 			}
 		}).start();
 	}

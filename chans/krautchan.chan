@@ -1,5 +1,9 @@
 BOARD_URL	"http://krautchan.net"			"Krautchan"
 
+BOARDS_INDEX	"/nav"
+BOARDS_LINK	"            <a href=\""		"\""
+BOARDS_DESC	"onmouseover=\"helpTip('"		"'"
+
 POST_ID		"<input name=\"post_"	 		"\""
 POST_USER	"<span class=\"postername\">"		"</span>"
 POST_TITLE	"<span class=\"postsubject\">"		"</span>"

@@ -45,16 +45,17 @@ public class ThreadWatcher implements IPostReceiver, Runnable {
 
 	@Override
 	public void run() {
-		try {
-			parser.getPosts(url, this);
-			java.lang.Thread.sleep(interval);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		while (true) {
+			try {
+				parser.getPosts(url, this);
+				java.lang.Thread.sleep(interval);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		run();
 	}
 }

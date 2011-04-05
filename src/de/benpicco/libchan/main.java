@@ -11,7 +11,7 @@ public class main {
 		// names.add("Pokechu");
 		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		String url = "http://boards.4chan.org/soc/res/3134485";
+		String url = "http://boards.4chan.org/soc/res/3143700";
 
 		new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 		//
