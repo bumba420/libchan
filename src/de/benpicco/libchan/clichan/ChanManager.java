@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 
@@ -22,15 +21,13 @@ public class ChanManager {
 					chans.add(new ChanSpecification(configDirectory + file));
 	}
 
-	public IImageBoardParser getParser(String url) {
-		IImageBoardParser ret = null;
+	public AsyncImageBoardParser getParser(String url) {
+		AsyncImageBoardParser ret = null;
 		for (ChanSpecification chan : chans) {
 			ret = chan.getImageBoardParser(url);
 			if (ret != null)
 				break;
 		}
-		if (ret == null)
-			return null;
-		return new AsyncImageBoardParser(ret);
+		return ret;
 	}
 }

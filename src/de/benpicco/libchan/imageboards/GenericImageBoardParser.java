@@ -70,6 +70,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			}
 		}
 		System.err.println("Failed downloading " + url);
+		rec.onPostsParsingDone();
 	}
 
 	@Override

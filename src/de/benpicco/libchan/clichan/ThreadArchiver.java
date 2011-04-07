@@ -16,8 +16,8 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
+import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -34,7 +34,7 @@ public class ThreadArchiver {
 	public static void main(String[] args) {
 		ThreadArchiver archiver = new ThreadArchiver();
 
-		String thread = "http://boards.4chan.org/soc/res/3177010";
+		String thread = "http://boards.4chan.org/soc/res/3186014";
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("t", "thread", true, "Thread to process");
@@ -69,7 +69,7 @@ public class ThreadArchiver {
 
 	void archiveThread(int id) {
 
-		IImageBoardParser parser = new ChanManager(chancfg).getParser(oldThread);
+		AsyncImageBoardParser parser = new ChanManager(chancfg).getParser(oldThread);
 		String thread = oldThread;
 		if (id > 0)
 			thread = parser.composeUrl(oldThread, id);
@@ -84,8 +84,10 @@ public class ThreadArchiver {
 			try {
 				if (interval >= 0)
 					(new ThreadWatcher(thread, interval, new PostArchiver(t), parser)).run();
-				else
+				else {
 					parser.getPosts(thread, new PostArchiver(t));
+					parser.dispose();
+				}
 			} catch (IOException e) {
 				System.out.println("Unable to parse " + thread + ", " + e);
 			}

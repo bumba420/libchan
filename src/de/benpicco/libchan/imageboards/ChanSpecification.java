@@ -10,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
@@ -93,10 +92,10 @@ public class ChanSpecification implements IParseDataReceiver {
 		return supported;
 	}
 
-	public IImageBoardParser getImageBoardParser(String key) {
+	public AsyncImageBoardParser getImageBoardParser(String key) {
 		for (Tuple<String, String> chan : supported)
 			if (key.startsWith(chan.first) || key.equals(chan.second))
-				return new GenericImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser, imgPrefix,
+				return new AsyncImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser, imgPrefix,
 						thumbPrefix, countryPrefix, threadURL);
 		return null;
 	}

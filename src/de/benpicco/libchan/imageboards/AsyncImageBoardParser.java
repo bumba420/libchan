@@ -2,33 +2,35 @@ package de.benpicco.libchan.imageboards;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.IThreadReceiver;
 import de.benpicco.libchan.imageboards.Message.Type;
+import de.benpicco.libchan.streamparser.StreamParser;
+import de.benpicco.libchan.util.Tuple;
 
-public class AsyncImageBoardParser implements IImageBoardParser {
+public class AsyncImageBoardParser extends GenericImageBoardParser {
 
-	private final IImageBoardParser			parser;
 	private final BlockingQueue<Message>	messages;
 
 	/**
 	 * Wraps an IImageBoardParser to enable non-blocking get-Methods
 	 */
-	public AsyncImageBoardParser(final IImageBoardParser parser) {
-		this.parser = parser;
-		messages = new LinkedBlockingDeque<Message>();
+	public AsyncImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
+			StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix,
+			Tuple<String, String> threadURL) {
+		super(baseUrl, postStarter, postEnder, imageEnder, parser, imgPrefix, thumbPrefix, countryPrefix, threadURL);
 
-		if (parser == null)
-			return;
+		messages = new LinkedBlockingDeque<Message>();
 
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
+
 				while (true) {
 
 					Message message = null;
@@ -38,16 +40,16 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					}
-					if (message == null) {
-						System.out.println("Terminating thread");
+					if (message.url == null)
 						return;
-					}
+
+					// System.out.println(message);
 
 					try {
 						if (message.type == Type.POST)
-							parser.getPosts(message.url, (IPostReceiver) message.receiver);
+							AsyncImageBoardParser.super.getPosts(message.url, (IPostReceiver) message.receiver);
 						else if (message.type == Type.THREAD)
-							parser.getThreads(message.url, (IThreadReceiver) message.receiver);
+							AsyncImageBoardParser.super.getThreads(message.url, (IThreadReceiver) message.receiver);
 
 					} catch (FileNotFoundException e) {
 						System.err.println(message.url + " does not esist");
@@ -67,8 +69,8 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 		}).start();
 	}
 
-	protected void finalize() {
-		messages.add(null);
+	public void dispose() {
+		messages.add(new Message(null, null, null));
 	}
 
 	@Override
@@ -91,16 +93,6 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 			e.printStackTrace();
 		}
 	}
-
-	@Override
-	public String composeUrl(String url, Post post) {
-		return parser.composeUrl(url, post);
-	}
-
-	@Override
-	public String composeUrl(String url, int post) {
-		return parser.composeUrl(url, post);
-	}
 }
 
 class Message {
@@ -116,5 +108,9 @@ class Message {
 		this.url = url;
 		this.receiver = receiver;
 		this.type = type;
+	}
+
+	public String toString() {
+		return type + ": " + url;
 	}
 }
