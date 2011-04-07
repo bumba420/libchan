@@ -183,4 +183,8 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	public String composeUrl(String url, int post) {
 		return baseUrl + getBoard(url) + threadURL.first + post + threadURL.second;
 	}
+
+	public String getUrl() {
+		return baseUrl;
+	}
 }

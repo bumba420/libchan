@@ -8,12 +8,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.GnuParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.IPostReceiver;
@@ -22,49 +16,18 @@ import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 
 public class ThreadArchiver {
-	String	target		= ".";
-	String	chancfg;
-	int		interval	= -1;
-	String	oldThread	= null;
+	final String	target;
+	final String	chancfg;
+	final int		interval;
+	final String	oldThread;
+	final String	followUpTag;
 
-	public ThreadArchiver() {
-		chancfg = ThreadArchiver.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		chancfg = chancfg.substring(0, chancfg.lastIndexOf(File.separatorChar) + 1) + "chans/";
-	}
-
-	public static void main(String[] args) {
-		ThreadArchiver archiver = new ThreadArchiver();
-		String thread = null;
-
-		final Options cliOptions = new Options();
-		cliOptions.addOption("t", "thread", true, "Thread to process");
-		cliOptions.addOption("o", "output", true, "target directory");
-		cliOptions.addOption("i", "interval", true, "thread refresh interval");
-		cliOptions.addOption("c", "config", true, "chan configuration directory");
-
-		final CommandLineParser cliParser = new GnuParser();
-		try {
-			CommandLine commandLine = cliParser.parse(cliOptions, args);
-			if (commandLine.hasOption('t'))
-				thread = commandLine.getOptionValue('t');
-			if (commandLine.hasOption('o'))
-				archiver.target = commandLine.getOptionValue('o');
-			if (commandLine.hasOption('i'))
-				archiver.interval = Integer.parseInt(commandLine.getOptionValue('i'));
-			if (commandLine.hasOption('c'))
-				archiver.chancfg = commandLine.getOptionValue('c');
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-
-		if (thread == null) {
-			new HelpFormatter().printHelp("No Thread specified", cliOptions);
-			return;
-		}
-
-		archiver.oldThread = thread;
-
-		archiver.archiveThread(0);
+	public ThreadArchiver(String thread, String target, String config, int interval, String followUpTag) {
+		this.followUpTag = followUpTag.toUpperCase();
+		this.oldThread = thread;
+		this.target = target;
+		this.chancfg = config;
+		this.interval = interval;
 	}
 
 	void archiveThread(int id) {
@@ -150,7 +113,7 @@ public class ThreadArchiver {
 			})).start();
 
 			if (!hasFollowUpThread) {
-				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), "NEW THREAD");
+				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), followUpTag);
 				if (newThread != null) {
 					String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
 					if (newThreadId != null && newThreadId.trim().length() > 0) {

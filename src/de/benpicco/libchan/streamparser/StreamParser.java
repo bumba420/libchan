@@ -7,11 +7,22 @@ import java.util.List;
 
 import de.benpicco.libchan.imageboards.Tags;
 
-public class StreamParser {
+public class StreamParser implements Cloneable {
 	private final List<ParseItem>	tags;
 
 	public StreamParser() {
 		tags = new ArrayList<ParseItem>();
+	}
+
+	private StreamParser(List<ParseItem> tags) {
+		this.tags = tags;
+	}
+
+	public StreamParser clone() {
+		List<ParseItem> cpyTags = new ArrayList<ParseItem>(tags.size());
+		for (ParseItem t : tags)
+			cpyTags.add(new ParseItem(t.tag, new String(t.start), new String(t.end)));
+		return new StreamParser(cpyTags);
 	}
 
 	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
@@ -58,8 +69,12 @@ class ParseItem {
 	final char[]		end;
 
 	public ParseItem(Tags tag, String start, String end) {
-		this.start = start.toCharArray();
-		this.end = end.toCharArray();
+		this(tag, start.toCharArray(), end.toCharArray());
+	}
+
+	private ParseItem(Tags tag, char[] start, char[] end) {
+		this.start = start;
+		this.end = end;
 		this.tag = tag;
 	}
 

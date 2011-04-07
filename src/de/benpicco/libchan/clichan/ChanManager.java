@@ -24,7 +24,7 @@ public class ChanManager {
 
 	}
 
-	public AsyncImageBoardParser getParser(String url) {
+	public synchronized AsyncImageBoardParser getParser(String url) {
 		AsyncImageBoardParser ret = null;
 		for (ChanSpecification chan : chans) {
 			ret = chan.getImageBoardParser(url);

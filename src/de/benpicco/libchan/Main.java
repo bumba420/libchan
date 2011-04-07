@@ -1,42 +1,27 @@
 package de.benpicco.libchan;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
 	public static void main(final String[] args) {
-		// List<String> names = new ArrayList<String>();
-		// names.add("Pokechu");
-		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
-		// String url = "http://boards.4chan.org/soc/res/3167929";
+		String url = "http://boards.4chan.org/soc/res/3167929";
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
-		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
-		//
-		// try {
-		// parser.getPosts(url, new SimplePostReceiver());
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
-		// try {
-		// IImageBoardParser parser = new KrautchanParser();
-		//
-		// // InputStream in = new FileInputStream("/tmp/3035546");
-		// InputStream in = new BufferedInputStream(new
-		// URL("http://krautchan.net/b/0.html").openStream());
-		// parser.parseThread(in, new SimplePostReceiver(parser));
-		//
-		// // InputStream in = new BufferedInputStream(new
-		// // URL("http://boards.4chan.org/soc/0").openStream());
-		// // parser.getThreads(in, new SimplePostReceiver(parser));
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
+		try {
+			parser.getPosts(url, new SimplePostReceiver());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
 
