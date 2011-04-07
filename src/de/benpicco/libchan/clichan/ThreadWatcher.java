@@ -1,8 +1,9 @@
-package de.benpicco.libchan;
+package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
 
-import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.IImageBoardParser;
+import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.imageboards.Post;
 
 public class ThreadWatcher implements IPostReceiver, Runnable {
@@ -22,12 +23,11 @@ public class ThreadWatcher implements IPostReceiver, Runnable {
 	 * @param receiver
 	 *            Object to push new posts to
 	 */
-	public ThreadWatcher(String url, int interval, IPostReceiver receiver) {
+	public ThreadWatcher(String url, int interval, IPostReceiver receiver, IImageBoardParser parser) {
 		this.url = url;
 		this.interval = interval * 1000;
 		this.receiver = receiver;
-
-		parser = new ChanManager("chans/").getParser(url);
+		this.parser = parser;
 	}
 
 	@Override
@@ -49,6 +49,7 @@ public class ThreadWatcher implements IPostReceiver, Runnable {
 			try {
 				parser.getPosts(url, this);
 				java.lang.Thread.sleep(interval);
+				System.out.println("Refreshing thread…");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

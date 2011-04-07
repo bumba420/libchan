@@ -96,6 +96,11 @@ public class AsyncImageBoardParser implements IImageBoardParser {
 	public String composeUrl(String url, Post post) {
 		return parser.composeUrl(url, post);
 	}
+
+	@Override
+	public String composeUrl(String url, int post) {
+		return parser.composeUrl(url, post);
+	}
 }
 
 class Message {

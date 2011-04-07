@@ -165,14 +165,21 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		}
 	}
 
-	public String composeUrl(String url, Post post) {
+	private String getBoard(String url) {
 		String board = url.substring(baseUrl.length() + 1);
 
 		int slash = board.indexOf("/");
 		if (slash > 0)
 			board = board.substring(0, slash);
-		board = "/" + board + "/";
+		return "/" + board + "/";
+	}
 
-		return baseUrl + board + threadURL.first + post.op + threadURL.second + (post.isFirstPost ? "" : "#" + post.id);
+	public String composeUrl(String url, Post post) {
+		return baseUrl + getBoard(url) + threadURL.first + post.op + threadURL.second
+				+ (post.isFirstPost ? "" : "#" + post.id);
+	}
+
+	public String composeUrl(String url, int post) {
+		return baseUrl + getBoard(url) + threadURL.first + post + threadURL.second;
 	}
 }

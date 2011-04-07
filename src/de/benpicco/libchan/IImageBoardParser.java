@@ -10,4 +10,6 @@ public interface IImageBoardParser {
 	public void getThreads(String url, IThreadReceiver rec) throws IOException;
 
 	public String composeUrl(String url, Post post);
+
+	public String composeUrl(String url, int post);
 }

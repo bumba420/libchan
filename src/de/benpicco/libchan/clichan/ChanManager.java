@@ -15,9 +15,11 @@ public class ChanManager {
 	public ChanManager(String configDirectory) {
 		chans = new LinkedList<ChanSpecification>();
 
-		for (String file : new File(configDirectory).list())
-			if (file.endsWith(".chan"))
-				chans.add(new ChanSpecification(configDirectory + file));
+		File cfgdir = new File(configDirectory);
+		if (cfgdir.exists())
+			for (String file : cfgdir.list())
+				if (file.endsWith(".chan"))
+					chans.add(new ChanSpecification(configDirectory + file));
 	}
 
 	public IImageBoardParser getParser(String url) {
@@ -27,6 +29,8 @@ public class ChanManager {
 			if (ret != null)
 				break;
 		}
+		if (ret == null)
+			return null;
 		return new AsyncImageBoardParser(ret);
 	}
 }
