@@ -42,6 +42,8 @@ class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
 		for (String name : names)
 			if (post.user.contains(name))
 				System.out.println(name + ": " + parser.composeUrl(page, post));
+			else if (post.message.compareToIgnoreCase(name) == 0)
+				System.out.println("mentioned " + name + ": " + parser.composeUrl(page, post));
 	}
 
 	@Override

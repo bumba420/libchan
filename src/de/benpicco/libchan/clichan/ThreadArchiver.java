@@ -23,18 +23,18 @@ import de.benpicco.libchan.imageboards.Post;
 
 public class ThreadArchiver {
 	String	target		= ".";
-	String	chancfg		= "chans/";
+	String	chancfg;
 	int		interval	= -1;
 	String	oldThread	= null;
 
 	public ThreadArchiver() {
-
+		chancfg = ThreadArchiver.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		chancfg = chancfg.substring(0, chancfg.lastIndexOf(File.separatorChar) + 1) + "chans/";
 	}
 
 	public static void main(String[] args) {
 		ThreadArchiver archiver = new ThreadArchiver();
-
-		String thread = "http://boards.4chan.org/soc/res/3186014";
+		String thread = null;
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("t", "thread", true, "Thread to process");
@@ -107,7 +107,8 @@ public class ThreadArchiver {
 
 		@Override
 		public void onAddPost(final Post post) {
-			++count;
+			if (++count > 500)
+				System.out.println("Thread has " + count + " replies.");
 
 			final String dir = targetDir + post.user + File.separator;
 
@@ -128,9 +129,8 @@ public class ThreadArchiver {
 									System.out.println(dir + img.filename + " already exists, skipping.");
 									break;
 								}
-								System.out.println("Saving " + img.url + " as " + dir + img.filename);
 								downloadFile(img.url, dir + img.filename);
-								System.out.println(dir + img.filename + " saved.");
+								System.out.println("Saved " + img.url + " as " + dir + img.filename);
 
 								break;
 							} catch (Exception e) {
@@ -150,7 +150,7 @@ public class ThreadArchiver {
 			})).start();
 
 			if (!hasFollowUpThread) {
-				String newThread = StringUtils.substringBetween(post.message, "NEW THREAD");
+				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), "NEW THREAD");
 				if (newThread != null) {
 					String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
 					if (newThreadId != null && newThreadId.trim().length() > 0) {

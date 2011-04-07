@@ -15,10 +15,13 @@ public class ChanManager {
 		chans = new LinkedList<ChanSpecification>();
 
 		File cfgdir = new File(configDirectory);
-		if (cfgdir.exists())
+		if (cfgdir.exists()) {
 			for (String file : cfgdir.list())
 				if (file.endsWith(".chan"))
 					chans.add(new ChanSpecification(configDirectory + file));
+		} else
+			System.err.println(configDirectory + " does not contain any imageboard specifications");
+
 	}
 
 	public AsyncImageBoardParser getParser(String url) {

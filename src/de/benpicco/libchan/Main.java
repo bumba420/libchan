@@ -1,17 +1,15 @@
 package de.benpicco.libchan;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
 	public static void main(final String[] args) {
-		List<String> names = new ArrayList<String>();
-		names.add("Pokechu");
-		ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
+		// List<String> names = new ArrayList<String>();
+		// names.add("Pokechu");
+		// ChanCrawler.lookFor(names, "http://boards.4chan.org/soc/");
 
 		// String url = "http://boards.4chan.org/soc/res/3167929";
 
