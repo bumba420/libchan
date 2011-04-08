@@ -16,6 +16,11 @@ public class Main {
 
 		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
+		if (parser == null) {
+			System.err.println("No parser found");
+			return;
+		}
+
 		try {
 			parser.getPosts(url, new SimplePostReceiver());
 		} catch (IOException e) {
