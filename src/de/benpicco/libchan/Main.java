@@ -1,6 +1,6 @@
 package de.benpicco.libchan;
 
-import java.io.DataOutputStream;
+import java.io.BufferedWriter;
 import java.io.IOException;
 
 import de.benpicco.libchan.clichan.ChanManager;
@@ -10,7 +10,8 @@ import de.benpicco.libchan.imageboards.Post;
 public class Main {
 	public static void main(final String[] args) {
 
-		String url = "http://boards.4chan.org/soc/res/3239694";
+		String url = "http://krautchan.net/b/thread-2855681.html";
+		// String url = "http://boards.4chan.org/soc/res/3239694";
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
@@ -32,7 +33,7 @@ public class Main {
 
 class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
-	DataOutputStream	out	= null;
+	BufferedWriter		writer	= null;
 	final HtmlConverter	converter;
 
 	public SimplePostReceiver() {
@@ -41,16 +42,16 @@ class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
 	@Override
 	public void onAddPost(final Post post) {
-		System.out.println(post);
-		if (out == null)
+		// System.out.println(post);
+		if (writer == null)
 			try {
-				out = converter.threadToHtml(post, "");
+				writer = converter.threadToHtml(post, "");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 		try {
-			out.writeUTF(converter.postToHtml(post));
+			writer.write(converter.postToHtml(post));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,10 +61,11 @@ class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 	public void onPostsParsingDone() {
 		System.out.println("Thread parsing done.");
 		try {
-			out.close();
+			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.exit(0);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package de.benpicco.libchan.streamparser;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,32 +27,34 @@ public class StreamParser implements Cloneable {
 	}
 
 	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
-		int character = 0;
+		InputStreamReader reader = new InputStreamReader(stream);
+
+		char[] buffer = new char[512];
+		int read = 0;
+
 		ParseItem match = null;
 		StringBuilder builder = new StringBuilder();
-		while (character >= 0) {
-			character = stream.read();
+		while (read >= 0) {
+			read = reader.read(buffer);
 
-			if (character < 0)
-				break;
+			for (int i = 0; i < read; ++i)
+				if (match != null) {
+					builder.append(buffer[i]);
+					if (match.match(buffer[i])) {
+						builder.delete(builder.length() - match.trailing(), builder.length());
 
-			if (match != null) {
-				builder.append((char) character);
-				if (match.match((char) character)) {
-					builder.delete(builder.length() - match.trailing(), builder.length());
+						receiver.parsedString(match.tag, builder.toString());
 
-					receiver.parsedString(match.tag, builder.toString());
-
-					builder = new StringBuilder();
-					match = null;
-				}
-			} else {
-				for (ParseItem pi : tags)
-					if (pi.match((char) character)) {
-						match = pi;
-						break;
+						builder = new StringBuilder();
+						match = null;
 					}
-			}
+				} else {
+					for (ParseItem pi : tags)
+						if (pi.match(buffer[i])) {
+							match = pi;
+							break;
+						}
+				}
 		}
 	}
 

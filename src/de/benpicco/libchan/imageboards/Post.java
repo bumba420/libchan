@@ -40,6 +40,7 @@ public class Post {
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
 		if (user != null)
 			user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
+
 		title = StringEscapeUtils.unescapeHtml4(title);
 
 		if (title != null && title.length() == 0)
