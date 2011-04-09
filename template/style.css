@@ -8,6 +8,7 @@ div.post {
 	padding-left: 5px;
 	padding-right: 5px;
 	background-color: #f0e0d6;
+	clear:left;
 	display: inline-block;
 }
 

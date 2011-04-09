@@ -1,16 +1,16 @@
 package de.benpicco.libchan;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 
 import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.HtmlConverter;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
 	public static void main(final String[] args) {
 
-		String url = "http://boards.4chan.org/soc/res/3167929";
+		String url = "http://boards.4chan.org/soc/res/3239694";
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
@@ -32,21 +32,38 @@ public class Main {
 
 class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
-	List<Post>	posts;
+	DataOutputStream	out	= null;
+	final HtmlConverter	converter;
 
 	public SimplePostReceiver() {
-		posts = new LinkedList<Post>();
+		converter = new HtmlConverter("template/");
 	}
 
 	@Override
 	public void onAddPost(final Post post) {
-		posts.add(post);
 		System.out.println(post);
+		if (out == null)
+			try {
+				out = converter.threadToHtml(post, "");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		try {
+			out.writeUTF(converter.postToHtml(post));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void onPostsParsingDone() {
-		System.out.println("Thread with " + posts.size() + " posts received.");
+		System.out.println("Thread parsing done.");
+		try {
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
