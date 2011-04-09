@@ -1,39 +1,41 @@
 package de.benpicco.libchan;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Writer;
 
-import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.HtmlConverter;
+import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
 	public static void main(final String[] args) {
 
-		String url = "http://krautchan.net/b/thread-2855681.html";
-		// String url = "http://boards.4chan.org/soc/res/3239694";
+		// String url = "http://krautchan.net/b/thread-2855681.html";
+		String url = "http://boards.4chan.org/soc/res/3248788";
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
-		IImageBoardParser parser = new ChanManager("chans/").getParser(url);
+		new ThreadArchiver(url, ".", "chans/", -1, null, true).archiveThread();
 
-		if (parser == null) {
-			System.err.println("No parser found");
-			return;
-		}
+		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
-		try {
-			parser.getPosts(url, new SimplePostReceiver());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// if (parser == null) {
+		// System.err.println("No parser found");
+		// return;
+		// }
+		//
+		// try {
+		// parser.getPosts(url, new SimplePostReceiver());
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 }
 
 class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
 
-	BufferedWriter		writer	= null;
+	Writer				writer	= null;
 	final HtmlConverter	converter;
 
 	public SimplePostReceiver() {

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -14,6 +15,7 @@ import de.benpicco.libchan.IPostReceiver;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.util.FileUtil;
 
 public class ThreadArchiver {
 	final String	target;
@@ -21,13 +23,20 @@ public class ThreadArchiver {
 	final int		interval;
 	final String	oldThread;
 	final String	followUpTag;
+	final boolean	saveHtml;
 
-	public ThreadArchiver(String thread, String target, String config, int interval, String followUpTag) {
-		this.followUpTag = followUpTag.toUpperCase();
+	public ThreadArchiver(String thread, String target, String config, int interval, String followUpTag,
+			boolean saveHtml) {
+		this.followUpTag = followUpTag != null ? followUpTag.toUpperCase() : null;
 		this.oldThread = thread;
 		this.target = target;
 		this.chancfg = config;
 		this.interval = interval;
+		this.saveHtml = saveHtml;
+	}
+
+	public void archiveThread() {
+		archiveThread(-1);
 	}
 
 	void archiveThread(int id) {
@@ -58,14 +67,31 @@ public class ThreadArchiver {
 
 	class PostArchiver implements IPostReceiver {
 
-		int				count				= 0;
-		final String	targetDir;
-		boolean			hasFollowUpThread	= false;
+		int					count				= 0;
+		final String		targetDir;
+		boolean				hasFollowUpThread	= false;
 
-		public PostArchiver(String targetDir) {
-			this.targetDir = targetDir.endsWith(File.separator) ? targetDir : targetDir + File.separator;
+		final String		thumbs				= ".thumbs" + File.separator;
+		Writer				writer				= null;
+		String				templateDir			= "template/";
+		final HtmlConverter	converter;
+
+		public PostArchiver(String target) {
+			targetDir = target.endsWith(File.separator) ? target : target + File.separator;
 
 			new File(targetDir).mkdir();
+
+			if (saveHtml) {
+				new File(targetDir + thumbs).mkdir();
+				converter = new HtmlConverter(templateDir);
+				try {
+					FileUtil.copyFile(new File(templateDir + "style.css"), new File(targetDir + "style.css"));
+				} catch (IOException e) {
+					System.err.println("Unable to copy " + templateDir + "style.css");
+				}
+
+			} else
+				converter = null;
 		}
 
 		@Override
@@ -84,35 +110,32 @@ public class ThreadArchiver {
 				public void run() {
 					for (Image img : post.images) {
 						img.filename = img.filename.replace(File.separatorChar, ' ');
-						File file = new File(dir + img.filename);
-						int tries = 5;
-						while (--tries > 0)
-							try {
-								if (file.exists()) {
-									System.out.println(dir + img.filename + " already exists, skipping.");
-									break;
-								}
-								downloadFile(img.url, dir + img.filename);
-								System.out.println("Saved " + img.url + " as " + dir + img.filename);
+						saveFile(img.url, dir + img.filename, 5);
+						if (saveHtml)
+							saveFile(img.thumbnailUrl,
+									targetDir + thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/"), 3);
 
-								break;
-							} catch (Exception e) {
-								file.delete();
-								System.err.println("Failed to save " + img.filename + " as " + dir + img.filename
-										+ " (" + e + ")");
-								// System.out.println("------------------\n" +
-								// post
-								// + "\n-------------------");
-								if (tries > 0)
-									System.out.println("retrying…");
-								else
-									System.err.println("…giving up");
-							}
 					}
 				}
 			})).start();
 
-			if (!hasFollowUpThread) {
+			if (saveHtml) {
+				Post localPost = localisePost(post);
+				if (writer == null)
+					try {
+						writer = converter.threadToHtml(localPost, targetDir);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+				try {
+					writer.write(converter.postToHtml(localPost));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+
+			if (followUpTag != null && !hasFollowUpThread) {
 				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), followUpTag);
 				if (newThread != null) {
 					String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
@@ -123,6 +146,52 @@ public class ThreadArchiver {
 					}
 				}
 			}
+		}
+
+		private Post localisePost(Post post) {
+			if (post.images.size() == 0)
+				return post;
+
+			Post newPost = new Post();
+			newPost.id = post.id;
+			newPost.title = post.title;
+			newPost.user = post.user;
+			newPost.mail = post.mail;
+			newPost.message = post.message;
+			newPost.date = post.date;
+			newPost.countryball = post.countryball;
+
+			for (Image img : post.images) {
+				Image newImg = new Image();
+				newImg.filename = img.filename;
+				newImg.url = post.user + File.separator + img.filename;
+				newImg.thumbnailUrl = thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/");
+				newPost.addImage(newImg);
+			}
+
+			return newPost;
+		}
+
+		private void saveFile(String url, String filename, int tries) {
+			File file = new File(filename);
+			while (--tries > 0)
+				try {
+					if (file.exists()) {
+						System.out.println(filename + " already exists, skipping.");
+						break;
+					}
+					downloadFile(url, filename);
+					System.out.println("Saved " + url + " as " + filename);
+
+					break;
+				} catch (Exception e) {
+					file.delete();
+					System.err.println("Failed to save " + url + " as " + filename + " (" + e + ")");
+					if (tries > 0)
+						System.out.println("retrying…");
+					else
+						System.err.println("…giving up");
+				}
 		}
 
 		public void downloadFile(String url, String target) throws MalformedURLException, IOException {

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -72,8 +73,8 @@ public class HtmlConverter {
 				.replace("$MESSAGE", message);
 	}
 
-	public BufferedWriter threadToHtml(Post opening, String dir) throws IOException {
-		BufferedWriter out = new BufferedWriter(new FileWriter(new File(dir + opening.id + ".html")));
+	public Writer threadToHtml(Post opening, String dir) throws IOException {
+		Writer out = new BufferedWriter(new FileWriter(new File(dir + opening.id + ".html")));
 
 		String header = threadHeader.replace("$TITLE", opening.title == null ? "Thread " + opening.id : opening.title);
 		out.write(header);

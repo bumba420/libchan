@@ -60,7 +60,7 @@ public class CliChan {
 			return;
 		}
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag);
+		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, false);
 		archiver.archiveThread(0);
 	}
 }

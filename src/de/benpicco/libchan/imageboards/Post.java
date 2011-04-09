@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class Post {
+public class Post implements Cloneable {
 	public int					id;
 	public boolean				isFirstPost;
 	public String				title;
@@ -28,7 +28,7 @@ public class Post {
 				+ (images.size() > 0 ? "Images: " + images.toString() + "\n" : "") + message + "\n";
 	}
 
-	protected void addImage(Image image) {
+	public void addImage(Image image) {
 		images.add(image);
 	}
 
