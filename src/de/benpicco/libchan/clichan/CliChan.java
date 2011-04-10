@@ -18,7 +18,7 @@ public class CliChan {
 		String out = ".";
 		String followUpTag = "NEW THREAD";
 		int interval = -1;
-		String chancfg = FileUtil.getJarLocation() + "chans" + File.pathSeparator;
+		String chancfg = FileUtil.getJarLocation() + "chans" + File.separator;
 		String[] names = null;
 		boolean html = false;
 
@@ -59,6 +59,9 @@ public class CliChan {
 					cliOptions);
 			return;
 		}
+
+		if (!chancfg.endsWith(File.separator))
+			chancfg += File.separator;
 
 		if (names != null) {
 			ChanCrawler.lookFor(names, url, 0, 15, chancfg);

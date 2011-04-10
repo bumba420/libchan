@@ -73,7 +73,7 @@ public class ThreadArchiver {
 
 		final String		thumbs				= ".thumbs" + File.separator;
 		Writer				writer				= null;
-		String				templateDir			= FileUtil.getJarLocation() + "template" + File.pathSeparator;
+		String				templateDir			= FileUtil.getJarLocation() + "template" + File.separator;
 		final HtmlConverter	converter;
 
 		public PostArchiver(String target) {
