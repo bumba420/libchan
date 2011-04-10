@@ -59,7 +59,8 @@ public class HtmlConverter {
 	}
 
 	public String postToHtml(Post post) {
-		final String user = post.mail == null ? post.user : "<a href=\"" + post.mail + "\">" + post.user + "</a>";
+		final String user = post.mail == null ? post.user : "<a href=\"mailto:" + post.mail + "\">" + post.user
+				+ "</a>";
 		final String message = StringEscapeUtils.escapeHtml4(post.message)
 				.replaceAll("&gt;&gt;([0-9]*)", "<a href=\"#$1\">&gt;&gt;$1</a>").replace("\n", "<br>");
 

@@ -73,7 +73,7 @@ public class ThreadArchiver {
 
 		final String		thumbs				= ".thumbs" + File.separator;
 		Writer				writer				= null;
-		String				templateDir			= "template/";
+		String				templateDir			= FileUtil.getJarLocation() + "template" + File.pathSeparator;
 		final HtmlConverter	converter;
 
 		public PostArchiver(String target) {
@@ -211,6 +211,13 @@ public class ThreadArchiver {
 		@Override
 		public void onPostsParsingDone() {
 			System.out.println("Thread with " + count + " posts received.");
+			if (writer != null)
+				try {
+					writer.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		}
 	}
 }

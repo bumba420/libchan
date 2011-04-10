@@ -10,14 +10,17 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.benpicco.libchan.util.FileUtil;
+
 public class CliChan {
 	public static void main(String[] args) {
 		String url = null;
 		String out = ".";
 		String followUpTag = "NEW THREAD";
 		int interval = -1;
-		String chancfg = new PathHelper().jarLocation + "chans/";
+		String chancfg = FileUtil.getJarLocation() + "chans" + File.pathSeparator;
 		String[] names = null;
+		boolean html = false;
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("u", "url", true, "url to process");
@@ -25,6 +28,7 @@ public class CliChan {
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
+		cliOptions.addOption("html", false, "also archive thread as html");
 
 		Option o = new Option("f", "find", true, "Searches the imageborad for users");
 		o.setArgs(Integer.MAX_VALUE);
@@ -43,6 +47,7 @@ public class CliChan {
 				chancfg = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
 				names = commandLine.getOptionValues('f');
+			html = commandLine.hasOption("html");
 
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -60,16 +65,7 @@ public class CliChan {
 			return;
 		}
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, false);
+		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, html);
 		archiver.archiveThread(0);
-	}
-}
-
-class PathHelper {
-	public final String	jarLocation;
-
-	public PathHelper() {
-		String tmp = ThreadArchiver.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-		jarLocation = tmp.substring(0, tmp.lastIndexOf(File.separatorChar) + 1);
 	}
 }
