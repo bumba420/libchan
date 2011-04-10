@@ -58,6 +58,10 @@ public class HtmlConverter {
 		threadHeader = thread;
 	}
 
+	public boolean isInizialised() {
+		return imgTemplate != null && postTemplate != null && threadHeader != null;
+	}
+
 	public String postToHtml(Post post) {
 		final String user = post.mail == null ? post.user : "<a href=\"mailto:" + post.mail + "\">" + post.user
 				+ "</a>";

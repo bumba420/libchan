@@ -67,14 +67,13 @@ public class ThreadArchiver {
 
 	class PostArchiver implements IPostReceiver {
 
-		int					count				= 0;
-		final String		targetDir;
-		boolean				hasFollowUpThread	= false;
+		int				count		= 0;
+		final String	targetDir;
 
-		final String		thumbs				= ".thumbs" + File.separator;
-		Writer				writer				= null;
-		String				templateDir			= FileUtil.getJarLocation() + "template" + File.separator;
-		final HtmlConverter	converter;
+		final String	thumbs		= ".thumbs" + File.separator;
+		Writer			writer		= null;
+		String			templateDir	= FileUtil.getJarLocation() + "template" + File.separator;
+		HtmlConverter	converter	= null;
 
 		public PostArchiver(String target) {
 			targetDir = target.endsWith(File.separator) ? target : target + File.separator;
@@ -84,14 +83,14 @@ public class ThreadArchiver {
 			if (saveHtml) {
 				new File(targetDir + thumbs).mkdir();
 				converter = new HtmlConverter(templateDir);
+				if (!converter.isInizialised())
+					converter = null;
 				try {
 					FileUtil.copyFile(new File(templateDir + "style.css"), new File(targetDir + "style.css"));
 				} catch (IOException e) {
 					System.err.println("Unable to copy " + templateDir + "style.css");
 				}
-
-			} else
-				converter = null;
+			}
 		}
 
 		@Override
@@ -119,7 +118,7 @@ public class ThreadArchiver {
 				}
 			})).start();
 
-			if (saveHtml) {
+			if (converter != null) {
 				Post localPost = localisePost(post);
 				if (writer == null)
 					try {
@@ -135,14 +134,13 @@ public class ThreadArchiver {
 				}
 			}
 
-			if (followUpTag != null && !hasFollowUpThread) {
+			if (followUpTag != null) {
 				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), followUpTag);
 				if (newThread != null) {
 					String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
 					if (newThreadId != null && newThreadId.trim().length() > 0) {
 						System.out.println("Detected follow-up thread: " + newThreadId);
 						archiveThread(Integer.parseInt(newThreadId));
-						hasFollowUpThread = true;
 					}
 				}
 			}
