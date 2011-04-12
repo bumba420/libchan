@@ -129,6 +129,7 @@ public class ThreadArchiver {
 
 				try {
 					writer.write(converter.postToHtml(localPost));
+					writer.flush();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -137,10 +138,16 @@ public class ThreadArchiver {
 			if (followUpTag != null) {
 				String newThread = StringUtils.substringBetween(post.message.toUpperCase(), followUpTag);
 				if (newThread != null) {
-					String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
+					final String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
 					if (newThreadId != null && newThreadId.trim().length() > 0) {
 						System.out.println("Detected follow-up thread: " + newThreadId);
-						archiveThread(Integer.parseInt(newThreadId));
+						new Thread(new Runnable() {
+
+							@Override
+							public void run() {
+								archiveThread(Integer.parseInt(newThreadId));
+							}
+						}).start();
 					}
 				}
 			}

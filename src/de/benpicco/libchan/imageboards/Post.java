@@ -1,5 +1,6 @@
 package de.benpicco.libchan.imageboards;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,6 +37,11 @@ public class Post implements Cloneable {
 
 		message = message.replaceAll("(<br>|<br />|<p>|</p>)", "\n").replaceAll("\\<.*?>", "").trim();
 		message = StringEscapeUtils.unescapeHtml4(message);
+
+		Iterator<Image> iter = images.iterator();
+		while (iter.hasNext())
+			if (iter.next().url == null)
+				iter.remove();
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
 		if (user != null)
