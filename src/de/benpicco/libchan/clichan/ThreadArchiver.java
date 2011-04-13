@@ -11,6 +11,7 @@ import de.benpicco.libchan.handler.DownloadImageHandler;
 import de.benpicco.libchan.handler.FollowupThreadHandler;
 import de.benpicco.libchan.handler.NewThreadReceiver;
 import de.benpicco.libchan.handler.PostCountHandler;
+import de.benpicco.libchan.handler.UserNotifyHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -21,14 +22,16 @@ public class ThreadArchiver implements NewThreadReceiver {
 	final String				followUpTag;
 	final boolean				saveHtml;
 	private final ChanManager	manager;
+	private final List<String>	names;
 
 	public ThreadArchiver(String thread, String target, String config, int interval, String followUpTag,
-			boolean saveHtml) {
+			boolean saveHtml, List<String> names) {
 		this.followUpTag = followUpTag != null ? followUpTag.toUpperCase() : null;
 		this.oldThread = thread;
 		this.target = target;
 		this.interval = interval;
 		this.saveHtml = saveHtml;
+		this.names = names;
 		manager = new ChanManager(config);
 	}
 
@@ -63,11 +66,13 @@ public class ThreadArchiver implements NewThreadReceiver {
 
 				List<PostHandler> handler = new ArrayList<PostHandler>();
 				handler.add(new DownloadImageHandler(t));
+				handler.add(new PostCountHandler(500));
 				if (saveHtml)
 					handler.add(new ArchiveHtmlHandler(t));
 				if (followUpTag != null)
 					handler.add(new FollowupThreadHandler(followUpTag, ThreadArchiver.this));
-				handler.add(new PostCountHandler(500));
+				if (names != null)
+					handler.add(new UserNotifyHandler(names));
 
 				try {
 					if (interval >= 0)

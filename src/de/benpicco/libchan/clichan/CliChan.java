@@ -1,6 +1,7 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -19,7 +20,8 @@ public class CliChan {
 		String followUpTag = "NEW THREAD";
 		int interval = -1;
 		String chancfg = FileUtil.getJarLocation() + "chans" + File.separator;
-		String[] names = null;
+		String[] namesToSearch = null;
+		ArrayList<String> namesToWach = null;
 		boolean html = false;
 
 		final Options cliOptions = new Options();
@@ -32,6 +34,9 @@ public class CliChan {
 		cliOptions.addOption("html", false, "also archive thread as html");
 
 		Option o = new Option("f", "find", true, "Searches the imageborad for users");
+		o.setArgs(Integer.MAX_VALUE);
+		cliOptions.addOption(o);
+		o = new Option("n", "notify", true, "show a notification when the following users post");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
@@ -47,7 +52,13 @@ public class CliChan {
 			if (commandLine.hasOption('c'))
 				chancfg = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
-				names = commandLine.getOptionValues('f');
+				namesToSearch = commandLine.getOptionValues('f');
+			if (commandLine.hasOption('n')) {
+				String[] names = commandLine.getOptionValues('n');
+				namesToWach = new ArrayList<String>(names.length);
+				for (String name : names)
+					namesToWach.add(name.toLowerCase());
+			}
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan");
 				System.exit(0);
@@ -68,12 +79,12 @@ public class CliChan {
 		if (!chancfg.endsWith(File.separator))
 			chancfg += File.separator;
 
-		if (names != null) {
-			ChanCrawler.lookFor(names, url, 0, 15, chancfg);
+		if (namesToSearch != null) {
+			ChanCrawler.lookFor(namesToSearch, url, 0, 15, chancfg);
 			return;
 		}
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, html);
+		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, html, namesToWach);
 		archiver.saveThread();
 	}
 }

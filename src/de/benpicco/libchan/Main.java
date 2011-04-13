@@ -2,15 +2,35 @@ package de.benpicco.libchan;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.LinkedList;
+import java.util.List;
 
 import de.benpicco.libchan.clichan.HtmlConverter;
+import de.benpicco.libchan.handler.UserNotifyHandler;
+import de.benpicco.libchan.imageboards.ChanSpecification;
+import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
 	public static void main(final String[] args) {
 
+		ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
+
 		// String url = "http://krautchan.net/b/thread-2855681.html";
 		String url = "http://boards.4chan.org/soc/res/3248788";
+
+		Image img = new Image();
+		img.thumbnailUrl = "http://0.thumbs.4chan.org/soc/thumb/1302716950081s.jpg";
+
+		Post p = new Post();
+		p.user = "Test";
+		p.message = "Lorem ipsum lirum larum foo bar";
+		p.images.add(img);
+
+		List<String> names = new LinkedList<String>();
+		names.add("test");
+
+		new UserNotifyHandler(names).onAddPost(p);
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
