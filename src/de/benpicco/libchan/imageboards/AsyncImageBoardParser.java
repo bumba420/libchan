@@ -40,8 +40,10 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 						// TODO Auto-generated catch block
 						e2.printStackTrace();
 					}
-					if (message.url == null)
+					if (message.url == null) {
+						System.out.println("Shutting down parser");
 						return;
+					}
 
 					// System.out.println(message);
 
@@ -75,6 +77,8 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 
 	@Override
 	public void getPosts(String url, PostHandler rec) throws IOException {
+		if (url == null)
+			return;
 		try {
 			messages.put(new Message(url, rec, Type.POST));
 		} catch (InterruptedException e) {
@@ -86,6 +90,8 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 
 	@Override
 	public void getThreads(String url, ThreadHandler rec) throws IOException {
+		if (url == null)
+			return;
 		try {
 			messages.put(new Message(url, rec, Type.THREAD));
 		} catch (InterruptedException e) {
