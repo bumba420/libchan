@@ -79,7 +79,6 @@ public class ThreadArchiver implements NewThreadReceiver {
 				} catch (IOException e) {
 					System.out.println("Unable to parse " + thread + ", " + e);
 				}
-
 			}
 		}).start();
 	}
