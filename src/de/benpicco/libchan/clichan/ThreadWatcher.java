@@ -3,14 +3,14 @@ package de.benpicco.libchan.clichan;
 import java.io.IOException;
 
 import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.IPostReceiver;
+import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Post;
 
-public class ThreadWatcher implements IPostReceiver, Runnable {
+public class ThreadWatcher implements PostHandler, Runnable {
 	private final IImageBoardParser	parser;
 	private final String			url;
 	private final int				interval;
-	private final IPostReceiver		receiver;
+	private final PostHandler		receiver;
 
 	int								lastId	= 0;
 
@@ -23,7 +23,7 @@ public class ThreadWatcher implements IPostReceiver, Runnable {
 	 * @param receiver
 	 *            Object to push new posts to
 	 */
-	public ThreadWatcher(String url, int interval, IPostReceiver receiver, IImageBoardParser parser) {
+	public ThreadWatcher(String url, int interval, PostHandler receiver, IImageBoardParser parser) {
 		this.url = url;
 		this.interval = interval * 1000;
 		this.receiver = receiver;

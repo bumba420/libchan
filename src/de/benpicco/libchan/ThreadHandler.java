@@ -1,7 +1,7 @@
 package de.benpicco.libchan;
 
 
-public interface IThreadReceiver {
+public interface ThreadHandler {
 	public void onAddThread(Thread thread);
 
 	public void onThreadsParsingDone();

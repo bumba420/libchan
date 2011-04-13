@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.IThreadReceiver;
+import de.benpicco.libchan.PostHandler;
+import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.imageboards.Message.Type;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
@@ -47,9 +47,9 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 
 					try {
 						if (message.type == Type.POST)
-							AsyncImageBoardParser.super.getPosts(message.url, (IPostReceiver) message.receiver);
+							AsyncImageBoardParser.super.getPosts(message.url, (PostHandler) message.receiver);
 						else if (message.type == Type.THREAD)
-							AsyncImageBoardParser.super.getThreads(message.url, (IThreadReceiver) message.receiver);
+							AsyncImageBoardParser.super.getThreads(message.url, (ThreadHandler) message.receiver);
 
 					} catch (FileNotFoundException e) {
 						System.err.println(message.url + " does not esist");
@@ -74,7 +74,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 	}
 
 	@Override
-	public void getPosts(String url, IPostReceiver rec) throws IOException {
+	public void getPosts(String url, PostHandler rec) throws IOException {
 		try {
 			messages.put(new Message(url, rec, Type.POST));
 		} catch (InterruptedException e) {
@@ -85,7 +85,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 	}
 
 	@Override
-	public void getThreads(String url, IThreadReceiver rec) throws IOException {
+	public void getThreads(String url, ThreadHandler rec) throws IOException {
 		try {
 			messages.put(new Message(url, rec, Type.THREAD));
 		} catch (InterruptedException e) {

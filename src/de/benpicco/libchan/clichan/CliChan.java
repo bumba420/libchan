@@ -27,6 +27,7 @@ public class CliChan {
 		cliOptions.addOption("o", "output", true, "target directory");
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
+		cliOptions.addOption("v", "version", false, "show version");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "also archive thread as html");
 
@@ -47,6 +48,10 @@ public class CliChan {
 				chancfg = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
 				names = commandLine.getOptionValues('f');
+			if (commandLine.hasOption('v')) {
+				System.out.println("cliChan using libChan");
+				System.exit(0);
+			}
 			html = commandLine.hasOption("html");
 
 		} catch (ParseException e) {
@@ -69,6 +74,6 @@ public class CliChan {
 		}
 
 		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, html);
-		archiver.archiveThread(0);
+		archiver.saveThread();
 	}
 }

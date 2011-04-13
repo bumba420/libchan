@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 
 import de.benpicco.libchan.clichan.HtmlConverter;
-import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Post;
 
 public class Main {
@@ -15,7 +14,8 @@ public class Main {
 
 		// new ThreadWatcher(url, 5, new SimplePostReceiver()).run();
 
-		new ThreadArchiver(url, ".", "chans/", -1, null, true).archiveThread();
+		// new ThreadArchiver(url, ".", "chans/", -1, null,
+		// true).archiveThread();
 
 		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
@@ -33,7 +33,7 @@ public class Main {
 	}
 }
 
-class SimplePostReceiver implements IPostReceiver, IThreadReceiver {
+class SimplePostReceiver implements PostHandler, ThreadHandler {
 
 	Writer				writer	= null;
 	final HtmlConverter	converter;

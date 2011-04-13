@@ -8,8 +8,8 @@ import java.net.URL;
 import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.IThreadReceiver;
+import de.benpicco.libchan.PostHandler;
+import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.Thread;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
@@ -17,7 +17,7 @@ import de.benpicco.libchan.util.Tuple;
 
 public class GenericImageBoardParser implements IImageBoardParser, IParseDataReceiver {
 
-	private IPostReceiver				receiver;
+	private PostHandler				receiver;
 
 	private Post						currentPost		= null;
 	private Image						currentImage	= null;
@@ -54,7 +54,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void getPosts(String url, IPostReceiver rec) throws MalformedURLException, IOException {
+	public void getPosts(String url, PostHandler rec) throws MalformedURLException, IOException {
 		int maxtries = 5;
 		while (maxtries-- > 0) {
 
@@ -141,16 +141,16 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void getThreads(String url, IThreadReceiver rec) throws IOException {
+	public void getThreads(String url, ThreadHandler rec) throws IOException {
 		getPosts(url, new ThreadParser(url, rec));
 		rec.onThreadsParsingDone();
 	}
 
-	class ThreadParser implements IPostReceiver {
-		private IThreadReceiver	rec;
+	class ThreadParser implements PostHandler {
+		private ThreadHandler	rec;
 		private String			url;
 
-		public ThreadParser(String url, IThreadReceiver rec) {
+		public ThreadParser(String url, ThreadHandler rec) {
 			this.rec = rec;
 			this.url = url;
 		}

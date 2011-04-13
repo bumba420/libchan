@@ -2,8 +2,8 @@ package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
 
-import de.benpicco.libchan.IPostReceiver;
-import de.benpicco.libchan.IThreadReceiver;
+import de.benpicco.libchan.PostHandler;
+import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -25,7 +25,7 @@ public class ChanCrawler {
 	}
 }
 
-class PageCrawler implements Runnable, IPostReceiver, IThreadReceiver {
+class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	private final String[]	names;
 	AsyncImageBoardParser	parser	= null;
 	final String			page;
