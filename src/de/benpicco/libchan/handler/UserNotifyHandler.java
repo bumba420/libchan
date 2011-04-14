@@ -35,7 +35,22 @@ public class UserNotifyHandler implements PostHandler {
 				}
 			}
 
-			String[] cmd = { "notify-send", "-i", tempfile, post.user, post.message };
+			String[] cmd = null;
+			String[] cmd_linux = { "notify-send", "-i", tempfile, post.user, post.message };
+			String[] cmd_osx = { "growlnotify", "--image", tempfile, "-t", post.user, "-m", post.message };
+			String[] cmd_win = { "growlnotify", "/i:", tempfile, "/t:", post.user, post.message };
+
+			String uname = System.getProperty("os.name").toLowerCase();
+			if (uname.contains("windows"))
+				cmd = cmd_win;
+			else if (uname.contains("linux"))
+				cmd = cmd_linux;
+			else if (uname.contains("mac"))
+				cmd = cmd_osx;
+			else {
+				System.out.println(uname + " notification not supported");
+				return;
+			}
 
 			try {
 				Runtime.getRuntime().exec(cmd);
