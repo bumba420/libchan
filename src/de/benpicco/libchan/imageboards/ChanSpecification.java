@@ -92,6 +92,14 @@ public class ChanSpecification implements IParseDataReceiver {
 		return supported;
 	}
 
+	/**
+	 * A ChanSpecification can be valid for many websites using the same
+	 * software. This function generates a parser for a specific site.
+	 * 
+	 * @param key
+	 *            either the url or the name of the imageboard website
+	 * @return
+	 */
 	public AsyncImageBoardParser getImageBoardParser(String key) {
 		for (Tuple<String, String> chan : supported)
 			if (key.startsWith(chan.first) || key.equals(chan.second))
