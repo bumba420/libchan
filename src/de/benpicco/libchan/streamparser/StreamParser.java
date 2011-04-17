@@ -5,6 +5,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.benpicco.libchan.imageboards.Tags;
 
@@ -22,82 +24,114 @@ public class StreamParser implements Cloneable {
 	public StreamParser clone() {
 		List<ParseItem> cpyTags = new ArrayList<ParseItem>(tags.size());
 		for (ParseItem t : tags)
-			cpyTags.add(new ParseItem(t.tag, new String(t.start), new String(t.end)));
+			cpyTags.add(new ParseItem(t.tags, t.pattern));
 		return new StreamParser(cpyTags);
 	}
 
 	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
+		System.out.println("parsing stream");
 		InputStreamReader reader = new InputStreamReader(stream);
 
 		char[] buffer = new char[512];
 		int read = 0;
 
-		ParseItem match = null;
-		StringBuilder builder = new StringBuilder();
 		while (read >= 0) {
 			read = reader.read(buffer);
 
 			for (int i = 0; i < read; ++i)
-				if (match != null) {
-					builder.append(buffer[i]);
-					if (match.match(buffer[i])) {
-						builder.delete(builder.length() - match.trailing(), builder.length());
-
-						receiver.parsedString(match.tag, builder.toString());
-
-						builder = new StringBuilder();
-						match = null;
+				for (ParseItem pi : tags)
+					if (pi.match(buffer[i])) {
+						for (int j = 0; j < pi.tags.length; ++j)
+							System.out.println(pi.tags[j] + " - " + pi.items[j]);
+						// receiver.parsedString(pi.tags[j], pi.items[j]);
+						break;
 					}
-				} else {
-					for (ParseItem pi : tags)
-						if (pi.match(buffer[i])) {
-							match = pi;
-							break;
-						}
-				}
+
 		}
+		System.out.println("Done parsing stream");
 	}
 
-	public void addTag(Tags tag, String start, String end) {
-		tags.add(new ParseItem(tag, start, end));
+	public void addTag(String pattern) {
+		tags.add(new ParseItem(pattern));
 	}
 }
 
 class ParseItem {
-	int					count	= 0;
-	boolean				open	= false;
+	private int				count		= 0;
+	private int				item		= 0;
+	private StringBuilder	itemBuilder	= null;
+	private int				lastItem	= 0;
 
-	public final Tags	tag;
-	final char[]		start;
-	final char[]		end;
+	final String[]			items;
+	final char[]			pattern;
+	final Tags[]			tags;
 
-	public ParseItem(Tags tag, String start, String end) {
-		this(tag, start.toCharArray(), end.toCharArray());
+	ParseItem(Tags[] tags, char[] pattern) {
+		this.pattern = pattern;
+		this.tags = tags;
+		items = new String[tags.length];
 	}
 
-	private ParseItem(Tags tag, char[] start, char[] end) {
-		this.start = start;
-		this.end = end;
-		this.tag = tag;
+	public ParseItem(String pattern) {
+		Matcher match = Pattern.compile("\\$([A-Z_]+)\\$").matcher(pattern);
+		StringBuilder sb = new StringBuilder();
+		int lastMatch = 0;
+
+		if (match.find()) {
+			tags = new Tags[match.groupCount()];
+			for (int i = 0; i < match.groupCount(); ++i) {
+				tags[i] = Tags.valueOf(match.group(i + 1));
+				sb.append(pattern.substring(lastMatch, match.start()));
+				sb.append((char) 0);
+				lastMatch = match.end();
+			}
+			sb.append(pattern.substring(lastMatch));
+		} else
+			tags = null;
+
+		this.pattern = sb.toString().toCharArray();
+		items = new String[tags.length];
 	}
 
 	public boolean match(char c) {
-		char[] tag = open ? end : start;
+		if (pattern.length == 0)
+			return false;
 
-		if (tag.length > 0 && tag[count] == c)
+		if (pattern[count] == c)
 			++count;
-		else
-			count = 0;
+		else if (pattern[count] == 0) {
+			// System.out.println("ok[" + count + "]: " + new String(pattern));
+			if (itemBuilder != null && count > lastItem) {
+				System.out.println("ok");
+				items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
+				// System.out.println(tags[item] + " - " + items[item]);
+				item++;
+			} else
+				itemBuilder = new StringBuilder();
 
-		if (count == tag.length) {
+			lastItem = ++count;
+			if (pattern[count] == c)
+				++count;
+		} else {
+			count = lastItem;
+			// System.out.println("warp-around, setting back to " + count);
+		}
+
+		if (itemBuilder != null)
+			itemBuilder.append(c);
+
+		if (count >= pattern.length) {
+			// System.out.println("deleteing " + (count - lastItem));
+			items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
+			// for (int i = 0; i < items.length; ++i)
+			// System.out.println(tags[i] + " - " + items[i]);
+
 			count = 0;
-			open = !open;
+			lastItem = 0;
+			item = 0;
+			itemBuilder = null;
 			return true;
 		}
 		return false;
-	}
-
-	public int trailing() {
-		return end.length;
 	}
 }

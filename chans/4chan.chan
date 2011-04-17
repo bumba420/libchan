@@ -1,19 +1,16 @@
-BOARD_URL	"http://boards.4chan.org"	"4chan"
+BOARD_NAME	"4chan"
+BOARD_DESC	"The most popular Imageboard"
+BOARD_URL	"http://boards.4chan.org"
 
-BOARDS_LINK	"<li><a href=\""		"\""
-BOARDS_DESC	"class="boardlink" title=\""	"\""
+POST	"postername\">$POST_USER$</span> $POST_DATE$ <span id=\"$NULL$\"><a href=\"#$POST_ID$\""
+POST	"<span title=\"$POST_FILENAME$\">$NULL$</span>)</span><br><a href=\"POST_IMGURL" target=_blank><img src=$POST_THUMBNAIL$ border=0"
 
-POST_ID		"<input type=checkbox name=\""	 "\""
-POST_USER	"postername\">"			"</sp"
-POST_TITLE	"title\">"			"</span>"
-POST_THUMBNAIL	"<img src="			" "
-POST_IMGURL	"<br><a href=\""		"\""
-POST_FILENAME	"<span title=\""		"\""
-POST_DATE	"an> "				" <"
-POST_MESSAGE	"<blockquote>"			"</blockquote>"
-POST_THREAD	" id=\"nothread"		""
+POST	"title\">$POST_TITLE$</span>"
+POST	"<blockquote>$POST_MESSAGE$</blockquote>"
 
-URL_SCHEME	"res/"				""
+POST_THREAD	" id=\"nothread"
+
+URL_PREFIX	"res/"
 
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL

@@ -9,35 +9,24 @@ import de.benpicco.libchan.imageboards.Post;
 public class Main {
 	public static void main(final String[] args) {
 
-		ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
+		// ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
 
 		// String url = "http://krautchan.net/b/thread-2855681.html";
-		String url = "http://boards.4chan.org/soc/res/3406080";
+		String url = "http://boards.4chan.org/soc/res/3492498";
 
 		AsyncImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
+
+		if (parser == null) {
+			System.err.println("No parser found");
+			System.exit(-1);
+		}
+
 		try {
 			parser.getPosts(url, new SimplePostReceiver());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// new ThreadArchiver(url, ".", "chans/", -1, null,
-		// true).archiveThread();
-
-		// IImageBoardParser parser = new ChanManager("chans/").getParser(url);
-
-		// if (parser == null) {
-		// System.err.println("No parser found");
-		// return;
-		// }
-		//
-		// try {
-		// parser.getPosts(url, new SimplePostReceiver());
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
-
 	}
 }
 

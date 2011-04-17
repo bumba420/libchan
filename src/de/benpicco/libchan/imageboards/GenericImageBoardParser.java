@@ -9,15 +9,15 @@ import java.util.List;
 
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.PostHandler;
-import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.Thread;
+import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
 
 public class GenericImageBoardParser implements IImageBoardParser, IParseDataReceiver {
 
-	private PostHandler				receiver;
+	private PostHandler					receiver;
 
 	private Post						currentPost		= null;
 	private Image						currentImage	= null;
@@ -75,6 +75,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 	@Override
 	public void parsedString(Tags tag, String data) {
+		// System.out.println(tag + " - " + data);
 
 		if (currentPost == null)
 			if (postStarter.contains(tag))

@@ -1,7 +1,8 @@
 package de.benpicco.libchan.imageboards;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,79 +17,119 @@ import de.benpicco.libchan.util.Tuple;
 
 public class ChanSpecification implements IParseDataReceiver {
 
-	private List<Tags>					postStarter		= new ArrayList<Tags>();
-	private List<Tags>					postEnder		= new ArrayList<Tags>();
-	private List<Tags>					imageEnder		= new ArrayList<Tags>();
-	private List<Tuple<String, String>>	supported		= new ArrayList<Tuple<String, String>>();
-	private StreamParser				parser			= new StreamParser();
-	private String						thumbPrefix		= "";
-	private String						imgPrefix		= "";
-	private String						countryPrefix	= "";
-	private Tuple<String, String>		threadURL		= null;
+	private List<Tags>				postStarter		= new ArrayList<Tags>();
+	private List<Tags>				postEnder		= new ArrayList<Tags>();
+	private List<Tags>				imageEnder		= new ArrayList<Tags>();
+	private List<Imageboard>		supported		= new ArrayList<Imageboard>();
+	private StreamParser			parser			= new StreamParser();
+	private String					thumbPrefix		= "";
+	private String					imgPrefix		= "";
+	private String					countryPrefix	= "";
+	private Tuple<String, String>	threadURL		= new Tuple<String, String>("", "");
+	private Imageboard				board			= new Imageboard();
 
-	private final String				file;
+	private final String			file;
 
 	public ChanSpecification(String file) {
 		this.file = file;
 
-		StreamParser configParser = new StreamParser();
-		for (Tags t : Tags.values())
-			configParser.addTag(t, t.toString(), "\n");
 		try {
-			configParser.parseStream(new FileInputStream(file), this);
+			readConfig(file);
 		} catch (FileNotFoundException e) {
 			System.err.println("File " + file + " does not exist.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		supported.add(board);
+	}
+
+	private void readConfig(String file) throws IOException {
+		Pattern p = Pattern.compile("([A-Z_]+)(.+)");
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+
+		String line = reader.readLine();
+		while (line != null) {
+			Matcher matcher = p.matcher(line);
+			if (matcher.matches()) {
+				Tags key = Tags.valueOf(matcher.group(1));
+				String value = matcher.group().substring(matcher.end(1)).trim();
+				parsedString(key, value);
+			}
+			line = reader.readLine();
+		}
+
 	}
 
 	@Override
-	public void parsedString(Tags tag, String data) {
+	public void parsedString(Tags key, String data) {
 		Pattern p = Pattern.compile("(?<!\\\\)\"(.*?)(?<!\\\\)\"");
 		Matcher m = p.matcher(data);
-		String first = null;
-		String second = null;
+		String value = null;
 		if (m.find())
-			first = StringEscapeUtils.unescapeJava(m.group().substring(1, m.group().length() - 1));
-		if (m.find())
-			second = StringEscapeUtils.unescapeJava(m.group().substring(1, m.group().length() - 1));
+			value = StringEscapeUtils.unescapeJava(m.group().substring(1, m.group().length() - 1));
+		else if (data != null)
+			value = data.trim();
 
-		switch (tag) {
-		case BOARD_URL:
-			supported.add(new Tuple<String, String>(first, second));
+		// System.out.println(key + " - " + value);
+
+		switch (key) {
+		case BOARD_NAME:
+			if (board.name != null) {
+				board = new Imageboard();
+				supported.add(board);
+			}
+			board.name = value;
 			break;
-		case URL_SCHEME:
-			threadURL = new Tuple<String, String>(first, second);
+		case BOARD_DESC:
+			if (board.description != null) {
+				board = new Imageboard();
+				supported.add(board);
+			}
+			board.description = value;
+			break;
+		case BOARD_URL:
+			if (board.baseurl != null) {
+				board = new Imageboard();
+				supported.add(board);
+			}
+			board.baseurl = value;
+			break;
+		case URL_PREFIX:
+			threadURL.first = value;
+			break;
+		case URL_POSTFIX:
+			threadURL.second = value;
 			break;
 		case START_POST:
-			postStarter.add(Tags.valueOf(data.trim()));
+			postStarter.add(Tags.valueOf(value));
 			break;
 		case END_POST:
-			postEnder.add(Tags.valueOf(data.trim()));
+			postEnder.add(Tags.valueOf(value));
 			break;
 		case END_IMAGE:
-			imageEnder.add(Tags.valueOf(data.trim()));
+			imageEnder.add(Tags.valueOf(value));
 			break;
 		case THUMBNAIL_PREFIX:
-			thumbPrefix = first;
+			thumbPrefix = value;
 			break;
 		case IMAGE_PREFIX:
-			imgPrefix = first;
+			imgPrefix = value;
 			break;
 		case COUNTRY_PREFIX:
-			countryPrefix = first;
+			countryPrefix = value;
 			break;
+		case POST:
+			parser.addTag(value);
 		default:
-			if (first == null || second == null) {
-				System.err.println("Malformed configuration for " + tag + " in " + file);
+			if (value == null) {
+				System.err.println("Syntax error in " + file + ": " + key + " does have invalid value " + data);
 				return;
 			}
-			parser.addTag(tag, first, second);
 		}
 	}
 
-	public List<Tuple<String, String>> getSupported() {
+	public List<Imageboard> getSupported() {
 		return supported;
 	}
 
@@ -101,9 +142,9 @@ public class ChanSpecification implements IParseDataReceiver {
 	 * @return
 	 */
 	public AsyncImageBoardParser getImageBoardParser(String key) {
-		for (Tuple<String, String> chan : supported)
-			if (key.startsWith(chan.first) || key.equals(chan.second))
-				return new AsyncImageBoardParser(chan.first, postStarter, postEnder, imageEnder, parser.clone(),
+		for (Imageboard chan : supported)
+			if (key.startsWith(chan.baseurl) || key.equals(chan.name))
+				return new AsyncImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
 						imgPrefix, thumbPrefix, countryPrefix, threadURL);
 		return null;
 	}
