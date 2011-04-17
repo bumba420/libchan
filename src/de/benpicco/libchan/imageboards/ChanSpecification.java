@@ -74,21 +74,21 @@ public class ChanSpecification implements IParseDataReceiver {
 		// System.out.println(key + " - " + value);
 
 		switch (key) {
-		case BOARD_NAME:
+		case SITE_NAME:
 			if (board.name != null) {
 				board = new Imageboard();
 				supported.add(board);
 			}
 			board.name = value;
 			break;
-		case BOARD_DESC:
+		case SITE_DESC:
 			if (board.description != null) {
 				board = new Imageboard();
 				supported.add(board);
 			}
 			board.description = value;
 			break;
-		case BOARD_URL:
+		case SITE_URL:
 			if (board.baseurl != null) {
 				board = new Imageboard();
 				supported.add(board);
@@ -121,11 +121,13 @@ public class ChanSpecification implements IParseDataReceiver {
 			break;
 		case POST:
 			parser.addTag(value);
+			break;
 		default:
 			if (value == null) {
 				System.err.println("Syntax error in " + file + ": " + key + " does have invalid value " + data);
 				return;
-			}
+			} else
+				System.out.println("Warning: ununsed option " + key);
 		}
 	}
 
