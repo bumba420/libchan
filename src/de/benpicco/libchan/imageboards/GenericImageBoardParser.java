@@ -120,6 +120,8 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		case POST_THREAD:
 			currentPost.isFirstPost = true;
 			break;
+		case NULL:
+			break;
 		default:
 			System.err.println("unhandled case " + tag + ": " + data);
 		}

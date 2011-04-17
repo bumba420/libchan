@@ -2,8 +2,8 @@ BOARD_NAME	"4chan"
 BOARD_DESC	"The most popular Imageboard"
 BOARD_URL	"http://boards.4chan.org"
 
-POST	"postername\">$POST_USER$</span> $POST_DATE$ <span id=\"$NULL$\"><a href=\"#$POST_ID$\""
-POST	"<span title=\"$POST_FILENAME$\">$NULL$</span>)</span><br><a href=\"POST_IMGURL" target=_blank><img src=$POST_THUMBNAIL$ border=0"
+POST	"postername\">$POST_USER$</span>$NULL$ $POST_DATE$ <span id=\"$NULL$\"><a href=\"#$POST_ID$\""
+POST	"<span title=\"$POST_FILENAME$\">$NULL$</span>)</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
 
 POST	"title\">$POST_TITLE$</span>"
 POST	"<blockquote>$POST_MESSAGE$</blockquote>"
@@ -14,6 +14,6 @@ URL_PREFIX	"res/"
 
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL
-START_POST	POST_ID
+START_POST	POST_USER
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE

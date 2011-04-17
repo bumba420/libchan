@@ -29,7 +29,6 @@ public class StreamParser implements Cloneable {
 	}
 
 	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
-		System.out.println("parsing stream");
 		InputStreamReader reader = new InputStreamReader(stream);
 
 		char[] buffer = new char[512];
@@ -42,13 +41,11 @@ public class StreamParser implements Cloneable {
 				for (ParseItem pi : tags)
 					if (pi.match(buffer[i])) {
 						for (int j = 0; j < pi.tags.length; ++j)
-							System.out.println(pi.tags[j] + " - " + pi.items[j]);
-						// receiver.parsedString(pi.tags[j], pi.items[j]);
+							receiver.parsedString(pi.tags[j], pi.items[j]);
 						break;
 					}
 
 		}
-		System.out.println("Done parsing stream");
 	}
 
 	public void addTag(String pattern) {
@@ -77,20 +74,19 @@ class ParseItem {
 		StringBuilder sb = new StringBuilder();
 		int lastMatch = 0;
 
-		if (match.find()) {
-			tags = new Tags[match.groupCount()];
-			for (int i = 0; i < match.groupCount(); ++i) {
-				tags[i] = Tags.valueOf(match.group(i + 1));
-				sb.append(pattern.substring(lastMatch, match.start()));
-				sb.append((char) 0);
-				lastMatch = match.end();
-			}
-			sb.append(pattern.substring(lastMatch));
-		} else
-			tags = null;
+		ArrayList<Tags> tags = new ArrayList<Tags>();
+
+		while (match.find()) {
+			tags.add(Tags.valueOf(match.group(1)));
+			sb.append(pattern.substring(lastMatch, match.start()));
+			sb.append((char) 0);
+			lastMatch = match.end();
+		}
+		sb.append(pattern.substring(lastMatch));
 
 		this.pattern = sb.toString().toCharArray();
-		items = new String[tags.length];
+		this.tags = tags.toArray(new Tags[tags.size()]);
+		items = new String[this.tags.length];
 	}
 
 	public boolean match(char c) {
@@ -102,11 +98,11 @@ class ParseItem {
 		else if (pattern[count] == 0) {
 			// System.out.println("ok[" + count + "]: " + new String(pattern));
 			if (itemBuilder != null && count > lastItem) {
-				System.out.println("ok");
 				items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
 				// System.out.println(tags[item] + " - " + items[item]);
 				item++;
-			} else
+			}
+			if (count > lastItem)
 				itemBuilder = new StringBuilder();
 
 			lastItem = ++count;
@@ -133,5 +129,16 @@ class ParseItem {
 			return true;
 		}
 		return false;
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		int j = 0;
+		for (int i = 0; i < pattern.length; ++i)
+			if (pattern[i] > 0)
+				sb.append(pattern[i]);
+			else
+				sb.append(tags[j++]);
+		return sb.toString();
 	}
 }
