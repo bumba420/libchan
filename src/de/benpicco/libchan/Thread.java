@@ -28,4 +28,8 @@ public class Thread {
 	public int getId() {
 		return opening.id;
 	}
+
+	public Post getOpening() {
+		return opening;
+	}
 }

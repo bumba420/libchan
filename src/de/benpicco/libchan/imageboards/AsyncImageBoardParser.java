@@ -11,9 +11,11 @@ import de.benpicco.libchan.util.Tuple;
 public class AsyncImageBoardParser extends GenericImageBoardParser {
 
 	public AsyncImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
-			StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix,
+			StreamParser parser, String threadMark, String imgPrefix, String thumbPrefix, String countryPrefix,
 			Tuple<String, String> threadURL) {
-		super(baseUrl, postStarter, postEnder, imageEnder, parser, imgPrefix, thumbPrefix, countryPrefix, threadURL);
+		super(baseUrl, postStarter, postEnder, imageEnder, parser, threadMark, imgPrefix, thumbPrefix, countryPrefix,
+				threadURL);
+		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -35,7 +37,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 	}
 
 	@Override
-	public void getThreads(final String url, final ThreadHandler rec) throws IOException {
+	public void getThreads(final String url, final ThreadHandler rec) {
 		if (url == null)
 			return;
 

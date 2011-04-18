@@ -27,6 +27,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	private String					countryPrefix	= "";
 	private Tuple<String, String>	threadURL		= new Tuple<String, String>("", "");
 	private Imageboard				board			= new Imageboard();
+	private String					threadMark		= "";
 
 	private final String			file;
 
@@ -122,6 +123,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case POST:
 			parser.addTag(value);
 			break;
+		case POST_THREAD_MARK:
+			threadMark = value;
+			break;
 		default:
 			if (value == null) {
 				System.err.println("Syntax error in " + file + ": " + key + " does have invalid value " + data);
@@ -147,7 +151,7 @@ public class ChanSpecification implements IParseDataReceiver {
 		for (Imageboard chan : supported)
 			if (key.startsWith(chan.baseurl) || key.equals(chan.name))
 				return new AsyncImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
-						imgPrefix, thumbPrefix, countryPrefix, threadURL);
+						threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL);
 		return null;
 	}
 }

@@ -34,13 +34,14 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	private final String				thumbPrefix;
 	private final String				countryPrefix;
 	private final Tuple<String, String>	threadURL;
+	private final String				threadMark;
 
 	private String absolute(String relUrl) {
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
 	}
 
 	public GenericImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
-			StreamParser parser, String imgPrefix, String thumbPrefix, String countryPrefix,
+			StreamParser parser, String threadMark, String imgPrefix, String thumbPrefix, String countryPrefix,
 			Tuple<String, String> threadURL) {
 		this.baseUrl = baseUrl;
 		this.postStarter = postStarter;
@@ -51,6 +52,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		this.thumbPrefix = thumbPrefix;
 		this.countryPrefix = countryPrefix;
 		this.threadURL = threadURL;
+		this.threadMark = threadMark;
 	}
 
 	@Override
@@ -118,7 +120,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			currentPost.message = data;
 			break;
 		case POST_THREAD:
-			currentPost.isFirstPost = true;
+			currentPost.isFirstPost = data.contains(threadMark);
 			break;
 		case NULL:
 			break;
@@ -146,7 +148,6 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	@Override
 	public void getThreads(String url, ThreadHandler rec) throws IOException {
 		getPosts(url, new ThreadParser(url, rec));
-		rec.onThreadsParsingDone();
 	}
 
 	class ThreadParser implements PostHandler {
@@ -166,6 +167,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 		@Override
 		public void onPostsParsingDone() {
+			rec.onThreadsParsingDone();
 		}
 	}
 

@@ -1,7 +1,5 @@
 package de.benpicco.libchan.clichan;
 
-import java.io.IOException;
-
 import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
@@ -42,12 +40,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	public void run() {
 		if (names == null)
 			return;
-		try {
-			parser.getThreads(page, this);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
+		parser.getThreads(page, this);
 	}
 
 	@Override

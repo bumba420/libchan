@@ -4,11 +4,13 @@ SITE_URL	"http://boards.4chan.org"
 
 BOARD	"<li><a href=\"$BOARD_URL$\" class="boardlink" title=\"$BOARD_TITLE$\">"
 
-POST	"postername\">$POST_USER$</span>$$ $POST_DATE$ <span id=\"$$\"><a href=\"#$POST_ID$\"$$<blockquote>$POST_MESSAGE$</blockquote>"
+POST	"postername\">$POST_USER$</span>$$ $POST_DATE$ <span id=\"$POST_THREAD$\"><a href=\"$$#$POST_ID$\"$$<blockquote>$POST_MESSAGE$</blockquote>"
 POST	"<span title=\"$POST_FILENAME$\">$$</span>)</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
+POST	")</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
+
 POST	"title\">$POST_TITLE$</span>"
 
-POST_THREAD	" id=\"nothread"
+POST_THREAD_MARK	"nothread"
 
 URL_PREFIX	"res/"
 
