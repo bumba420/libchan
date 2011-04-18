@@ -70,14 +70,17 @@ class ParseItem {
 	}
 
 	public ParseItem(String pattern) {
-		Matcher match = Pattern.compile("\\$([A-Z_]+)\\$").matcher(pattern);
+		Matcher match = Pattern.compile("\\$([A-Z_]*)\\$").matcher(pattern);
 		StringBuilder sb = new StringBuilder();
 		int lastMatch = 0;
 
 		ArrayList<Tags> tags = new ArrayList<Tags>();
 
 		while (match.find()) {
-			tags.add(Tags.valueOf(match.group(1)));
+			if (match.group(1).length() == 0)
+				tags.add(Tags.NULL);
+			else
+				tags.add(Tags.valueOf(match.group(1)));
 			sb.append(pattern.substring(lastMatch, match.start()));
 			sb.append((char) 0);
 			lastMatch = match.end();

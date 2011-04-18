@@ -33,7 +33,6 @@ class SimplePostReceiver implements PostHandler, ThreadHandler {
 	@Override
 	public void onPostsParsingDone() {
 		System.out.println("posts parsing done.");
-		System.exit(0);
 	}
 
 	@Override
@@ -45,6 +44,5 @@ class SimplePostReceiver implements PostHandler, ThreadHandler {
 	@Override
 	public void onThreadsParsingDone() {
 		System.out.println("threads parsing done.");
-		// System.exit(0);
 	}
 }
