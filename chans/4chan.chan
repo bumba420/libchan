@@ -4,18 +4,16 @@ SITE_URL	"http://boards.4chan.org"
 
 BOARD	"<li><a href=\"$BOARD_URL$\" class="boardlink" title=\"$BOARD_TITLE$\">"
 
-POST	"postername\">$POST_USER$</span>$$ $POST_DATE$ <span id=\"$POST_THREAD$\"><a href=\"$$#$POST_ID$\"$$<blockquote>$POST_MESSAGE$</blockquote>"
+POST	"<input type=checkbox name=\"$POST_ID$\" value=delete><span class=\"$POST_THREAD$title\">$POST_TITLE$</span>$$<span class=\"$$postername\">$POST_USER$</span>$$ $POST_DATE$ <span$$<blockquote>$POST_MESSAGE$</blockquote>"
 POST	"<span title=\"$POST_FILENAME$\">$$</span>)</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
 POST	")</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
 
-POST	"title\">$POST_TITLE$</span>"
-
-POST_THREAD_MARK	"nothread"
+POST_THREAD_MARK	"file"
 
 URL_PREFIX	"res/"
 
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL
-START_POST	POST_USER
+START_POST	POST_ID
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE

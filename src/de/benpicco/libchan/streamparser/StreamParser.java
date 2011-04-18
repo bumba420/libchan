@@ -99,10 +99,8 @@ class ParseItem {
 		if (pattern[count] == c)
 			++count;
 		else if (pattern[count] == 0) {
-			// System.out.println("ok[" + count + "]: " + new String(pattern));
 			if (itemBuilder != null && count > lastItem) {
 				items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
-				// System.out.println(tags[item] + " - " + items[item]);
 				item++;
 			}
 			if (count > lastItem)
@@ -113,7 +111,6 @@ class ParseItem {
 				++count;
 		} else {
 			count = lastItem;
-			// System.out.println("warp-around, setting back to " + count);
 		}
 
 		if (itemBuilder != null)

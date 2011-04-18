@@ -19,7 +19,7 @@ public class Main {
 			System.exit(-1);
 		}
 
-		parser.getPosts(url, new SimplePostReceiver());
+		parser.getThreads(url, new SimplePostReceiver());
 	}
 }
 

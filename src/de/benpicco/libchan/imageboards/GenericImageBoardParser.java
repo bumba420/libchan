@@ -120,7 +120,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			currentPost.message = data;
 			break;
 		case POST_THREAD:
-			currentPost.isFirstPost = data.contains(threadMark);
+			currentPost.isFirstPost = threadMark.length() == 0 ? data.trim().length() == 0 : data.contains(threadMark);
 			break;
 		case NULL:
 			break;
