@@ -7,6 +7,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import de.benpicco.libchan.BoardHandler;
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.Thread;
@@ -29,6 +30,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	private final List<Tags>			imageEnder;
 
 	private final StreamParser			parser;
+	private final StreamParser			boardParser;
 
 	private final String				imgPrefix;
 	private final String				thumbPrefix;
@@ -41,13 +43,14 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	public GenericImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
-			StreamParser parser, String threadMark, String imgPrefix, String thumbPrefix, String countryPrefix,
-			Tuple<String, String> threadURL) {
+			StreamParser parser, StreamParser boardParser, String threadMark, String imgPrefix, String thumbPrefix,
+			String countryPrefix, Tuple<String, String> threadURL) {
 		this.baseUrl = baseUrl;
 		this.postStarter = postStarter;
 		this.postEnder = postEnder;
 		this.imageEnder = imageEnder;
 		this.parser = parser;
+		this.boardParser = boardParser;
 		this.imgPrefix = imgPrefix;
 		this.thumbPrefix = thumbPrefix;
 		this.countryPrefix = countryPrefix;
@@ -191,5 +194,43 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 	public String getUrl() {
 		return baseUrl;
+	}
+
+	@Override
+	public void getBoards(final BoardHandler rec) throws IOException {
+		IParseDataReceiver parseDataReceiver = new IParseDataReceiver() {
+			Board	board	= null;
+
+			@Override
+			public void parsedString(Tags tag, String data) {
+				if (data.length() == 0)
+					return;
+
+				boolean finished = board != null;
+				if (!finished)
+					board = new Board();
+
+				switch (tag) {
+				case BOARD_URL:
+					board.url = data;
+					break;
+				case BOARD_TITLE:
+					board.name = data;
+					break;
+				default:
+					return;
+				}
+
+				if (finished) {
+					Board tmp = board;
+					board = null;
+					rec.onAddBoard(tmp);
+				}
+			}
+		};
+
+		InputStream in = new BufferedInputStream(new URL(baseUrl).openStream());
+		boardParser.parseStream(in, parseDataReceiver);
+		rec.onBoardParsingDone();
 	}
 }

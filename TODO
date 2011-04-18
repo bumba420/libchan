@@ -1,4 +1,5 @@
-use scanner for regex parsing?
+Bugs:
+ handle newlines properly
 
 Ideas:
  partitial downloading

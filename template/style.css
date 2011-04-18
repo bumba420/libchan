@@ -2,23 +2,22 @@ a:link {text-decoration: none; color: #c02a03;}
 a:hover {color:#d51105;}
 
 body {
+	font-size: 90%;
 	font-family:arial,helvetica,sans-serif;
 	background-color: #ffffee;
 }
 
 div.post {
 	color: #c02a03;
-	margin: 5px;
+	margin: 3px;
 	margin-left: 20px;
 	background-color: #f0e0d6;
 	clear:left;
 	display: inline-block;
 	box-shadow:1px 1px 1px #666;
-	font-size: 90%;
 	padding-bottom: 15px;
 	padding-right: 15px;
 	padding-left: 15px;
-
 }
 
 div.img {

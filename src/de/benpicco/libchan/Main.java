@@ -1,6 +1,7 @@
 package de.benpicco.libchan;
 
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
+import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.Post;
 
@@ -19,13 +20,14 @@ public class Main {
 			System.exit(-1);
 		}
 
-		parser.getThreads(url, new SimplePostReceiver());
+		parser.getBoards(new SimplePostReceiver());
 	}
 }
 
-class SimplePostReceiver implements PostHandler, ThreadHandler {
+class SimplePostReceiver implements PostHandler, ThreadHandler, BoardHandler {
 	int	postCount	= 0;
 	int	threadCount	= 0;
+	int	boardCount	= 0;
 
 	@Override
 	public void onAddPost(final Post post) {
@@ -47,5 +49,16 @@ class SimplePostReceiver implements PostHandler, ThreadHandler {
 	@Override
 	public void onThreadsParsingDone() {
 		System.out.println(threadCount + " threads received.");
+	}
+
+	@Override
+	public void onAddBoard(Board board) {
+		boardCount++;
+		System.out.println(board);
+	}
+
+	@Override
+	public void onBoardParsingDone() {
+		System.out.println(boardCount + " boards received.");
 	}
 }

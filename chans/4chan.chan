@@ -2,7 +2,7 @@ SITE_NAME	"4chan"
 SITE_DESC	"The most popular Imageboard"
 SITE_URL	"http://boards.4chan.org"
 
-BOARD	"<li><a href=\"$BOARD_URL$\" class="boardlink" title=\"$BOARD_TITLE$\">"
+BOARD	"<li><a href=\"$BOARD_URL$\" class=\"boardlink\" title=\"$BOARD_TITLE$\">"
 
 POST	"<input type=checkbox name=\"$POST_ID$\" value=delete><span class=\"$POST_THREAD$title\">$POST_TITLE$</span>$$<span class=\"$$postername\">$POST_USER$</span>$$ $POST_DATE$ <span$$<blockquote>$POST_MESSAGE$</blockquote>"
 POST	"<span title=\"$POST_FILENAME$\">$$</span>)</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"

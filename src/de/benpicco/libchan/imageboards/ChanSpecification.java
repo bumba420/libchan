@@ -22,6 +22,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	private List<Tags>				imageEnder		= new ArrayList<Tags>();
 	private List<Imageboard>		supported		= new ArrayList<Imageboard>();
 	private StreamParser			parser			= new StreamParser();
+	private StreamParser			boardParser		= new StreamParser();
 	private String					thumbPrefix		= "";
 	private String					imgPrefix		= "";
 	private String					countryPrefix	= "";
@@ -120,6 +121,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case COUNTRY_PREFIX:
 			countryPrefix = value;
 			break;
+		case BOARD:
+			boardParser.addTag(value);
+			break;
 		case POST:
 			parser.addTag(value);
 			break;
@@ -151,7 +155,7 @@ public class ChanSpecification implements IParseDataReceiver {
 		for (Imageboard chan : supported)
 			if (key.startsWith(chan.baseurl) || key.equals(chan.name))
 				return new AsyncImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
-						threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL);
+						boardParser.clone(), threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL);
 		return null;
 	}
 }
