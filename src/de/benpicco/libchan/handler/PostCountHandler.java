@@ -1,7 +1,7 @@
 package de.benpicco.libchan.handler;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 
 public class PostCountHandler implements PostHandler {
 	final int	treshold;

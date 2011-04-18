@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 
 public class FollowupThreadHandler implements PostHandler {
 	private final String			followUpTag;

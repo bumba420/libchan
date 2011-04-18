@@ -4,6 +4,10 @@ import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.imageboards.Thread;
+import de.benpicco.libchan.interfaces.BoardHandler;
+import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.ThreadHandler;
 
 public class Main {
 	public static void main(final String[] args) {

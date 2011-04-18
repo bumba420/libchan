@@ -2,9 +2,9 @@ package de.benpicco.libchan.handler;
 
 import java.io.File;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
 
 public class DownloadImageHandler implements PostHandler {

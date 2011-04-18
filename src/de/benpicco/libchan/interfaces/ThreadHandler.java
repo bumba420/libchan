@@ -1,4 +1,6 @@
-package de.benpicco.libchan;
+package de.benpicco.libchan.interfaces;
+
+import de.benpicco.libchan.imageboards.Thread;
 
 
 public interface ThreadHandler {

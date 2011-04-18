@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.handler.ArchiveHtmlHandler;
 import de.benpicco.libchan.handler.DownloadImageHandler;
 import de.benpicco.libchan.handler.FollowupThreadHandler;
@@ -13,6 +12,7 @@ import de.benpicco.libchan.handler.PostCountHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 
 public class ThreadArchiver implements NewThreadReceiver {
 	final String				target;

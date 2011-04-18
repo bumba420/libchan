@@ -1,4 +1,4 @@
-package de.benpicco.libchan;
+package de.benpicco.libchan.interfaces;
 
 import java.io.IOException;
 

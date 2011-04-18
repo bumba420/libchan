@@ -1,9 +1,9 @@
 package de.benpicco.libchan.clichan;
 
-import de.benpicco.libchan.PostHandler;
-import de.benpicco.libchan.ThreadHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.ThreadHandler;
 
 public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
@@ -54,7 +54,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	}
 
 	@Override
-	public void onAddThread(final de.benpicco.libchan.Thread thread) {
+	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
 		new Thread(new Runnable() {
 
 			@Override

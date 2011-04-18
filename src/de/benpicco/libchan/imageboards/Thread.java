@@ -1,6 +1,5 @@
-package de.benpicco.libchan;
+package de.benpicco.libchan.imageboards;
 
-import de.benpicco.libchan.imageboards.Post;
 
 public class Thread {
 	private int				replies;

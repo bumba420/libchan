@@ -2,9 +2,9 @@ package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
 
-import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.IImageBoardParser;
+import de.benpicco.libchan.interfaces.PostHandler;
 
 public class ThreadWatcher implements PostHandler, Runnable {
 	private final IImageBoardParser	parser;

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
 
 public class UserNotifyHandler implements PostHandler {

@@ -6,10 +6,10 @@ import java.io.Writer;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.benpicco.libchan.PostHandler;
 import de.benpicco.libchan.clichan.HtmlConverter;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
 
 public class ArchiveHtmlHandler implements PostHandler {

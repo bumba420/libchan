@@ -3,9 +3,9 @@ package de.benpicco.libchan.imageboards;
 import java.io.IOException;
 import java.util.List;
 
-import de.benpicco.libchan.BoardHandler;
-import de.benpicco.libchan.PostHandler;
-import de.benpicco.libchan.ThreadHandler;
+import de.benpicco.libchan.interfaces.BoardHandler;
+import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
 
@@ -23,7 +23,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 		if (url == null)
 			return;
 
-		new Thread(new Runnable() {
+		new java.lang.Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -41,7 +41,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 		if (url == null)
 			return;
 
-		new Thread(new Runnable() {
+		new java.lang.Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -55,7 +55,7 @@ public class AsyncImageBoardParser extends GenericImageBoardParser {
 	}
 
 	public void getBoards(final BoardHandler rec) {
-		new Thread(new Runnable() {
+		new java.lang.Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {

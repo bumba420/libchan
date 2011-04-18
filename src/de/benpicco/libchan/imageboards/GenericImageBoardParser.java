@@ -9,11 +9,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import de.benpicco.libchan.BoardHandler;
-import de.benpicco.libchan.IImageBoardParser;
-import de.benpicco.libchan.PostHandler;
-import de.benpicco.libchan.Thread;
-import de.benpicco.libchan.ThreadHandler;
+import de.benpicco.libchan.interfaces.BoardHandler;
+import de.benpicco.libchan.interfaces.IImageBoardParser;
+import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
