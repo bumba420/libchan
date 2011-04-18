@@ -67,12 +67,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 			@Override
 			public void run() {
 				AsyncImageBoardParser parser = manager.getParser(thread.getUrl());
-				try {
-					parser.getPosts(thread.getUrl(), PageCrawler.this);
-					parser.dispose();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				parser.getPosts(thread.getUrl(), PageCrawler.this);
 			}
 		}).run();
 	}
@@ -85,6 +80,5 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	@Override
 	public void onThreadsParsingDone() {
 		// System.out.print("!");
-		parser.dispose();
 	}
 }

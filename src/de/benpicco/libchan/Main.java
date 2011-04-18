@@ -1,7 +1,5 @@
 package de.benpicco.libchan;
 
-import java.io.IOException;
-
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.Post;
@@ -12,7 +10,7 @@ public class Main {
 		// ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
 
 		// String url = "http://krautchan.net/b/thread-2855681.html";
-		String url = "http://boards.4chan.org/soc/res/3492498";
+		String url = "http://boards.4chan.org/soc/res/3525012";
 
 		AsyncImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
 
@@ -21,12 +19,7 @@ public class Main {
 			System.exit(-1);
 		}
 
-		try {
-			parser.getPosts(url, new SimplePostReceiver());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		parser.getPosts(url, new SimplePostReceiver());
 	}
 }
 

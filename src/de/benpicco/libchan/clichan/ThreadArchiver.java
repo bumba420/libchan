@@ -1,7 +1,6 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,16 +73,10 @@ public class ThreadArchiver implements NewThreadReceiver {
 				if (names != null)
 					handler.add(new UserNotifyHandler(names));
 
-				try {
-					if (interval >= 0)
-						(new ThreadWatcher(thread, interval, new PostArchiver(handler), parser)).run();
-					else {
-						parser.getPosts(thread, new PostArchiver(handler));
-						parser.dispose();
-					}
-				} catch (IOException e) {
-					System.out.println("Unable to parse " + thread + ", " + e);
-				}
+				if (interval >= 0)
+					(new ThreadWatcher(thread, interval, new PostArchiver(handler), parser)).run();
+				else
+					parser.getPosts(thread, new PostArchiver(handler));
 			}
 		}).start();
 	}
