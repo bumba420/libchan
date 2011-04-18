@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import de.benpicco.libchan.BoardHandler;
 import de.benpicco.libchan.IImageBoardParser;
 import de.benpicco.libchan.PostHandler;
@@ -215,7 +217,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 					board.url = data;
 					break;
 				case BOARD_TITLE:
-					board.name = data;
+					board.name = StringEscapeUtils.unescapeHtml4(data);
 					break;
 				default:
 					return;
