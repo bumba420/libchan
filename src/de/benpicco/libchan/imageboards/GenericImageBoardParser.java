@@ -62,17 +62,16 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	@Override
 	public void getPosts(String url, PostHandler rec) throws MalformedURLException, IOException {
 		int maxtries = 5;
+		receiver = rec;
+
 		while (maxtries-- > 0) {
-
-			InputStream in = new BufferedInputStream(new URL(url).openStream());
-
-			receiver = rec;
 			try {
+				InputStream in = new BufferedInputStream(new URL(url).openStream());
 				parser.parseStream(in, this);
 				rec.onPostsParsingDone();
 				return;
 			} catch (IOException e) {
-				System.out.println("Unable to read " + url + ", retrying…");
+				;// System.out.println("Unable to read " + url + ", retrying…");
 			}
 		}
 		System.err.println("Failed downloading " + url);
@@ -95,6 +94,9 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			break;
 		case POST_USER:
 			currentPost.user = data;
+			break;
+		case POST_TRIP:
+			currentPost.tripcode = data;
 			break;
 		case POST_DATE:
 			currentPost.date = data;

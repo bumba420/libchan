@@ -1,5 +1,6 @@
 package de.benpicco.libchan.imageboards;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class Post implements Cloneable {
 	public boolean				isFirstPost;
 	public String				title;
 	public String				user;
+	public String				tripcode;
 	public String				mail;
 	public String				message;
 	public String				date;
@@ -25,7 +27,7 @@ public class Post implements Cloneable {
 
 	public String toString() {
 		return "ID: " + id + "\n" + "Date: " + date + "\n" + (title != null ? "Title: " + title + "\n" : "") + "User: "
-				+ user + "\n" + (mail != null ? "Mail: " + mail + "\n" : "")
+				+ user + (tripcode != null ? " " + tripcode : "") + "\n" + (mail != null ? "Mail: " + mail + "\n" : "")
 				+ (images.size() > 0 ? "Images: " + images.toString() + "\n" : "") + message + "\n";
 	}
 
@@ -51,5 +53,12 @@ public class Post implements Cloneable {
 
 		if (title != null && title.length() == 0)
 			title = null;
+	}
+
+	public String getDir() {
+		String ret = (user + (tripcode != null ? tripcode : "")).replace(File.separatorChar, ' ');
+		if (ret.length() == 0)
+			ret = "(undefined)";
+		return ret;
 	}
 }

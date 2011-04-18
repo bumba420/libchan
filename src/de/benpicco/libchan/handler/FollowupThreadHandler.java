@@ -2,6 +2,8 @@ package de.benpicco.libchan.handler;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +32,7 @@ public class FollowupThreadHandler implements PostHandler {
 	 * @param handler
 	 */
 	public FollowupThreadHandler(String followUpTag, NewThreadReceiver handler) {
-		this.followUpTag = followUpTag;
+		this.followUpTag = followUpTag.toUpperCase();
 		this.handler = handler;
 		followUps = new LinkedList<Integer>();
 	}
@@ -38,9 +40,11 @@ public class FollowupThreadHandler implements PostHandler {
 	@Override
 	public void onAddPost(Post post) {
 		if (followUpTag != null) {
-			String newThread = StringUtils.substringBetween(post.message.toUpperCase(), followUpTag);
-			if (newThread != null) {
-				final String newThreadId = StringUtils.substringBetween(newThread, ">>", "\n");
+			String newThread = StringUtils.substringAfter(post.message.toUpperCase(), followUpTag);
+			if (newThread != null && newThread.length() > 0) {
+				Matcher match = Pattern.compile(">>([0-9]+)").matcher(newThread);
+				match.find();
+				String newThreadId = match.group(1);
 				if (newThreadId != null && newThreadId.trim().length() > 0) {
 					int newId = Integer.parseInt(newThreadId);
 					if (!followUps.contains(newId)) {

@@ -52,11 +52,13 @@ public class ChanSpecification implements IParseDataReceiver {
 
 		String line = reader.readLine();
 		while (line != null) {
-			Matcher matcher = p.matcher(line);
-			if (matcher.matches()) {
-				Tags key = Tags.valueOf(matcher.group(1));
-				String value = matcher.group().substring(matcher.end(1)).trim();
-				parsedString(key, value);
+			if (!line.startsWith("#")) {
+				Matcher matcher = p.matcher(line);
+				if (matcher.matches()) {
+					Tags key = Tags.valueOf(matcher.group(1));
+					String value = matcher.group().substring(matcher.end(1)).trim();
+					parsedString(key, value);
+				}
 			}
 			line = reader.readLine();
 		}

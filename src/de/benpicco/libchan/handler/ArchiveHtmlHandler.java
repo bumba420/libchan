@@ -80,11 +80,12 @@ public class ArchiveHtmlHandler implements PostHandler {
 		newPost.message = post.message;
 		newPost.date = post.date;
 		newPost.countryball = post.countryball;
+		newPost.tripcode = post.tripcode;
 
 		for (Image img : post.images) {
 			Image newImg = new Image();
 			newImg.filename = img.filename;
-			newImg.url = post.user + File.separator + img.filename;
+			newImg.url = post.getDir() + File.separator + img.filename;
 			newImg.thumbnailUrl = thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/");
 			newPost.addImage(newImg);
 		}

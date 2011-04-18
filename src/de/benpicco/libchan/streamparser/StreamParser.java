@@ -29,6 +29,9 @@ public class StreamParser implements Cloneable {
 	}
 
 	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
+		// for (ParseItem pi : tags)
+		// System.out.println(pi);
+
 		InputStreamReader reader = new InputStreamReader(stream);
 
 		char[] buffer = new char[512];
@@ -39,12 +42,9 @@ public class StreamParser implements Cloneable {
 
 			for (int i = 0; i < read; ++i)
 				for (ParseItem pi : tags)
-					if (pi.match(buffer[i])) {
+					if (pi.match(buffer[i]))
 						for (int j = 0; j < pi.tags.length; ++j)
 							receiver.parsedString(pi.tags[j], pi.items[j]);
-						break;
-					}
-
 		}
 	}
 

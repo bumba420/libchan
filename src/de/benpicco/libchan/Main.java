@@ -15,7 +15,7 @@ public class Main {
 		// ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
 
 		// String url = "http://krautchan.net/b/thread-2855681.html";
-		String url = "http://boards.4chan.org/soc/";
+		String url = "http://boards.4chan.org/c/res/1676190";
 
 		AsyncImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
 
@@ -24,7 +24,7 @@ public class Main {
 			System.exit(-1);
 		}
 
-		parser.getBoards(new SimplePostReceiver());
+		parser.getPosts(url, new SimplePostReceiver());
 	}
 }
 

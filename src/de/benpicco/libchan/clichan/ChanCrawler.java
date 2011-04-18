@@ -59,8 +59,10 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 			@Override
 			public void run() {
-				AsyncImageBoardParser parser = manager.getParser(thread.getUrl());
-				parser.getPosts(thread.getUrl(), PageCrawler.this);
+				System.out.println(thread.getUrl());
+				// AsyncImageBoardParser parser =
+				// manager.getParser(thread.getUrl());
+				// parser.getPosts(thread.getUrl(), PageCrawler.this);
 			}
 		}).run();
 	}

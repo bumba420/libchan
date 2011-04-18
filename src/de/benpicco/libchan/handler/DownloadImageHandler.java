@@ -18,7 +18,7 @@ public class DownloadImageHandler implements PostHandler {
 	@Override
 	public void onAddPost(final Post post) {
 
-		final String dir = targetDir + post.user + File.separator;
+		final String dir = targetDir + post.getDir() + File.separator;
 
 		if (post.images.size() > 0)
 			new File(dir).mkdir();
