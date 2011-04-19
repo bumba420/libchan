@@ -20,17 +20,19 @@ public class ThreadArchiver implements NewThreadReceiver {
 	final String				oldThread;
 	final String				followUpTag;
 	final boolean				saveHtml;
+	final boolean				threadFolders;
 	private final ChanManager	manager;
 	private final List<String>	names;
 
-	public ThreadArchiver(String thread, String target, String config, int interval, String followUpTag,
-			boolean saveHtml, List<String> names) {
+	public ThreadArchiver(String thread, String target, boolean threadFolders, String config, int interval,
+			String followUpTag, boolean saveHtml, List<String> names) {
 		this.followUpTag = followUpTag != null ? followUpTag.toUpperCase() : null;
 		this.oldThread = thread;
-		this.target = target;
+		this.target = target.endsWith(File.separator) ? target : target + File.separator;
 		this.interval = interval;
 		this.saveHtml = saveHtml;
 		this.names = names;
+		this.threadFolders = threadFolders;
 		manager = new ChanManager(config);
 	}
 
@@ -60,7 +62,9 @@ public class ThreadArchiver implements NewThreadReceiver {
 				if (id > 0)
 					thread = parser.composeUrl(oldThread, id);
 
-				String t = target + File.separator + thread.substring(thread.lastIndexOf('/') + 1);
+				String t = target;
+				if (threadFolders)
+					t += thread.substring(thread.lastIndexOf('/') + 1);
 				System.out.println("Saving pictures from " + thread + " to " + t);
 
 				List<PostHandler> handler = new ArrayList<PostHandler>();

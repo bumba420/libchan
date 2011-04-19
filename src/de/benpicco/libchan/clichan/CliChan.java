@@ -23,6 +23,7 @@ public class CliChan {
 		String[] namesToSearch = null;
 		ArrayList<String> namesToWach = null;
 		boolean html = false;
+		boolean threadFolders = true;
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("u", "url", true, "url to process");
@@ -32,6 +33,7 @@ public class CliChan {
 		cliOptions.addOption("v", "version", false, "show version");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "also archive thread as html");
+		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
 
 		Option o = new Option("f", "find", true, "Searches the imageborad for users");
 		o.setArgs(Integer.MAX_VALUE);
@@ -64,6 +66,7 @@ public class CliChan {
 				System.exit(0);
 			}
 			html = commandLine.hasOption("html");
+			threadFolders = !commandLine.hasOption("nothreadfolders");
 
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -71,8 +74,7 @@ public class CliChan {
 
 		if (url == null) {
 			System.err.println("No url specified");
-			new HelpFormatter().printHelp("use -t to specify either a thread to archive or a board to crawl",
-					cliOptions);
+			new HelpFormatter().printHelp("You have to at least specify a URL using the -u option.", cliOptions);
 			return;
 		}
 
@@ -84,7 +86,8 @@ public class CliChan {
 			return;
 		}
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, chancfg, interval, followUpTag, html, namesToWach);
+		ThreadArchiver archiver = new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag, html,
+				namesToWach);
 		archiver.saveThread();
 	}
 }

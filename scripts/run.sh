@@ -1,2 +1,2 @@
 #!/bin/sh
-java -jar cliChan.jar ${*}
+java -jar `dirname $0`/cliChan.jar ${*}
