@@ -117,10 +117,7 @@ class ParseItem {
 			itemBuilder.append(c);
 
 		if (count >= pattern.length) {
-			// System.out.println("deleteing " + (count - lastItem));
 			items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
-			// for (int i = 0; i < items.length; ++i)
-			// System.out.println(tags[i] + " - " + items[i]);
 
 			count = 0;
 			lastItem = 0;

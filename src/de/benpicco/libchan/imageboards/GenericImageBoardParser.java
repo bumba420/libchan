@@ -90,48 +90,60 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 		switch (tag) {
 		case POST_ID:
-			currentPost.id = Integer.parseInt(data);
+			if (currentPost.id == 0)
+				currentPost.id = Integer.parseInt(data);
 			break;
 		case POST_USER:
-			currentPost.user = data;
+			if (currentPost.user == null)
+				currentPost.user = data;
 			break;
 		case POST_TRIP:
-			currentPost.tripcode = data;
+			if (currentPost.tripcode == null)
+				currentPost.tripcode = data;
 			break;
 		case POST_DATE:
-			currentPost.date = data;
+			if (currentPost.date == null)
+				currentPost.date = data;
 			break;
 		case POST_IMGURL:
 			if (currentImage == null)
 				currentImage = new Image();
-			currentImage.url = absolute(imgPrefix + data.trim());
+			if (currentImage.url == null)
+				currentImage.url = absolute(imgPrefix + data.trim());
 			break;
 		case POST_THUMBNAIL:
 			if (currentImage == null)
 				currentImage = new Image();
-			currentImage.thumbnailUrl = absolute(thumbPrefix + data.trim());
+			if (currentImage.thumbnailUrl == null)
+				currentImage.thumbnailUrl = absolute(thumbPrefix + data.trim());
 			break;
 		case POST_FILENAME:
 			if (currentImage == null)
 				currentImage = new Image();
-			currentImage.filename = data.trim();
+			if (currentImage.filename == null)
+				currentImage.filename = data.trim();
 			break;
 		case POST_COUNTRY:
-			currentPost.countryball = absolute(countryPrefix + data);
+			if (currentPost.countryball == null)
+				currentPost.countryball = absolute(countryPrefix + data);
 			break;
 		case POST_TITLE:
-			currentPost.title = data;
+			if (currentPost.title == null)
+				currentPost.title = data;
 			break;
 		case POST_MESSAGE:
-			currentPost.message = data;
+			if (currentPost.message == null)
+				currentPost.message = data;
 			break;
 		case POST_THREAD:
-			currentPost.isFirstPost = threadMark.length() == 0 ? data.trim().length() == 0 : data.contains(threadMark);
+			if (currentPost.message == null)
+				currentPost.isFirstPost = threadMark.length() == 0 ? data.trim().length() == 0 : data
+						.contains(threadMark);
 			break;
 		case NULL:
 			break;
 		default:
-			System.err.println("unhandled case " + tag + ": " + data);
+			System.err.println("Warning: unhandled case " + tag + ": " + data);
 		}
 
 		if (currentImage != null && imageEnder.contains(tag)) {
