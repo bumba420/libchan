@@ -43,16 +43,17 @@ public class FollowupThreadHandler implements PostHandler {
 			String newThread = StringUtils.substringAfter(post.message.toUpperCase(), followUpTag);
 			if (newThread != null && newThread.length() > 0) {
 				Matcher match = Pattern.compile(">>([0-9]+)").matcher(newThread);
-				match.find();
-				String newThreadId = match.group(1);
-				if (newThreadId != null && newThreadId.trim().length() > 0) {
-					int newId = Integer.parseInt(newThreadId);
-					if (!followUps.contains(newId)) {
-						followUps.add(newId);
-						System.out.println("Detected follow-up thread: " + newThreadId);
-						handler.saveThread(newId);
-					} else
-						System.out.println("follow-up thread " + newId + " has already been detected.");
+				if (match.find()) {
+					String newThreadId = match.group(1);
+					if (newThreadId != null && newThreadId.trim().length() > 0) {
+						int newId = Integer.parseInt(newThreadId);
+						if (!followUps.contains(newId)) {
+							followUps.add(newId);
+							System.out.println("Detected follow-up thread: " + newThreadId);
+							handler.saveThread(newId);
+						} else
+							System.out.println("follow-up thread " + newId + " has already been detected.");
+					}
 				}
 			}
 		}
