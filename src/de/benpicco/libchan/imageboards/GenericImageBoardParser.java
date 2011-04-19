@@ -157,6 +157,11 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 				firstPost = currentPost;
 			currentPost.op = firstPost.id;
 			currentPost.cleanup();
+			for (Image img : currentPost.images) { // XXX quick and dirty hack
+													// to get unique filenames
+				int dot = img.filename.lastIndexOf('.');
+				img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
+			}
 			receiver.onAddPost(currentPost);
 
 			currentPost = null;
