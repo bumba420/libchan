@@ -1,6 +1,5 @@
 package de.benpicco.libchan.handler;
 
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -70,6 +69,7 @@ class Stats {
 		text += post.message.length();
 
 		Matcher matcher = responsePattern.matcher(post.message);
+		int lastId = 0; // do not count the same response more than once
 		while (matcher.find()) {
 			int id = 0;
 			try {
@@ -77,7 +77,9 @@ class Stats {
 			} catch (Exception e) {
 				continue;
 			}
-			responded++;
+			if (lastId != id)
+				responded++;
+			lastId = id;
 
 			Stats target = usermapping.get(id);
 			if (target != null)
@@ -96,7 +98,7 @@ class Stats {
 	}
 
 	public String toString() {
-		return user + '\t' + posts + '\t' + posts_with_images + '\t' + images + '\t'
-				+ NumberFormat.getInstance().format((double) text / posts) + '\t' + responded + '\t' + responses;
+		return user + '\t' + posts + '\t' + posts_with_images + '\t' + images + '\t' + (text / posts) + '\t'
+				+ responded + '\t' + responses;
 	}
 }
