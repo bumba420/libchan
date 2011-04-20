@@ -1,12 +1,13 @@
 package de.benpicco.libchan.imageboards;
 
-import java.io.File;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+
+import de.benpicco.libchan.util.FileUtil;
 
 public class Post implements Cloneable {
 	public int					id;
@@ -57,7 +58,7 @@ public class Post implements Cloneable {
 	}
 
 	public String getDir() {
-		String ret = (user + (tripcode != null ? tripcode : "")).replace(File.separatorChar, ' ');
+		String ret = FileUtil.filterInvalidChars(user + (tripcode != null ? tripcode : ""), " ");
 		if (ret.length() == 0)
 			ret = "(undefined)";
 		return ret;

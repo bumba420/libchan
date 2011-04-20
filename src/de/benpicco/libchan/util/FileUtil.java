@@ -76,6 +76,15 @@ public class FileUtil {
 		out.close();
 		in.close();
 	}
+
+	public static String filterInvalidChars(String filename, String replacement) {
+		String regex;
+		if (System.getProperty("os.name").toLowerCase().contains("win"))
+			regex = "[\\?\\:\\\\/\\*\"\\<\\>\\|]";
+		else
+			regex = "\\/";
+		return filename.replaceAll(regex, replacement);
+	}
 }
 
 class PathHelper {

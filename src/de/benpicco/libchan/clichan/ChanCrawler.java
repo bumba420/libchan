@@ -64,6 +64,5 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onThreadsParsingDone() {
-		System.out.println(page + " done.");
 	}
 }
