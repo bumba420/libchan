@@ -55,25 +55,15 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				System.out.println(thread.getUrl());
-				// AsyncImageBoardParser parser =
-				// manager.getParser(thread.getUrl());
-				// parser.getPosts(thread.getUrl(), PageCrawler.this);
-			}
-		}).run();
+		parser.getPosts(thread.getUrl(), this);
 	}
 
 	@Override
 	public void onPostsParsingDone() {
-		// System.out.print(".");
 	}
 
 	@Override
 	public void onThreadsParsingDone() {
-		// System.out.print("!");
+		System.out.println(page + " done.");
 	}
 }

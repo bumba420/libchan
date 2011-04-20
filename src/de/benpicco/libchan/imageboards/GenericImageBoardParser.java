@@ -60,7 +60,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void getPosts(String url, PostHandler rec) throws MalformedURLException, IOException {
+	public synchronized void getPosts(String url, PostHandler rec) throws MalformedURLException, IOException {
 		int maxtries = 5;
 		receiver = rec;
 
@@ -169,7 +169,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public void getThreads(String url, ThreadHandler rec) throws IOException {
+	public synchronized void getThreads(String url, ThreadHandler rec) throws IOException {
 		getPosts(url, new ThreadParser(url, rec));
 	}
 
