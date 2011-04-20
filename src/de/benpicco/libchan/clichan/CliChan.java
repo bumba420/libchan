@@ -23,7 +23,9 @@ public class CliChan {
 		String[] namesToSearch = null;
 		ArrayList<String> namesToWach = null;
 		boolean html = false;
+		boolean archiveThread = true;
 		boolean threadFolders = true;
+		boolean recordStats = false;
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("u", "url", true, "url to process");
@@ -34,6 +36,8 @@ public class CliChan {
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "also archive thread as html");
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
+		cliOptions.addOption("noarchive", false, "Do not download images from the thread");
+		cliOptions.addOption("stats", false, "record poster statistics");
 
 		Option o = new Option("f", "find", true, "Searches the imageborad for users");
 		o.setArgs(Integer.MAX_VALUE);
@@ -67,6 +71,8 @@ public class CliChan {
 			}
 			html = commandLine.hasOption("html");
 			threadFolders = !commandLine.hasOption("nothreadfolders");
+			archiveThread = !commandLine.hasOption("noarchive");
+			recordStats = commandLine.hasOption("stats");
 
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -86,8 +92,8 @@ public class CliChan {
 			return;
 		}
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag, html,
-				namesToWach);
+		ThreadArchiver archiver = new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag,
+				archiveThread, html, recordStats, namesToWach);
 		archiver.saveThread();
 	}
 }

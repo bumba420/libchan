@@ -9,6 +9,7 @@ import de.benpicco.libchan.handler.DownloadImageHandler;
 import de.benpicco.libchan.handler.FollowupThreadHandler;
 import de.benpicco.libchan.handler.NewThreadReceiver;
 import de.benpicco.libchan.handler.PostCountHandler;
+import de.benpicco.libchan.handler.StatisticsHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
 import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
@@ -21,18 +22,23 @@ public class ThreadArchiver implements NewThreadReceiver {
 	final String				followUpTag;
 	final boolean				saveHtml;
 	final boolean				threadFolders;
+	final boolean				archiveThread;
+	final boolean				recordStats;
 	private final ChanManager	manager;
 	private final List<String>	names;
 
 	public ThreadArchiver(String thread, String target, boolean threadFolders, String config, int interval,
-			String followUpTag, boolean saveHtml, List<String> names) {
+			String followUpTag, boolean archiveThread, boolean saveHtml, boolean recordStats, List<String> names) {
 		this.followUpTag = followUpTag != null ? followUpTag.toUpperCase() : null;
 		this.oldThread = thread;
 		this.target = target.endsWith(File.separator) ? target : target + File.separator;
 		this.interval = interval;
 		this.saveHtml = saveHtml;
+		this.recordStats = recordStats;
 		this.names = names;
 		this.threadFolders = threadFolders;
+		this.archiveThread = archiveThread;
+
 		manager = new ChanManager(config);
 	}
 
@@ -65,10 +71,11 @@ public class ThreadArchiver implements NewThreadReceiver {
 				String t = target;
 				if (threadFolders)
 					t += thread.substring(thread.lastIndexOf('/') + 1);
-				System.out.println("Saving pictures from " + thread + " to " + t);
+				System.out.println("Saving items from " + thread + " to " + t);
 
 				List<PostHandler> handler = new ArrayList<PostHandler>();
-				handler.add(new DownloadImageHandler(t));
+				if (archiveThread)
+					handler.add(new DownloadImageHandler(t));
 				handler.add(new PostCountHandler(500));
 				if (saveHtml)
 					handler.add(new ArchiveHtmlHandler(t));
@@ -76,6 +83,8 @@ public class ThreadArchiver implements NewThreadReceiver {
 					handler.add(new FollowupThreadHandler(followUpTag, ThreadArchiver.this));
 				if (names != null)
 					handler.add(new UserNotifyHandler(names));
+				if (recordStats)
+					handler.add(new StatisticsHandler());
 
 				if (interval >= 0)
 					(new ThreadWatcher(thread, interval, new PostArchiver(handler), parser)).run();
