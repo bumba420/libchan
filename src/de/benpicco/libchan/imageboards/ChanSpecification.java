@@ -153,10 +153,10 @@ public class ChanSpecification implements IParseDataReceiver {
 	 *            either the url or the name of the imageboard website
 	 * @return
 	 */
-	public AsyncImageBoardParser getImageBoardParser(String key) {
+	public GenericImageBoardParser getImageBoardParser(String key) {
 		for (Imageboard chan : supported)
 			if (key.startsWith(chan.baseurl) || key.equals(chan.name))
-				return new AsyncImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
+				return new GenericImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
 						boardParser.clone(), threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL);
 		return null;
 	}

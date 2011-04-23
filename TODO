@@ -1,7 +1,10 @@
 Bugs:
  handle newlines properly
+ call finishedparsing() even when in Watching Mode to write stats files
+ keep all watched threads in a list -> no endless loops
 
 Ideas:
+ graphviz
  partitial downloading
  [Pokechan] dashboard (add Chan)
 

@@ -47,7 +47,7 @@ public class FollowupThreadHandler implements PostHandler {
 					String newThreadId = match.group(1);
 					if (newThreadId != null && newThreadId.trim().length() > 0) {
 						int newId = Integer.parseInt(newThreadId);
-						if (!followUps.contains(newId)) {
+						if (!followUps.contains(newId) && newId > post.id) {
 							followUps.add(newId);
 							System.out.println("Detected follow-up thread: " + newThreadId);
 							handler.saveThread(newId);

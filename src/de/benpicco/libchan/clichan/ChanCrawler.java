@@ -1,7 +1,9 @@
 package de.benpicco.libchan.clichan;
 
-import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
+import java.io.IOException;
+
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.IImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 
@@ -25,7 +27,7 @@ public class ChanCrawler {
 
 class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	private final String[]	names;
-	AsyncImageBoardParser	parser	= null;
+	IImageBoardParser		parser	= null;
 	final String			page;
 	ChanManager				manager;
 
@@ -40,7 +42,12 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	public void run() {
 		if (names == null)
 			return;
-		parser.getThreads(page, this);
+		try {
+			parser.getThreads(page, this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -50,12 +57,16 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 				System.out.println(name + ": " + parser.composeUrl(page, post));
 			else if (post.message.toLowerCase().contains(name.toLowerCase()))
 				System.out.println("mentioned " + name + ": " + parser.composeUrl(page, post));
-
 	}
 
 	@Override
 	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
-		parser.getPosts(thread.getUrl(), this);
+		try {
+			parser.getPosts(thread.getUrl(), this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override

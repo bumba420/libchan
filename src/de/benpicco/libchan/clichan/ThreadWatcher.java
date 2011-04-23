@@ -1,5 +1,6 @@
 package de.benpicco.libchan.clichan;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.benpicco.libchan.imageboards.Post;
@@ -45,11 +46,15 @@ public class ThreadWatcher implements PostHandler, Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
+		boolean running = true;
+		while (running) {
 			try {
 				parser.getPosts(url, this);
 				java.lang.Thread.sleep(interval);
 				System.out.println("Refreshing thread…");
+			} catch (FileNotFoundException e) {
+				System.out.println("Thread " + url + " does not exist.");
+				running = false;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

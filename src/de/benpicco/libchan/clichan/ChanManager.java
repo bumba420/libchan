@@ -4,8 +4,8 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
-import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.ChanSpecification;
+import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 
 public class ChanManager {
 
@@ -24,8 +24,8 @@ public class ChanManager {
 
 	}
 
-	public synchronized AsyncImageBoardParser getParser(String url) {
-		AsyncImageBoardParser ret = null;
+	public synchronized GenericImageBoardParser getParser(String url) {
+		GenericImageBoardParser ret = null;
 		for (ChanSpecification chan : chans) {
 			ret = chan.getImageBoardParser(url);
 			if (ret != null)

@@ -25,6 +25,8 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	private Image						currentImage	= null;
 	private Post						firstPost		= null;
 
+	private boolean						async			= true;
+
 	private final String				baseUrl;
 	private final List<Tags>			postStarter;
 	private final List<Tags>			postEnder;
@@ -60,22 +62,32 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public synchronized void getPosts(String url, PostHandler rec) throws MalformedURLException, IOException {
-		int maxtries = 5;
+	public void getPosts(final String url, final PostHandler rec) throws MalformedURLException, IOException {
 		receiver = rec;
 
-		while (maxtries-- > 0) {
-			try {
-				InputStream in = new BufferedInputStream(new URL(url).openStream());
-				parser.parseStream(in, this);
+		final InputStream in = new BufferedInputStream(new URL(url).openStream());
+		Runnable parsing = new Runnable() {
+
+			@Override
+			public void run() {
+				int tries = 5;
+				while (tries-- > 0)
+					try {
+						parser.parseStream(in, GenericImageBoardParser.this);
+						break;
+					} catch (IOException e) {
+						if (tries == 0)
+							System.err.println("Failed downloading " + url + ": " + e);
+					}
 				rec.onPostsParsingDone();
-				return;
-			} catch (IOException e) {
-				;// System.out.println("Unable to read " + url + ", retrying…");
 			}
-		}
-		System.err.println("Failed downloading " + url);
-		rec.onPostsParsingDone();
+		};
+
+		if (async)
+			new java.lang.Thread(parsing).start();
+		else
+			parsing.run();
+
 	}
 
 	@Override
@@ -169,7 +181,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	}
 
 	@Override
-	public synchronized void getThreads(String url, ThreadHandler rec) throws IOException {
+	public void getThreads(String url, ThreadHandler rec) throws IOException {
 		getPosts(url, new ThreadParser(url, rec));
 	}
 
@@ -214,6 +226,10 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 
 	public String getUrl() {
 		return baseUrl;
+	}
+
+	public void setAsync(boolean async) {
+		this.async = async;
 	}
 
 	@Override

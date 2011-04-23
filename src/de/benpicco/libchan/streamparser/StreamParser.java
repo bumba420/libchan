@@ -28,7 +28,7 @@ public class StreamParser implements Cloneable {
 		return new StreamParser(cpyTags);
 	}
 
-	public void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
+	public synchronized void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
 		// for (ParseItem pi : tags)
 		// System.out.println(pi);
 

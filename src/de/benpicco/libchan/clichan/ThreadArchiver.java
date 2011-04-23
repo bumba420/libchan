@@ -1,6 +1,8 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,8 +13,8 @@ import de.benpicco.libchan.handler.NewThreadReceiver;
 import de.benpicco.libchan.handler.PostCountHandler;
 import de.benpicco.libchan.handler.StatisticsHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
-import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.IImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 
 public class ThreadArchiver implements NewThreadReceiver {
@@ -58,7 +60,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 
 			@Override
 			public void run() {
-				AsyncImageBoardParser parser = manager.getParser(oldThread);
+				IImageBoardParser parser = manager.getParser(oldThread);
 				if (parser == null) {
 					System.err.println("URL scheme not supported by any parser");
 					return;
@@ -89,7 +91,14 @@ public class ThreadArchiver implements NewThreadReceiver {
 				if (interval >= 0)
 					(new ThreadWatcher(thread, interval, new PostArchiver(handler), parser)).run();
 				else
-					parser.getPosts(thread, new PostArchiver(handler));
+					try {
+						parser.getPosts(thread, new PostArchiver(handler));
+					} catch (FileNotFoundException e) {
+						System.out.println("Thread " + thread + " does not exist.");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 		}).start();
 	}

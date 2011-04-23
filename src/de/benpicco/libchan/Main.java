@@ -1,8 +1,11 @@
 package de.benpicco.libchan;
 
-import de.benpicco.libchan.imageboards.AsyncImageBoardParser;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
+import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
 import de.benpicco.libchan.interfaces.BoardHandler;
@@ -18,14 +21,22 @@ public class Main {
 
 		String url = "http://boards.4chan.org/soc/res/3548246";
 
-		AsyncImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
+		GenericImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
 
 		if (parser == null) {
 			System.err.println("No parser found");
 			System.exit(-1);
 		}
 
-		parser.getPosts(url, new SimplePostReceiver());
+		try {
+			parser.getPosts(url, new SimplePostReceiver());
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
 
