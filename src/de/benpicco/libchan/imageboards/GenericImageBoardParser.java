@@ -77,7 +77,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 					System.err.println("Failed downloading " + url + ": " + e);
 			}
 			try {
-				java.lang.Thread.sleep(100);
+				java.lang.Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

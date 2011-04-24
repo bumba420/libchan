@@ -1,6 +1,5 @@
 package de.benpicco.libchan.handler;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,6 +20,7 @@ public class ArchiveHtmlHandler implements PostHandler {
 	Writer					writer		= null;
 	String					templateDir	= FileUtil.getJarLocation() + "template" + File.separator;
 	HtmlConverter			converter	= null;
+	int						threadId	= 0;
 
 	public ArchiveHtmlHandler(String target) {
 		targetDir = FileUtil.prepareDir(target);
@@ -38,11 +38,13 @@ public class ArchiveHtmlHandler implements PostHandler {
 
 	@Override
 	public void onAddPost(Post post) {
+		if (post.isFirstPost)
+			threadId = post.id;
 		Post localPost = localisePost(post);
 
 		if (writer == null)
 			try {
-				writer = new BufferedWriter(new FileWriter(targetDir + localPost.id + ".html"));
+				writer = new FileWriter(targetDir + threadId + ".html", !post.isFirstPost);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

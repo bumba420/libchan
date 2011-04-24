@@ -57,6 +57,11 @@ public class FileUtil {
 				file.delete();
 				if (tries <= 0)
 					System.err.println("Failed to save " + url + " as " + filename + " (" + e + ")");
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
 			}
 	}
 
