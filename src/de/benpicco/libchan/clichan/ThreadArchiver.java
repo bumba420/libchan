@@ -29,7 +29,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 	final boolean				recordStats;
 	private final ChanManager	manager;
 	private final List<String>	names;
-	private final List<Integer>	threads;
+	private final List<String>	threads;
 
 	public ThreadArchiver(String thread, String target, boolean threadFolders, String config, int interval,
 			String followUpTag, boolean archiveThread, boolean saveHtml, boolean recordStats, List<String> names) {
@@ -42,7 +42,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 		this.names = names;
 		this.threadFolders = threadFolders;
 		this.archiveThread = archiveThread;
-		threads = new LinkedList<Integer>();
+		threads = new LinkedList<String>();
 
 		manager = new ChanManager(config);
 	}
@@ -59,23 +59,22 @@ public class ThreadArchiver implements NewThreadReceiver {
 	 * original url.
 	 */
 	public void saveThread(final int id) {
-		if (threads.contains(id))
+		final IImageBoardParser parser = manager.getParser(oldThread);
+		if (parser == null) {
+			System.err.println("URL scheme not supported by any parser");
 			return;
-		threads.add(id);
+		}
+
+		final String thread = id > 0 ? parser.composeUrl(oldThread, id) : oldThread;
+
+		if (threads.contains(thread))
+			return;
+		threads.add(thread);
 
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				IImageBoardParser parser = manager.getParser(oldThread);
-				if (parser == null) {
-					System.err.println("URL scheme not supported by any parser");
-					return;
-				}
-
-				String thread = oldThread;
-				if (id > 0)
-					thread = parser.composeUrl(oldThread, id);
 
 				String t = target;
 				if (threadFolders)
