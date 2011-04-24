@@ -3,7 +3,7 @@ package de.benpicco.libchan.clichan;
 import java.io.IOException;
 
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.IImageBoardParser;
+import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 
@@ -27,7 +27,7 @@ public class ChanCrawler {
 
 class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	private final String[]	names;
-	IImageBoardParser		parser	= null;
+	ImageBoardParser		parser	= null;
 	final String			page;
 	ChanManager				manager;
 

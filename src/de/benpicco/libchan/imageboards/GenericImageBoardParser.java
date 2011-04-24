@@ -10,14 +10,14 @@ import java.util.List;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import de.benpicco.libchan.interfaces.BoardHandler;
-import de.benpicco.libchan.interfaces.IImageBoardParser;
+import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Tuple;
 
-public class GenericImageBoardParser implements IImageBoardParser, IParseDataReceiver {
+public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
 
 	private PostHandler					receiver;
 

@@ -4,11 +4,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.IImageBoardParser;
+import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 
 public class ThreadWatcher implements PostHandler, Runnable {
-	private final IImageBoardParser	parser;
+	private final ImageBoardParser	parser;
 	private final int				interval;
 	private final PostHandler		receiver;
 	private final String			url;
@@ -23,7 +23,7 @@ public class ThreadWatcher implements PostHandler, Runnable {
 	 * @param receiver
 	 *            Object to push new posts to
 	 */
-	public ThreadWatcher(String url, int interval, PostHandler receiver, IImageBoardParser parser) {
+	public ThreadWatcher(String url, int interval, PostHandler receiver, ImageBoardParser parser) {
 		this.url = url;
 		this.interval = interval * 1000;
 		this.receiver = receiver;
