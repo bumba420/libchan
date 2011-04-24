@@ -23,8 +23,7 @@ public class ArchiveHtmlHandler implements PostHandler {
 	HtmlConverter			converter	= null;
 
 	public ArchiveHtmlHandler(String target) {
-		targetDir = target.endsWith(File.separator) ? target : target + File.separator;
-		new File(targetDir).mkdir();
+		targetDir = FileUtil.prepareDir(target);
 
 		new File(targetDir + thumbs).mkdir();
 		converter = new HtmlConverter(templateDir);
@@ -43,7 +42,7 @@ public class ArchiveHtmlHandler implements PostHandler {
 
 		if (writer == null)
 			try {
-				writer = new BufferedWriter(new FileWriter(new File(targetDir + localPost.id + ".html")));
+				writer = new BufferedWriter(new FileWriter(targetDir + localPost.id + ".html"));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

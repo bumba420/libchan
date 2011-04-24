@@ -11,8 +11,7 @@ public class DownloadImageHandler implements PostHandler {
 	final String	targetDir;
 
 	public DownloadImageHandler(String target) {
-		targetDir = target.endsWith(File.separator) ? target : target + File.separator;
-		new File(targetDir).mkdir();
+		targetDir = FileUtil.prepareDir(target);
 	}
 
 	@Override

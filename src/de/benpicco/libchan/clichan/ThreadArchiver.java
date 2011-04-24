@@ -97,7 +97,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 				if (names != null)
 					handler.add(new UserNotifyHandler(names));
 				if (recordStats)
-					handler.add(new StatisticsHandler());
+					handler.add(new StatisticsHandler(t));
 
 				if (watcher != null)
 					watcher.run();

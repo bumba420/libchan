@@ -85,6 +85,12 @@ public class FileUtil {
 			regex = "\\/";
 		return filename.replaceAll(regex, replacement);
 	}
+
+	public static String prepareDir(String target) {
+		String dir = target.endsWith(File.separator) ? target : target + File.separator;
+		new File(dir).mkdir();
+		return dir;
+	}
 }
 
 class PathHelper {

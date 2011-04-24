@@ -1,5 +1,8 @@
 package de.benpicco.libchan.handler;
 
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Matcher;
@@ -7,19 +10,27 @@ import java.util.regex.Pattern;
 
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.FileUtil;
 
 public class StatisticsHandler implements PostHandler {
 
 	final HashMap<Integer, Stats>	usermapping;
 	final ArrayList<Stats>			users;
+	final String					dir;
 
-	public StatisticsHandler() {
+	private int						threadId	= 0;
+
+	public StatisticsHandler(String target) {
 		usermapping = new HashMap<Integer, Stats>();
 		users = new ArrayList<Stats>();
+		dir = FileUtil.prepareDir(target);
 	}
 
 	@Override
 	public void onAddPost(Post post) {
+		if (post.isFirstPost)
+			threadId = post.id;
+
 		boolean found = false;
 		for (Stats s : users)
 			if (s.addPost(post)) {
@@ -32,9 +43,20 @@ public class StatisticsHandler implements PostHandler {
 
 	@Override
 	public void onPostsParsingDone() {
-		System.out.println(Stats.getHeader());
-		for (Stats s : users)
-			System.out.println(s);
+		try {
+			FileWriter writer = new FileWriter(dir + threadId + ".csv");
+			writer.write(Stats.getHeader());
+			for (Stats s : users)
+				writer.write(s.toString());
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }
 
@@ -94,11 +116,11 @@ class Stats {
 	}
 
 	public static String getHeader() {
-		return "User\tPosts\twith Images\tImages\tavg. Text\tresponded\tresponses";
+		return "User\tPosts\twith Images\tImages\tavg. Text\tresponded\tresponses\n";
 	}
 
 	public String toString() {
 		return user + '\t' + posts + '\t' + posts_with_images + '\t' + images + '\t' + (text / posts) + '\t'
-				+ responded + '\t' + responses;
+				+ responded + '\t' + responses + '\n';
 	}
 }
