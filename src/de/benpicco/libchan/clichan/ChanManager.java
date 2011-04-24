@@ -6,6 +6,7 @@ import java.util.List;
 
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
+import de.benpicco.libchan.imageboards.Imageboard;
 
 public class ChanManager {
 
@@ -32,5 +33,12 @@ public class ChanManager {
 				break;
 		}
 		return ret;
+	}
+
+	public List<Imageboard> getSupported() {
+		LinkedList<Imageboard> boards = new LinkedList<Imageboard>();
+		for (ChanSpecification chan : chans)
+			boards.addAll(chan.getSupported());
+		return boards;
 	}
 }

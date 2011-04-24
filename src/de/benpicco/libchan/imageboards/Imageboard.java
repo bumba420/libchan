@@ -5,4 +5,8 @@ public class Imageboard {
 	public String	baseurl;
 	public String	description;
 	public String	icon;
+
+	public String toString() {
+		return name + " - " + description + "\n\t" + baseurl;
+	}
 }

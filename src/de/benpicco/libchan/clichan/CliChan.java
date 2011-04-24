@@ -11,6 +11,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
 
 public class CliChan {
@@ -41,6 +42,7 @@ public class CliChan {
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
 		cliOptions.addOption("noarchive", false, "Do not download images from the thread");
 		cliOptions.addOption("stats", false, "record poster statistics");
+		cliOptions.addOption("list", false, "list all supported imageboards");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -78,6 +80,13 @@ public class CliChan {
 			threadFolders = !commandLine.hasOption("nothreadfolders");
 			archiveThread = !commandLine.hasOption("noarchive");
 			recordStats = commandLine.hasOption("stats");
+
+			if (commandLine.hasOption("list")) {
+				ChanManager manager = new ChanManager(chancfg);
+				for (Imageboard board : manager.getSupported())
+					System.out.println(board);
+				return;
+			}
 
 		} catch (ParseException e) {
 			e.printStackTrace();
