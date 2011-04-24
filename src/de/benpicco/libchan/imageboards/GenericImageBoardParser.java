@@ -68,7 +68,7 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 	private synchronized void getAsyncPosts(final InputStream in, final String url, final PostHandler rec) {
 		receiver = rec;
 		int tries = 5;
-		while (tries-- > 0)
+		while (tries-- > 0) {
 			try {
 				parser.parseStream(in, GenericImageBoardParser.this);
 				break;
@@ -76,6 +76,12 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 				if (tries == 0)
 					System.err.println("Failed downloading " + url + ": " + e);
 			}
+			try {
+				java.lang.Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		rec.onPostsParsingDone();
 	}
 
@@ -177,7 +183,11 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			currentPost.cleanup();
 			for (Image img : currentPost.images) { // XXX quick and dirty hack
 													// to get unique filenames
+				if (img.filename == null)
+					continue;
 				int dot = img.filename.lastIndexOf('.');
+				if (dot < 0)
+					dot = img.filename.length();
 				img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
 			}
 			receiver.onAddPost(currentPost);
