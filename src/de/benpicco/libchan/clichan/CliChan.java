@@ -30,21 +30,24 @@ public class CliChan {
 		boolean recordStats = false;
 
 		final Options cliOptions = new Options();
-		cliOptions.addOption("u", "url", true, "url to process");
+		cliOptions.addOption("u", "url", true,
+				"url to process, may be a thread or a board in when the --find option is used");
 		cliOptions.addOption("o", "output", true, "target directory");
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
 		cliOptions.addOption("v", "version", false, "show version");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
-		cliOptions.addOption("html", false, "also archive thread as html");
+		cliOptions.addOption("html", false, "archive thread as html");
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
 		cliOptions.addOption("noarchive", false, "Do not download images from the thread");
 		cliOptions.addOption("stats", false, "record poster statistics");
 
-		Option o = new Option("f", "find", true, "Searches the imageborad for users");
+		Option o = new Option("f", "find", true,
+				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
-		o = new Option("n", "notify", true, "show a notification when the following users post");
+		o = new Option("n", "notify", true,
+				"show a notification for the following users (uses notify-send on Linux and growl on Windows and OS X (untested))");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
