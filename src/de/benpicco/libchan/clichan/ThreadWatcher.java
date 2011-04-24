@@ -9,10 +9,9 @@ import de.benpicco.libchan.interfaces.PostHandler;
 
 public class ThreadWatcher implements PostHandler, Runnable {
 	private final IImageBoardParser	parser;
-	private final String			url;
 	private final int				interval;
 	private final PostHandler		receiver;
-
+	private final String			url;
 	int								lastId	= 0;
 
 	/**

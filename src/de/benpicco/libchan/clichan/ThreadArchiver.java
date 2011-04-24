@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.benpicco.libchan.handler.ArchiveHtmlHandler;
@@ -28,6 +29,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 	final boolean				recordStats;
 	private final ChanManager	manager;
 	private final List<String>	names;
+	private final List<Integer>	threads;
 
 	public ThreadArchiver(String thread, String target, boolean threadFolders, String config, int interval,
 			String followUpTag, boolean archiveThread, boolean saveHtml, boolean recordStats, List<String> names) {
@@ -40,6 +42,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 		this.names = names;
 		this.threadFolders = threadFolders;
 		this.archiveThread = archiveThread;
+		threads = new LinkedList<Integer>();
 
 		manager = new ChanManager(config);
 	}
@@ -56,6 +59,10 @@ public class ThreadArchiver implements NewThreadReceiver {
 	 * original url.
 	 */
 	public void saveThread(final int id) {
+		if (threads.contains(id))
+			return;
+		threads.add(id);
+
 		new Thread(new Runnable() {
 
 			@Override
@@ -76,6 +83,11 @@ public class ThreadArchiver implements NewThreadReceiver {
 				System.out.println("Saving items from " + thread + " to " + t);
 
 				List<PostHandler> handler = new ArrayList<PostHandler>();
+
+				ThreadWatcher watcher = null;
+				if (interval >= 0)
+					watcher = new ThreadWatcher(thread, interval, new PostArchiver(handler), parser);
+
 				if (archiveThread)
 					handler.add(new DownloadImageHandler(t));
 				handler.add(new PostCountHandler(500));
@@ -88,8 +100,8 @@ public class ThreadArchiver implements NewThreadReceiver {
 				if (recordStats)
 					handler.add(new StatisticsHandler());
 
-				if (interval >= 0)
-					(new ThreadWatcher(thread, interval, new PostArchiver(handler), parser)).run();
+				if (watcher != null)
+					watcher.run();
 				else
 					try {
 						parser.getPosts(thread, new PostArchiver(handler));
