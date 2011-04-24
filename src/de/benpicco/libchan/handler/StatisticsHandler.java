@@ -19,6 +19,7 @@ public class StatisticsHandler implements PostHandler {
 	final String					dir;
 
 	private int						threadId	= 0;
+	private FileWriter				graph		= null;
 
 	public StatisticsHandler(String target) {
 		usermapping = new HashMap<Integer, Stats>();
@@ -28,17 +29,26 @@ public class StatisticsHandler implements PostHandler {
 
 	@Override
 	public void onAddPost(Post post) {
-		if (post.isFirstPost)
+		if (post.isFirstPost) {
 			threadId = post.id;
+			try {
+				graph = new FileWriter(dir + threadId + ".gv");
+				graph.write("digraph " + threadId + " {\n");
+				graph.write("\tnode [color=lightblue2, style=filled];\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		boolean found = false;
 		for (Stats s : users)
-			if (s.addPost(post)) {
+			if (s.addPost(post, graph)) {
 				found = true;
 				break;
 			}
 		if (!found)
-			users.add(new Stats(post, usermapping));
+			users.add(new Stats(post, usermapping, graph));
 	}
 
 	@Override
@@ -56,7 +66,15 @@ public class StatisticsHandler implements PostHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		if (graph != null) {
+			graph.append("}");
+			graph.close();
+		}
 	}
 }
 
@@ -72,14 +90,14 @@ class Stats {
 	private final Pattern					responsePattern;
 	private final HashMap<Integer, Stats>	usermapping;
 
-	public Stats(Post post, HashMap<Integer, Stats> usermapping) {
+	public Stats(Post post, HashMap<Integer, Stats> usermapping, FileWriter graph) {
 		this.user = post.user;
 		this.usermapping = usermapping;
 		responsePattern = Pattern.compile(">>([0-9]+)");
-		addPost(post);
+		addPost(post, graph);
 	}
 
-	public boolean addPost(Post post) {
+	public boolean addPost(Post post, FileWriter graph) {
 		if (!post.user.equals(user))
 			return false;
 
@@ -99,13 +117,22 @@ class Stats {
 			} catch (Exception e) {
 				continue;
 			}
-			if (lastId != id)
-				responded++;
+			if (lastId == id)
+				continue;
 			lastId = id;
+			responded++;
 
 			Stats target = usermapping.get(id);
-			if (target != null)
+			if (target != null) {
+				try {
+					graph.append("\t\"" + post.user + "\"" + " -> \"" + target.user + "\";\n");
+					graph.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				target.responed();
+			}
 		}
 
 		return true;
