@@ -55,11 +55,8 @@ public class FileUtil {
 				break;
 			} catch (Exception e) {
 				file.delete();
-				System.err.println("Failed to save " + url + " as " + filename + " (" + e + ")");
-				if (tries > 0)
-					System.out.println("retrying…");
-				else
-					System.err.println("…giving up on " + url + " (" + filename + ")");
+				if (tries <= 0)
+					System.err.println("Failed to save " + url + " as " + filename + " (" + e + ")");
 			}
 	}
 

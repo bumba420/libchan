@@ -14,6 +14,8 @@ import org.apache.commons.cli.ParseException;
 import de.benpicco.libchan.util.FileUtil;
 
 public class CliChan {
+	public final static String	VERSION	= "0.2";
+
 	public static void main(String[] args) {
 		String url = null;
 		String out = ".";
@@ -66,7 +68,7 @@ public class CliChan {
 					namesToWach.add(name.toLowerCase());
 			}
 			if (commandLine.hasOption('v')) {
-				System.out.println("cliChan using libChan");
+				System.out.println("cliChan " + VERSION + " using libChan");
 				System.exit(0);
 			}
 			html = commandLine.hasOption("html");
@@ -83,6 +85,10 @@ public class CliChan {
 			new HelpFormatter().printHelp("You have to at least specify a URL using the -u option.", cliOptions);
 			return;
 		}
+
+		int anchor = url.indexOf('#');
+		if (anchor > 0)
+			url = url.substring(0, anchor);
 
 		if (!chancfg.endsWith(File.separator))
 			chancfg += File.separator;

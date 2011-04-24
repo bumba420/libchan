@@ -15,11 +15,7 @@ import de.benpicco.libchan.interfaces.ThreadHandler;
 public class Main {
 	public static void main(final String[] args) {
 
-		// ChanSpecification spec = new ChanSpecification("chans/4chan.chan");
-
-		// String url = "http://krautchan.net/b/thread-2855681.html";
-
-		String url = "http://boards.4chan.org/soc/";
+		String url = "http://boards.4chan.org/soc/res/3695630";
 
 		GenericImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
 
@@ -29,7 +25,7 @@ public class Main {
 		}
 
 		try {
-			parser.getThreads(url, new SimplePostReceiver());
+			parser.getPosts(url, new SimplePostReceiver());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
