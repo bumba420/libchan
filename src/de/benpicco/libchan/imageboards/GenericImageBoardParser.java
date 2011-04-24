@@ -70,6 +70,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		int tries = 5;
 		while (tries-- > 0) {
 			try {
+				parser.reset();
 				parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {

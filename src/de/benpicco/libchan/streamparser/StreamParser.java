@@ -28,6 +28,11 @@ public class StreamParser implements Cloneable {
 		return new StreamParser(cpyTags);
 	}
 
+	public void reset() {
+		for (ParseItem item : tags)
+			item.reset();
+	}
+
 	public synchronized void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
 		// for (ParseItem pi : tags)
 		// System.out.println(pi);
@@ -119,13 +124,17 @@ class ParseItem {
 		if (count >= pattern.length) {
 			items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
 
-			count = 0;
-			lastItem = 0;
-			item = 0;
-			itemBuilder = null;
+			reset();
 			return true;
 		}
 		return false;
+	}
+
+	void reset() {
+		count = 0;
+		lastItem = 0;
+		item = 0;
+		itemBuilder = null;
 	}
 
 	public String toString() {
