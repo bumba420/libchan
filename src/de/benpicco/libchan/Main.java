@@ -19,7 +19,7 @@ public class Main {
 
 		// String url = "http://krautchan.net/b/thread-2855681.html";
 
-		String url = "http://boards.4chan.org/soc/res/3548246";
+		String url = "http://boards.4chan.org/soc/";
 
 		GenericImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser("4chan");
 
@@ -29,7 +29,7 @@ public class Main {
 		}
 
 		try {
-			parser.getPosts(url, new SimplePostReceiver());
+			parser.getThreads(url, new SimplePostReceiver());
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

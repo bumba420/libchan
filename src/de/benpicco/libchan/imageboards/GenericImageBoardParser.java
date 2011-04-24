@@ -61,25 +61,32 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 		this.threadMark = threadMark;
 	}
 
+	/**
+	 * This function is used to avoid concurrent modification of the receiver
+	 * object
+	 */
+	private synchronized void getAsyncPosts(final InputStream in, final String url, final PostHandler rec) {
+		receiver = rec;
+		int tries = 5;
+		while (tries-- > 0)
+			try {
+				parser.parseStream(in, GenericImageBoardParser.this);
+				break;
+			} catch (IOException e) {
+				if (tries == 0)
+					System.err.println("Failed downloading " + url + ": " + e);
+			}
+		rec.onPostsParsingDone();
+	}
+
 	@Override
 	public void getPosts(final String url, final PostHandler rec) throws MalformedURLException, IOException {
-		receiver = rec;
 
 		final InputStream in = new BufferedInputStream(new URL(url).openStream());
 		Runnable parsing = new Runnable() {
-
 			@Override
 			public void run() {
-				int tries = 5;
-				while (tries-- > 0)
-					try {
-						parser.parseStream(in, GenericImageBoardParser.this);
-						break;
-					} catch (IOException e) {
-						if (tries == 0)
-							System.err.println("Failed downloading " + url + ": " + e);
-					}
-				rec.onPostsParsingDone();
+				getAsyncPosts(in, url, rec);
 			}
 		};
 
@@ -87,7 +94,6 @@ public class GenericImageBoardParser implements IImageBoardParser, IParseDataRec
 			new java.lang.Thread(parsing).start();
 		else
 			parsing.run();
-
 	}
 
 	@Override
