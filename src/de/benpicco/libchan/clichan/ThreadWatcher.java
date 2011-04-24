@@ -40,7 +40,7 @@ public class ThreadWatcher implements PostHandler, Runnable {
 
 	@Override
 	public void onPostsParsingDone() {
-
+		receiver.onPostsParsingDone();
 	}
 
 	@Override
