@@ -81,14 +81,16 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			} catch (IOException e) {
 				if (tries == 0)
 					System.err.println("Failed downloading " + url + ": " + e);
-				else
+				else {
+					try {
+						java.lang.Thread.sleep(500);
+					} catch (InterruptedException e2) {
+						e2.printStackTrace();
+					}
 					in = new BufferedInputStream(new URL(url).openStream());
+				}
 			}
-			try {
-				java.lang.Thread.sleep(500);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+
 		}
 		rec.onPostsParsingDone();
 	}
