@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
+import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Tuple;
 
 public class ChanSpecification implements IParseDataReceiver {
@@ -38,7 +39,7 @@ public class ChanSpecification implements IParseDataReceiver {
 		try {
 			readConfig(file);
 		} catch (FileNotFoundException e) {
-			System.err.println("File " + file + " does not exist.");
+			Logger.get().error("File " + file + " does not exist.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -75,7 +76,7 @@ public class ChanSpecification implements IParseDataReceiver {
 		else if (data != null)
 			value = data.trim();
 
-		// System.out.println(key + " - " + value);
+		// Logger.get().println(key + " - " + value);
 
 		switch (key) {
 		case SITE_NAME:
@@ -134,10 +135,10 @@ public class ChanSpecification implements IParseDataReceiver {
 			break;
 		default:
 			if (value == null) {
-				System.err.println("Syntax error in " + file + ": " + key + " does have invalid value " + data);
+				Logger.get().error("Syntax error in " + file + ": " + key + " does have invalid value " + data);
 				return;
 			} else
-				System.out.println("Warning: ununsed option " + key);
+				Logger.get().println("Warning: ununsed option " + key);
 		}
 	}
 

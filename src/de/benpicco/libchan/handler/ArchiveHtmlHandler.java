@@ -12,6 +12,7 @@ import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
+import de.benpicco.libchan.util.Logger;
 
 public class ArchiveHtmlHandler implements PostHandler {
 
@@ -32,7 +33,7 @@ public class ArchiveHtmlHandler implements PostHandler {
 		try {
 			FileUtil.copyFile(new File(templateDir + "style.css"), new File(targetDir + "style.css"));
 		} catch (IOException e) {
-			System.err.println("Unable to copy " + templateDir + "style.css");
+			Logger.get().error("Unable to copy " + templateDir + "style.css");
 		}
 	}
 

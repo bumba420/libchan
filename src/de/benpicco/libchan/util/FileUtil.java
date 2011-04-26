@@ -46,17 +46,17 @@ public class FileUtil {
 		while (--tries > 0)
 			try {
 				if (file.exists()) {
-					System.out.println(filename + " already exists, skipping.");
+					Logger.get().println(filename + " already exists, skipping.");
 					break;
 				}
 				downloadFile(url, filename);
-				System.out.println("Saved " + url + " as " + filename);
+				Logger.get().println("Saved " + url + " as " + filename);
 
 				break;
 			} catch (Exception e) {
 				file.delete();
 				if (tries <= 0)
-					System.err.println("Failed to save " + url + " as " + filename + " (" + e + ")");
+					Logger.get().error("Failed to save " + url + " as " + filename + " (" + e + ")");
 				else
 					try {
 						Thread.sleep(250);

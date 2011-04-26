@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
+import de.benpicco.libchan.util.Logger;
 
 public class UserNotifyHandler implements PostHandler {
 
@@ -21,7 +22,7 @@ public class UserNotifyHandler implements PostHandler {
 	@Override
 	public void onAddPost(Post post) {
 		if (names.contains(post.user.toLowerCase())) {
-			System.out.println("New post from " + post.user);
+			Logger.get().println("New post from " + post.user);
 
 			String tempfile = "";
 			if (post.images.size() > 0) {
@@ -31,7 +32,7 @@ public class UserNotifyHandler implements PostHandler {
 							+ StringUtils.substringAfterLast(url, "/");
 					FileUtil.downloadFile(url, tempfile);
 				} catch (IOException e1) {
-					System.err.println("Failed fetching thumbnail: " + e1);
+					Logger.get().error("Failed fetching thumbnail: " + e1);
 				}
 			}
 
@@ -48,14 +49,14 @@ public class UserNotifyHandler implements PostHandler {
 			else if (uname.contains("mac"))
 				cmd = cmd_osx;
 			else {
-				System.out.println(uname + " notification not supported");
+				Logger.get().println(uname + " notification not supported");
 				return;
 			}
 
 			try {
 				Runtime.getRuntime().exec(cmd);
 			} catch (IOException e) {
-				System.err.println("can't display notification");
+				Logger.get().error("can't display notification");
 			}
 		}
 	}

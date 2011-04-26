@@ -2,6 +2,7 @@ package de.benpicco.libchan.handler;
 
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class PostCountHandler implements PostHandler {
 	final int	treshold;
@@ -14,11 +15,11 @@ public class PostCountHandler implements PostHandler {
 	@Override
 	public void onAddPost(Post post) {
 		if (++count > treshold)
-			System.out.println("Thread has " + count + " replies.");
+			Logger.get().println("Thread has " + count + " replies.");
 	}
 
 	@Override
 	public void onPostsParsingDone() {
-		System.out.println("Thread with " + count + " posts received.");
+		Logger.get().println("Thread with " + count + " posts received.");
 	}
 }

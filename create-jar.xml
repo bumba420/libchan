@@ -7,7 +7,7 @@
 
         <jar destfile="dist/cliChan.jar" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="de.benpicco.libchan.clichan.CliChan"/>
+                <attribute name="Main-Class" value="de.benpicco.clichan.CliChan"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="bin"/>

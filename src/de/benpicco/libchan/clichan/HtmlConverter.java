@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.util.Logger;
 
 public class HtmlConverter {
 	final String	imgTemplate;
@@ -43,11 +44,11 @@ public class HtmlConverter {
 			thread = fileToString(templatedir + "thread-header.html");
 		} catch (IOException e) {
 			if (img == null)
-				System.err.println("Can not read " + templatedir + "image.html");
+				Logger.get().error("Can not read " + templatedir + "image.html");
 			else if (post == null)
-				System.err.println("Can not read " + templatedir + "post.html");
+				Logger.get().error("Can not read " + templatedir + "post.html");
 			else
-				System.err.println("Can not read " + templatedir + "thread-header.html");
+				Logger.get().error("Can not read " + templatedir + "thread-header.html");
 		}
 
 		imgTemplate = img;

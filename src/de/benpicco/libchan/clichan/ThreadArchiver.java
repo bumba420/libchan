@@ -17,6 +17,7 @@ import de.benpicco.libchan.handler.UserNotifyHandler;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class ThreadArchiver implements NewThreadReceiver {
 	final String				target;
@@ -61,7 +62,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 	public void saveThread(final int id) {
 		final ImageBoardParser parser = manager.getParser(oldThread);
 		if (parser == null) {
-			System.err.println("URL scheme not supported by any parser");
+			Logger.get().error("URL scheme not supported by any parser");
 			return;
 		}
 
@@ -79,7 +80,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 				String t = target;
 				if (threadFolders)
 					t += thread.substring(thread.lastIndexOf('/') + 1);
-				System.out.println("Saving items from " + thread + " to " + t);
+				Logger.get().println("Saving items from " + thread + " to " + t);
 
 				List<PostHandler> handler = new ArrayList<PostHandler>();
 
@@ -105,7 +106,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 					try {
 						parser.getPosts(thread, new PostArchiver(handler));
 					} catch (FileNotFoundException e) {
-						System.out.println("Thread " + thread + " does not exist.");
+						Logger.get().println("Thread " + thread + " does not exist.");
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

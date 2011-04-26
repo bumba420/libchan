@@ -6,6 +6,7 @@ import java.io.IOException;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class ThreadWatcher implements PostHandler, Runnable {
 	private final ImageBoardParser	parser;
@@ -50,9 +51,9 @@ public class ThreadWatcher implements PostHandler, Runnable {
 			try {
 				parser.getPosts(url, this);
 				java.lang.Thread.sleep(interval);
-				System.out.println("Refreshing thread…");
+				Logger.get().println("Refreshing " + url);
 			} catch (FileNotFoundException e) {
-				System.out.println("Thread " + url + " does not exist.");
+				Logger.get().println("Thread " + url + " does not exist.");
 				running = false;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

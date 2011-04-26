@@ -7,6 +7,7 @@ import java.util.List;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Imageboard;
+import de.benpicco.libchan.util.Logger;
 
 public class ChanManager {
 
@@ -21,7 +22,7 @@ public class ChanManager {
 				if (file.endsWith(".chan"))
 					chans.add(new ChanSpecification(configDirectory + file));
 		} else
-			System.err.println(configDirectory + " does not contain any imageboard specifications");
+			Logger.get().error(configDirectory + " does not contain any imageboard specifications");
 
 	}
 

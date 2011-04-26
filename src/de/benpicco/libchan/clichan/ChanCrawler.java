@@ -6,17 +6,18 @@ import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
-		System.out.print("Searching " + board + " for ");
+		Logger.get().print("Searching " + board + " for ");
 		for (int i = 0; i < names.length; ++i)
-			System.out.print((i > 0 ? ", " : "") + names[i]);
-		System.out.println();
+			Logger.get().print((i > 0 ? ", " : "") + names[i]);
+		Logger.get().println("");
 
 		ChanManager manager = new ChanManager(config);
 		if (manager.getParser(board) == null) {
-			System.err.println("No .chan specification for " + board + " present.");
+			Logger.get().error("No .chan specification for " + board + " present.");
 			return;
 		}
 
@@ -54,9 +55,9 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	public void onAddPost(Post post) {
 		for (String name : names)
 			if (post.user.toLowerCase().contains(name.toLowerCase()))
-				System.out.println(name + ": " + parser.composeUrl(page, post));
+				Logger.get().println(name + ": " + parser.composeUrl(page, post));
 			else if (post.message.toLowerCase().contains(name.toLowerCase()))
-				System.out.println("mentioned " + name + ": " + parser.composeUrl(page, post));
+				Logger.get().println("mentioned " + name + ": " + parser.composeUrl(page, post));
 	}
 
 	@Override

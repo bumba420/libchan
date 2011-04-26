@@ -15,6 +15,7 @@ import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.streamparser.StreamParser;
+import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Tuple;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
@@ -80,7 +81,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				break;
 			} catch (IOException e) {
 				if (tries == 0)
-					System.err.println("Failed downloading " + url + ": " + e);
+					Logger.get().error("Failed downloading " + url + ": " + e);
 				else {
 					try {
 						java.lang.Thread.sleep(500);
@@ -122,7 +123,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	@Override
 	public void parsedString(Tags tag, String data) {
-		// System.out.println(tag + " - " + data);
+		// Logger.get().println(tag + " - " + data);
 
 		if (currentPost == null)
 			if (postStarter.contains(tag))
@@ -185,7 +186,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		case NULL:
 			break;
 		default:
-			System.err.println("Warning: unhandled case " + tag + ": " + data);
+			Logger.get().error("Warning: unhandled case " + tag + ": " + data);
 		}
 
 		if (currentImage != null && imageEnder.contains(tag)) {

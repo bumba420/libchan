@@ -1,4 +1,4 @@
-package de.benpicco.libchan.clichan;
+package de.benpicco.clichan;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,8 +11,13 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.benpicco.libchan.clichan.ChanCrawler;
+import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
+import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.LoggerBackend;
 
 public class CliChan {
 	public final static String	VERSION	= "0.2";
@@ -29,6 +34,24 @@ public class CliChan {
 		boolean archiveThread = true;
 		boolean threadFolders = true;
 		boolean recordStats = false;
+
+		Logger.initialise(new LoggerBackend() {
+
+			@Override
+			public void print(String msg) {
+				System.out.print(msg);
+			}
+
+			@Override
+			public void error(String msg) {
+				System.err.println(msg);
+			}
+
+			@Override
+			public void println(String msg) {
+				System.out.println(msg);
+			}
+		});
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("u", "url", true,

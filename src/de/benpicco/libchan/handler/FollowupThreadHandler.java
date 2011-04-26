@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class FollowupThreadHandler implements PostHandler {
 	private final String			followUpTag;
@@ -49,10 +50,10 @@ public class FollowupThreadHandler implements PostHandler {
 						int newId = Integer.parseInt(newThreadId);
 						if (!followUps.contains(newId)) {
 							followUps.add(newId);
-							System.out.println("Detected follow-up thread: " + newThreadId);
+							Logger.get().println("Detected follow-up thread: " + newThreadId);
 							handler.saveThread(newId);
 						} else
-							System.out.println("follow-up thread " + newId + " has already been detected.");
+							Logger.get().println("follow-up thread " + newId + " has already been detected.");
 					}
 				}
 			}
