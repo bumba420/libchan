@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="create_run_jar" name="Create Runnable Jar for cliChan">
-    <target name="create_run_jar">
+
+<target name="init">
+	<mkdir dir="bin"/>
+	<mkdir dir="dist"/>
+</target>
+
+<target name="compile" depends="init">
+	<javac srcdir="src" destdir="bin" includeantruntime="false">
+		<classpath>
+			<fileset dir="lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</classpath>
+	</javac>
+</target>
+
+<target name="create_run_jar" depends="compile">
 	<copy todir="dist/chans"><fileset dir="chans"/>	</copy>
 	<copy todir="dist/template"><fileset dir="template"/></copy>
 	<copy todir="dist/"><fileset dir="scripts"/></copy>
