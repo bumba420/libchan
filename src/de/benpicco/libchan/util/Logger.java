@@ -1,33 +1,37 @@
 package de.benpicco.libchan.util;
 
-public class Logger implements LoggerBackend {
-	private static Logger	logger	= null;
-	private LoggerBackend	backend;
+import java.util.ArrayList;
 
-	Logger(LoggerBackend backend) {
-		this.backend = backend;
+public class Logger implements LoggerBackend {
+	private static Logger				logger	= null;
+	private ArrayList<LoggerBackend>	backends;
+
+	Logger() {
+		backends = new ArrayList<LoggerBackend>();
 	}
 
-	public static void initialise(LoggerBackend backend) {
-		logger = new Logger(backend);
+	public static void add(LoggerBackend backend) {
+		if (logger == null)
+			logger = new Logger();
+		logger.backends.add(backend);
 	}
 
 	public static LoggerBackend get() {
 		if (logger == null)
-			logger = new Logger(null);
+			logger = new Logger();
 		return logger;
 	}
 
 	@Override
 	public void print(String msg) {
-		if (backend != null)
+		for (LoggerBackend backend : backends)
 			backend.print(msg);
 	}
 
 	@Override
 	public void error(String msg) {
-		if (backend != null)
-			backend.print(msg);
+		for (LoggerBackend backend : backends)
+			backend.error(msg);
 	}
 
 	@Override

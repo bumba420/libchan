@@ -17,7 +17,6 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
-import de.benpicco.libchan.util.LoggerBackend;
 
 public class CliChan {
 	public final static String	VERSION	= "0.2";
@@ -35,23 +34,7 @@ public class CliChan {
 		boolean threadFolders = true;
 		boolean recordStats = false;
 
-		Logger.initialise(new LoggerBackend() {
-
-			@Override
-			public void print(String msg) {
-				System.out.print(msg);
-			}
-
-			@Override
-			public void error(String msg) {
-				System.err.println(msg);
-			}
-
-			@Override
-			public void println(String msg) {
-				System.out.println(msg);
-			}
-		});
+		Logger.add(new StdLogger());
 
 		final Options cliOptions = new Options();
 		cliOptions.addOption("u", "url", true,

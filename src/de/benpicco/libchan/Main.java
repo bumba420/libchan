@@ -3,6 +3,7 @@ package de.benpicco.libchan;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import de.benpicco.clichan.StdLogger;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
@@ -11,9 +12,11 @@ import de.benpicco.libchan.imageboards.Thread;
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
+import de.benpicco.libchan.util.Logger;
 
 public class Main {
 	public static void main(final String[] args) {
+		Logger.add(new StdLogger());
 
 		String url = "http://boards.4chan.org/soc/res/3695630";
 

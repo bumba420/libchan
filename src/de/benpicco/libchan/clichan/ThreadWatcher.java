@@ -56,8 +56,8 @@ public class ThreadWatcher implements PostHandler, Runnable {
 				Logger.get().println("Thread " + url + " does not exist.");
 				running = false;
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger.get().error("Error downloading " + url + ": " + e.getMessage());
+				break;
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
