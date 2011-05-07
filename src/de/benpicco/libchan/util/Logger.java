@@ -36,7 +36,8 @@ public class Logger implements LoggerBackend {
 
 	@Override
 	public void println(String msg) {
-		print(msg + "\n");
+		for (LoggerBackend backend : backends)
+			backend.println(msg);
 	}
 
 }

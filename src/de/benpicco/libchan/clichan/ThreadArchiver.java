@@ -19,7 +19,7 @@ import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
 
-public class ThreadArchiver implements NewThreadReceiver {
+public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	final String				target;
 	final int					interval;
 	final String				oldThread;
@@ -62,7 +62,7 @@ public class ThreadArchiver implements NewThreadReceiver {
 	public void saveThread(final int id) {
 		final ImageBoardParser parser = manager.getParser(oldThread);
 		if (parser == null) {
-			Logger.get().error("URL scheme not supported by any parser");
+			Logger.get().error("URL \"" + oldThread + "\" not supported by any parser");
 			return;
 		}
 
@@ -133,5 +133,10 @@ public class ThreadArchiver implements NewThreadReceiver {
 			for (PostHandler h : handler)
 				h.onPostsParsingDone();
 		}
+	}
+
+	@Override
+	public void run() {
+		saveThread();
 	}
 }

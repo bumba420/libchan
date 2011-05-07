@@ -22,7 +22,7 @@ public class CliChan {
 	public final static String	VERSION	= "0.2";
 
 	public static void main(String[] args) {
-		String url = null;
+		String[] urls = null;
 		String out = ".";
 		String followUpTag = "NEW THREAD";
 		int interval = -1;
@@ -37,8 +37,6 @@ public class CliChan {
 		Logger.add(new StdLogger());
 
 		final Options cliOptions = new Options();
-		cliOptions.addOption("u", "url", true,
-				"url to process, may be a thread or a board in when the --find option is used");
 		cliOptions.addOption("o", "output", true, "target directory");
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
@@ -54,8 +52,13 @@ public class CliChan {
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
+
 		o = new Option("n", "notify", true,
 				"show a notification for the following users (uses notify-send on Linux and growl on Windows and OS X (untested))");
+		o.setArgs(Integer.MAX_VALUE);
+		cliOptions.addOption(o);
+
+		o = new Option("u", "url", true, "url to process, may be a thread or a board in when the --find option is used");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
@@ -63,7 +66,7 @@ public class CliChan {
 		try {
 			CommandLine commandLine = cliParser.parse(cliOptions, args);
 			if (commandLine.hasOption('u'))
-				url = commandLine.getOptionValue('u');
+				urls = commandLine.getOptionValues('u');
 			if (commandLine.hasOption('o'))
 				out = commandLine.getOptionValue('o');
 			if (commandLine.hasOption('i'))
@@ -98,26 +101,25 @@ public class CliChan {
 			e.printStackTrace();
 		}
 
-		if (url == null) {
+		if (urls == null) {
 			System.err.println("No url specified");
-			new HelpFormatter().printHelp("You have to at least specify a URL using the -u option.", cliOptions);
+			new HelpFormatter().printHelp("You have to specify at least one URL using the -u option.", cliOptions);
 			return;
 		}
-
-		int anchor = url.indexOf('#');
-		if (anchor > 0)
-			url = url.substring(0, anchor);
 
 		if (!chancfg.endsWith(File.separator))
 			chancfg += File.separator;
 
-		if (namesToSearch != null) {
-			ChanCrawler.lookFor(namesToSearch, url, 0, 15, chancfg);
-			return;
-		}
+		for (String url : urls) {
+			int anchor = url.indexOf('#');
+			if (anchor > 0)
+				url = url.substring(0, anchor);
 
-		ThreadArchiver archiver = new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag,
-				archiveThread, html, recordStats, namesToWach);
-		archiver.saveThread();
+			if (namesToSearch != null)
+				ChanCrawler.lookFor(namesToSearch, url, 0, 15, chancfg);
+			else
+				new Thread(new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag, archiveThread,
+						html, recordStats, namesToWach)).start();
+		}
 	}
 }
