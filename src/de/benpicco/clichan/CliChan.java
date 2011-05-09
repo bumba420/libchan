@@ -19,7 +19,7 @@ import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 public class CliChan {
-	public final static String	VERSION	= "0.2";
+	public final static String	VERSION	= "0.2.1";
 
 	public static void main(String[] args) {
 		String[] urls = null;
