@@ -62,6 +62,12 @@ public class HtmlConverter {
 		return imgTemplate != null && postTemplate != null && threadHeader != null;
 	}
 
+	/**
+	 * taken from http://stackoverflow.com/questions/5386682
+	 * 
+	 * @param text
+	 * @return
+	 */
 	private static String getLinkifiedText(String text) {
 		try {
 			Pattern patt = Pattern
@@ -69,7 +75,7 @@ public class HtmlConverter {
 			Matcher matcher = patt.matcher(text);
 
 			while (matcher.find())
-				if (matcher.group(1).startsWith("http://"))
+				if (matcher.group(1).startsWith("http")) // also catches https
 					text = matcher.replaceAll("<a href=\"$1\">$1</a>");
 				else
 					text = matcher.replaceAll("<a href=\"http://$1\">$1</a>");
