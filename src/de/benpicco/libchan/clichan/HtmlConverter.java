@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -60,11 +62,28 @@ public class HtmlConverter {
 		return imgTemplate != null && postTemplate != null && threadHeader != null;
 	}
 
+	private static String getLinkifiedText(String text) {
+		try {
+			Pattern patt = Pattern
+					.compile("(?i)\\b((?:https?://|www\\d{0,3}[.]|[a-z0-9.\\-]+[.][a-z]{2,4}/)(?:[^\\s()<>]+|\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\))+(?:\\(([^\\s()<>]+|(\\([^\\s()<>]+\\)))*\\)|[^\\s`!()\\[\\]{};:\'\".,<>???“”‘’]))");
+			Matcher matcher = patt.matcher(text);
+
+			while (matcher.find())
+				if (matcher.group(1).startsWith("http://"))
+					text = matcher.replaceAll("<a href=\"$1\">$1</a>");
+				else
+					text = matcher.replaceAll("<a href=\"http://$1\">$1</a>");
+
+		} catch (Exception e) {
+		}
+		return text;
+	}
+
 	public String postToHtml(Post post) {
 		final String user = post.mail == null ? post.user : "<a href=\"mailto:" + post.mail + "\">" + post.user
 				+ "</a>";
-		final String message = StringEscapeUtils.escapeHtml4(post.message)
-				.replaceAll("&gt;&gt;([0-9]*)", "<a href=\"#$1\">&gt;&gt;$1</a>").replace("\n", "<br>");
+		final String message = getLinkifiedText(StringEscapeUtils.escapeHtml4(post.message)
+				.replaceAll("&gt;&gt;([0-9]*)", "<a href=\"#$1\">&gt;&gt;$1</a>").replace("\n", "<br>"));
 
 		String images = "";
 		for (Image img : post.images)

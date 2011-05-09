@@ -20,6 +20,7 @@
 	<copy todir="dist/chans"><fileset dir="chans"/>	</copy>
 	<copy todir="dist/template"><fileset dir="template"/></copy>
 	<copy todir="dist/"><fileset dir="scripts"/></copy>
+	<copy todir="dist/" file="README.TXT" />
 
         <jar destfile="dist/cliChan.jar" filesetmanifest="mergewithoutmain">
             <manifest>

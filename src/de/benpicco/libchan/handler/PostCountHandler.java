@@ -6,7 +6,8 @@ import de.benpicco.libchan.util.Logger;
 
 public class PostCountHandler implements PostHandler {
 	final int	treshold;
-	int			count	= 0;
+	int			count		= 0;
+	int			threadId	= 0;
 
 	public PostCountHandler(int treshold) {
 		this.treshold = treshold;
@@ -14,12 +15,15 @@ public class PostCountHandler implements PostHandler {
 
 	@Override
 	public void onAddPost(Post post) {
+		if (post.isFirstPost)
+			threadId = post.id;
+
 		if (++count > treshold)
-			Logger.get().println("Thread has " + count + " replies.");
+			Logger.get().println("Thread " + threadId + " has " + count + " replies.");
 	}
 
 	@Override
 	public void onPostsParsingDone() {
-		Logger.get().println("Thread with " + count + " posts received.");
+		Logger.get().println("Thread " + threadId + " with " + count + " posts received.");
 	}
 }
