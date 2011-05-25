@@ -106,8 +106,6 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			return;
 		}
 
-		parser.setAsync(false);
-
 		while (threads.size() > 0) {
 			Iterator<Tuple<String, PostArchiver>> iter = threads.iterator();
 

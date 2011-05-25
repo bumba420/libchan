@@ -44,9 +44,4 @@ public class DownloadImageHandler implements PostHandler {
 	@Override
 	public void onPostsParsingDone() {
 	}
-
-	public DownloadImageHandler clone() {
-		return new DownloadImageHandler(targetDir, threadFolder);
-	}
-
 }

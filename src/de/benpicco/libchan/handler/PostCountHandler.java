@@ -26,8 +26,4 @@ public class PostCountHandler implements PostHandler {
 	public void onPostsParsingDone() {
 		Logger.get().println("Thread " + threadId + " with " + count + " posts received.");
 	}
-
-	public PostCountHandler clone() {
-		return new PostCountHandler(treshold);
-	}
 }

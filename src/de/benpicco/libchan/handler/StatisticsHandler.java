@@ -85,10 +85,6 @@ public class StatisticsHandler implements PostHandler {
 			graph.close();
 		}
 	}
-
-	public StatisticsHandler clone() {
-		return new StatisticsHandler(baseDir, threadFolder);
-	}
 }
 
 class Stats {

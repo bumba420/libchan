@@ -10,10 +10,10 @@ import de.benpicco.libchan.util.Logger;
 
 public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
-		Logger.get().print("Searching " + board + " for ");
+		String printNames = "";
 		for (int i = 0; i < names.length; ++i)
-			Logger.get().print((i > 0 ? ", " : "") + names[i]);
-		Logger.get().println("");
+			printNames += (i > 0 ? ", " : "") + names[i];
+		Logger.get().println("Searching " + board + " for " + printNames);
 
 		ChanManager manager = new ChanManager(config);
 		if (manager.getParser(board) == null) {
@@ -62,12 +62,18 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
-		try {
-			parser.getPosts(thread.getUrl(), this);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					parser.getPosts(thread.getUrl(), PageCrawler.this);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 
 	@Override

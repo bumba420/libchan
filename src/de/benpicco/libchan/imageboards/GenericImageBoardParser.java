@@ -26,8 +26,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private Image						currentImage	= null;
 	private Post						firstPost		= null;
 
-	private boolean						async			= true;
-
 	private final String				baseUrl;
 	private final List<Tags>			postStarter;
 	private final List<Tags>			postEnder;
@@ -62,16 +60,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.threadMark = threadMark;
 	}
 
-	/**
-	 * This function is used to avoid concurrent modification of the receiver
-	 * object
-	 * 
-	 * @throws IOException
-	 * @throws MalformedURLException
-	 */
-	private synchronized void getAsyncPosts(final InputStream ins, final String url, final PostHandler rec)
-			throws MalformedURLException, IOException {
-		InputStream in = ins;
+	@Override
+	public synchronized void getPosts(final String url, final PostHandler rec) throws MalformedURLException,
+			IOException {
+		InputStream in = new BufferedInputStream(new URL(url).openStream());
 		receiver = rec;
 		int tries = 5;
 		while (tries-- > 0) {
@@ -86,39 +78,12 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 					try {
 						java.lang.Thread.sleep(500);
 					} catch (InterruptedException e2) {
-						e2.printStackTrace();
 					}
 					in = new BufferedInputStream(new URL(url).openStream());
 				}
 			}
-
 		}
 		rec.onPostsParsingDone();
-	}
-
-	@Override
-	public void getPosts(final String url, final PostHandler rec) throws MalformedURLException, IOException {
-
-		final InputStream in = new BufferedInputStream(new URL(url).openStream());
-		Runnable parsing = new Runnable() {
-			@Override
-			public void run() {
-				try {
-					getAsyncPosts(in, url, rec);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		};
-
-		if (async)
-			new java.lang.Thread(parsing).start();
-		else
-			parsing.run();
 	}
 
 	@Override
@@ -261,10 +226,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	public String getUrl() {
 		return baseUrl;
-	}
-
-	public void setAsync(boolean async) {
-		this.async = async;
 	}
 
 	@Override

@@ -114,9 +114,4 @@ public class ArchiveHtmlHandler implements PostHandler {
 
 		return newPost;
 	}
-
-	public ArchiveHtmlHandler clone() {
-		return new ArchiveHtmlHandler(baseDir, threadFolder);
-	}
-
 }
