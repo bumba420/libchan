@@ -28,11 +28,11 @@ public class UserNotifyHandler implements PostHandler {
 			if (post.images.size() > 0) {
 				String url = post.images.get(0).thumbnailUrl;
 				try {
-					tempfile = System.getProperty("java.io.tmpdir") + File.separator
+					tempfile = FileUtil.prepareDir(System.getProperty("java.io.tmpdir") + File.separator + "libChan")
 							+ StringUtils.substringAfterLast(url, "/");
 					FileUtil.downloadFile(url, tempfile);
-				} catch (IOException e1) {
-					Logger.get().error("Failed fetching thumbnail: " + e1);
+				} catch (IOException e) {
+					Logger.get().error("Failed fetching thumbnail: " + e);
 				}
 			}
 

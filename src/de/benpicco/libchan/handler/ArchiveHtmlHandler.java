@@ -16,15 +16,22 @@ import de.benpicco.libchan.util.Logger;
 
 public class ArchiveHtmlHandler implements PostHandler {
 
-	private final String	targetDir;
-	final String			thumbs		= ".thumbs" + File.separator;
-	Writer					writer		= null;
-	String					templateDir	= FileUtil.getJarLocation() + "template" + File.separator;
-	HtmlConverter			converter	= null;
-	int						threadId	= 0;
+	private final String	baseDir;
+	private final boolean	threadFolder;
 
-	public ArchiveHtmlHandler(String target) {
-		targetDir = FileUtil.prepareDir(target);
+	private final String	thumbs		= ".thumbs" + File.separator;
+
+	private String			targetDir;
+	private Writer			writer		= null;
+	private String			templateDir	= FileUtil.getJarLocation() + "template" + File.separator;
+	private HtmlConverter	converter	= null;
+	private int				threadId	= 0;
+
+	private void initialise() {
+		if (threadFolder)
+			targetDir = FileUtil.prepareDir(baseDir + threadId);
+		else
+			targetDir = baseDir;
 
 		new File(targetDir + thumbs).mkdir();
 		converter = new HtmlConverter(templateDir);
@@ -37,10 +44,17 @@ public class ArchiveHtmlHandler implements PostHandler {
 		}
 	}
 
+	public ArchiveHtmlHandler(String target, boolean threadFolder) {
+		baseDir = FileUtil.prepareDir(target);
+		this.threadFolder = threadFolder;
+	}
+
 	@Override
 	public void onAddPost(Post post) {
-		if (post.isFirstPost)
+		if (post.isFirstPost) {
 			threadId = post.id;
+			initialise();
+		}
 		Post localPost = localisePost(post);
 
 		if (writer == null)
@@ -99,6 +113,10 @@ public class ArchiveHtmlHandler implements PostHandler {
 		}
 
 		return newPost;
+	}
+
+	public ArchiveHtmlHandler clone() {
+		return new ArchiveHtmlHandler(baseDir, threadFolder);
 	}
 
 }

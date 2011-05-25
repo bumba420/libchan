@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
 
@@ -51,7 +52,7 @@ public class FollowupThreadHandler implements PostHandler {
 						if (!followUps.contains(newId)) {
 							followUps.add(newId);
 							Logger.get().println("Detected follow-up thread: " + newThreadId);
-							handler.saveThread(newId);
+							handler.addThread(newId);
 						} else
 							Logger.get().println("follow-up thread " + newId + " has already been detected.");
 					}

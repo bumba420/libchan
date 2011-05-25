@@ -11,6 +11,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
+import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.ThreadArchiver;
@@ -22,17 +23,17 @@ public class CliChan {
 	public final static String	VERSION	= "0.2.1";
 
 	public static void main(String[] args) {
+		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
-		String out = ".";
-		String followUpTag = "NEW THREAD";
-		int interval = -1;
-		String chancfg = FileUtil.getJarLocation() + "chans" + File.separator;
+		options.target = ".";
+		options.followUpTag = "NEW THREAD";
+		options.interval = -1;
+		options.config = FileUtil.getJarLocation() + "chans" + File.separator;
 		String[] namesToSearch = null;
-		ArrayList<String> namesToWach = null;
-		boolean html = false;
-		boolean archiveThread = true;
-		boolean threadFolders = true;
-		boolean recordStats = false;
+		options.saveHtml = false;
+		options.archiveThread = true;
+		options.threadFolders = true;
+		options.recordStats = false;
 
 		Logger.add(new StdLogger());
 
@@ -68,30 +69,30 @@ public class CliChan {
 			if (commandLine.hasOption('u'))
 				urls = commandLine.getOptionValues('u');
 			if (commandLine.hasOption('o'))
-				out = commandLine.getOptionValue('o');
+				options.target = commandLine.getOptionValue('o');
 			if (commandLine.hasOption('i'))
-				interval = Integer.parseInt(commandLine.getOptionValue('i'));
+				options.interval = Integer.parseInt(commandLine.getOptionValue('i')) * 1000;
 			if (commandLine.hasOption('c'))
-				chancfg = commandLine.getOptionValue('c');
+				options.config = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
 				namesToSearch = commandLine.getOptionValues('f');
 			if (commandLine.hasOption('n')) {
 				String[] names = commandLine.getOptionValues('n');
-				namesToWach = new ArrayList<String>(names.length);
+				options.names = new ArrayList<String>(names.length);
 				for (String name : names)
-					namesToWach.add(name.toLowerCase());
+					options.names.add(name.toLowerCase());
 			}
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan " + VERSION + " using libChan");
 				System.exit(0);
 			}
-			html = commandLine.hasOption("html");
-			threadFolders = !commandLine.hasOption("nothreadfolders");
-			archiveThread = !commandLine.hasOption("noarchive");
-			recordStats = commandLine.hasOption("stats");
+			options.saveHtml = commandLine.hasOption("html");
+			options.threadFolders = !commandLine.hasOption("nothreadfolders");
+			options.archiveThread = !commandLine.hasOption("noarchive");
+			options.recordStats = commandLine.hasOption("stats");
 
 			if (commandLine.hasOption("list")) {
-				ChanManager manager = new ChanManager(chancfg);
+				ChanManager manager = new ChanManager(options.config);
 				for (Imageboard board : manager.getSupported())
 					System.out.println(board);
 				return;
@@ -107,8 +108,9 @@ public class CliChan {
 			return;
 		}
 
-		if (!chancfg.endsWith(File.separator))
-			chancfg += File.separator;
+		ThreadArchiver archiver = null;
+		if (namesToSearch == null)
+			archiver = new ThreadArchiver(options);
 
 		for (String url : urls) {
 			int anchor = url.indexOf('#');
@@ -116,10 +118,12 @@ public class CliChan {
 				url = url.substring(0, anchor);
 
 			if (namesToSearch != null)
-				ChanCrawler.lookFor(namesToSearch, url, 0, 15, chancfg);
+				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.config);
 			else
-				new Thread(new ThreadArchiver(url, out, threadFolders, chancfg, interval, followUpTag, archiveThread,
-						html, recordStats, namesToWach)).start();
+				archiver.addThread(url);
 		}
+
+		if (archiver != null)
+			archiver.run();
 	}
 }

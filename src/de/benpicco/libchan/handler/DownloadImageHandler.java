@@ -9,15 +9,22 @@ import de.benpicco.libchan.util.FileUtil;
 
 public class DownloadImageHandler implements PostHandler {
 	final String	targetDir;
+	final boolean	threadFolder;
 
-	public DownloadImageHandler(String target) {
+	String			tf	= "";
+
+	public DownloadImageHandler(String target, boolean threadFolder) {
+		this.threadFolder = threadFolder;
 		targetDir = FileUtil.prepareDir(target);
 	}
 
 	@Override
 	public void onAddPost(final Post post) {
+		if (post.isFirstPost && threadFolder) {
+			tf = post.id + File.separator;
+		}
 
-		final String dir = targetDir + post.getDir() + File.separator;
+		final String dir = targetDir + tf + post.getDir() + File.separator;
 
 		if (post.images.size() > 0)
 			new File(dir).mkdir();
@@ -36,6 +43,10 @@ public class DownloadImageHandler implements PostHandler {
 
 	@Override
 	public void onPostsParsingDone() {
+	}
+
+	public DownloadImageHandler clone() {
+		return new DownloadImageHandler(targetDir, threadFolder);
 	}
 
 }

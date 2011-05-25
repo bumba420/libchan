@@ -16,23 +16,32 @@ public class StatisticsHandler implements PostHandler {
 
 	final HashMap<Integer, Stats>	usermapping;
 	final ArrayList<Stats>			users;
-	final String					dir;
+	final String					baseDir;
+	final boolean					threadFolder;
+
+	private String					targetDir;
 
 	private int						threadId	= 0;
 	private FileWriter				graph		= null;
 
-	public StatisticsHandler(String target) {
+	public StatisticsHandler(String target, boolean threadFolder) {
+		this.threadFolder = threadFolder;
 		usermapping = new HashMap<Integer, Stats>();
 		users = new ArrayList<Stats>();
-		dir = FileUtil.prepareDir(target);
+		baseDir = FileUtil.prepareDir(target);
 	}
 
 	@Override
 	public void onAddPost(Post post) {
 		if (post.isFirstPost) {
 			threadId = post.id;
+			if (threadFolder)
+				targetDir = FileUtil.prepareDir(baseDir + threadId);
+			else
+				targetDir = baseDir;
+
 			try {
-				graph = new FileWriter(dir + threadId + ".gv");
+				graph = new FileWriter(targetDir + threadId + ".gv");
 				graph.write("digraph " + threadId + " {\n");
 				graph.write("\tnode [color=lightblue2, style=filled];\n");
 			} catch (IOException e) {
@@ -54,7 +63,7 @@ public class StatisticsHandler implements PostHandler {
 	@Override
 	public void onPostsParsingDone() {
 		try {
-			FileWriter writer = new FileWriter(dir + threadId + ".csv");
+			FileWriter writer = new FileWriter(targetDir + threadId + ".csv");
 			writer.write(Stats.getHeader());
 			for (Stats s : users)
 				writer.write(s.toString());
@@ -75,6 +84,10 @@ public class StatisticsHandler implements PostHandler {
 			graph.append("}");
 			graph.close();
 		}
+	}
+
+	public StatisticsHandler clone() {
+		return new StatisticsHandler(baseDir, threadFolder);
 	}
 }
 
