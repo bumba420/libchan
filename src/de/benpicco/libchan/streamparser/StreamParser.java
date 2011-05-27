@@ -12,6 +12,7 @@ import de.benpicco.libchan.imageboards.Tags;
 
 public class StreamParser implements Cloneable {
 	private final List<ParseItem>	tags;
+	private int						bytesRead;
 
 	public StreamParser() {
 		tags = new ArrayList<ParseItem>();
@@ -34,27 +35,31 @@ public class StreamParser implements Cloneable {
 	}
 
 	public synchronized void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
-		// for (ParseItem pi : tags)
-		// Logger.get().println(pi);
-
 		InputStreamReader reader = new InputStreamReader(stream);
 
 		char[] buffer = new char[512];
 		int read = 0;
+		bytesRead = 0;
 
 		while (read >= 0) {
 			read = reader.read(buffer);
 
-			for (int i = 0; i < read; ++i)
+			for (int i = 0; i < read; ++i) {
+				++bytesRead;
 				for (ParseItem pi : tags)
 					if (pi.match(buffer[i]))
 						for (int j = 0; j < pi.tags.length; ++j)
 							receiver.parsedString(pi.tags[j], pi.items[j]);
+			}
 		}
 	}
 
 	public void addTag(String pattern) {
 		tags.add(new ParseItem(pattern));
+	}
+
+	public int getPos() {
+		return bytesRead;
 	}
 }
 

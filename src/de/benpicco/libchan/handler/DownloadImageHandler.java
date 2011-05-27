@@ -22,6 +22,7 @@ public class DownloadImageHandler implements PostHandler {
 	public void onAddPost(final Post post) {
 		if (post.isFirstPost && threadFolder) {
 			tf = post.id + File.separator;
+			new File(targetDir + tf).mkdir();
 		}
 
 		final String dir = targetDir + tf + post.getDir() + File.separator;

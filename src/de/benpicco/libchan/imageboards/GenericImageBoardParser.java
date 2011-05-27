@@ -3,6 +3,7 @@ package de.benpicco.libchan.imageboards;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -20,7 +21,9 @@ import de.benpicco.libchan.util.Tuple;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
 
-	private PostHandler					receiver;
+	private PostHandler					postReceiver	= null;
+	private ThreadHandler				threadReceiver	= null;
+	private BoardHandler				boardReceiver	= null;
 
 	private Post						currentPost		= null;
 	private Image						currentImage	= null;
@@ -40,13 +43,17 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private final Tuple<String, String>	threadURL;
 	private final String				threadMark;
 
+	private int							lastPos			= 0;
+
+	private String						url;
+
 	private String absolute(String relUrl) {
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
 	}
 
 	public GenericImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
 			StreamParser parser, StreamParser boardParser, String threadMark, String imgPrefix, String thumbPrefix,
-			String countryPrefix, Tuple<String, String> threadURL) {
+			String countryPrefix, Tuple<String, String> threadURL, String url) {
 		this.baseUrl = baseUrl;
 		this.postStarter = postStarter;
 		this.postEnder = postEnder;
@@ -58,15 +65,23 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.countryPrefix = countryPrefix;
 		this.threadURL = threadURL;
 		this.threadMark = threadMark;
+
+		this.url = url;
 	}
 
 	@Override
-	public synchronized void getPosts(final String url, final PostHandler rec) throws MalformedURLException,
-			IOException {
-		InputStream in = new BufferedInputStream(new URL(url).openStream());
-		receiver = rec;
+	public synchronized void getPosts() throws MalformedURLException, IOException {
+		if (postReceiver == null)
+			return;
+
 		int tries = 5;
 		while (tries-- > 0) {
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setInstanceFollowRedirects(true);
+			if (lastPos > 0)
+				connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
+			InputStream in = new BufferedInputStream(connection.getInputStream());
+
 			try {
 				parser.reset();
 				parser.parseStream(in, GenericImageBoardParser.this);
@@ -79,17 +94,14 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 						java.lang.Thread.sleep(500);
 					} catch (InterruptedException e2) {
 					}
-					in = new BufferedInputStream(new URL(url).openStream());
 				}
 			}
 		}
-		rec.onPostsParsingDone();
+		postReceiver.onPostsParsingDone();
 	}
 
 	@Override
 	public void parsedString(Tags tag, String data) {
-		// Logger.get().println(tag + " - " + data);
-
 		if (currentPost == null)
 			if (postStarter.contains(tag))
 				currentPost = new Post();
@@ -164,9 +176,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentPost.isFirstPost || firstPost == null)
 				firstPost = currentPost;
 			currentPost.op = firstPost.id;
+			currentPost.bytePos = parser.getPos();
+
 			currentPost.cleanup();
 			for (Image img : currentPost.images) { // XXX quick and dirty hack
-													// to get unique filenames
+				// to get unique filenames
 				if (img.filename == null)
 					continue;
 				int dot = img.filename.lastIndexOf('.');
@@ -174,35 +188,35 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 					dot = img.filename.length();
 				img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
 			}
-			receiver.onAddPost(currentPost);
+			postReceiver.onAddPost(currentPost);
 
 			currentPost = null;
 		}
 	}
 
 	@Override
-	public void getThreads(String url, ThreadHandler rec) throws IOException {
-		getPosts(url, new ThreadParser(url, rec));
+	public void getThreads() throws IOException {
+		if (threadReceiver == null)
+			return;
+
+		PostHandler oldRecceiver = postReceiver;
+		postReceiver = new ThreadParser();
+		getPosts();
+		postReceiver = oldRecceiver;
 	}
 
 	class ThreadParser implements PostHandler {
-		private ThreadHandler	rec;
-		private String			url;
-
-		public ThreadParser(String url, ThreadHandler rec) {
-			this.rec = rec;
-			this.url = url;
-		}
 
 		@Override
 		public void onAddPost(Post post) {
 			if (post.isFirstPost)
-				rec.onAddThread(new Thread(post, composeUrl(url, post), 0));
+				threadReceiver.onAddThread(new Thread(post, composeUrl(post.id), 0));
+			// TODO: count replies & parse omittedInfo
 		}
 
 		@Override
 		public void onPostsParsingDone() {
-			rec.onThreadsParsingDone();
+			threadReceiver.onThreadsParsingDone();
 		}
 	}
 
@@ -215,21 +229,19 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		return "/" + board + "/";
 	}
 
-	public String composeUrl(String url, Post post) {
-		return baseUrl + getBoard(url) + threadURL.first + post.op + threadURL.second
-				+ (post.isFirstPost ? "" : "#" + post.id);
-	}
-
-	public String composeUrl(String url, int post) {
+	public String composeUrl(int post) {
 		return baseUrl + getBoard(url) + threadURL.first + post + threadURL.second;
 	}
 
-	public String getUrl() {
+	public String getBaseUrl() {
 		return baseUrl;
 	}
 
 	@Override
-	public void getBoards(final BoardHandler rec) throws IOException {
+	public synchronized void getBoards() throws IOException {
+		if (boardReceiver == null)
+			return;
+
 		IParseDataReceiver parseDataReceiver = new IParseDataReceiver() {
 			Board	board	= null;
 
@@ -256,13 +268,36 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				if (finished) {
 					Board tmp = board;
 					board = null;
-					rec.onAddBoard(tmp);
+					boardReceiver.onAddBoard(tmp);
 				}
 			}
 		};
 
 		InputStream in = new BufferedInputStream(new URL(baseUrl).openStream());
 		boardParser.parseStream(in, parseDataReceiver);
-		rec.onBoardParsingDone();
+		boardReceiver.onBoardParsingDone();
+	}
+
+	@Override
+	public void setPostHandler(PostHandler rec) {
+		postReceiver = rec;
+	}
+
+	@Override
+	public void setThreadHandler(ThreadHandler rec) {
+		threadReceiver = rec;
+	}
+
+	@Override
+	public void setBoardHandler(BoardHandler rec) {
+		boardReceiver = rec;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getUrl() {
+		return url;
 	}
 }

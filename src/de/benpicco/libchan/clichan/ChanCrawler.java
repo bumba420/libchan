@@ -2,8 +2,8 @@ package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
 
+import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
@@ -28,15 +28,15 @@ public class ChanCrawler {
 
 class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	private final String[]	names;
-	ImageBoardParser		parser	= null;
-	final String			page;
-	ChanManager				manager;
+	GenericImageBoardParser	threadParser	= null;
+	GenericImageBoardParser	postParser		= null;
 
 	public PageCrawler(String page, ChanManager manager, final String[] names) {
-		parser = manager.getParser(page);
+		threadParser = manager.getParser(page);
+		threadParser.setThreadHandler(this);
+		postParser = manager.getParser(page);
+		postParser.setPostHandler(this);
 		this.names = names;
-		this.page = page;
-		this.manager = manager;
 	}
 
 	@Override
@@ -44,7 +44,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 		if (names == null)
 			return;
 		try {
-			parser.getThreads(page, this);
+			threadParser.getThreads();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -55,25 +55,22 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	public void onAddPost(Post post) {
 		for (String name : names)
 			if (post.user.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println(name + ": " + parser.composeUrl(page, post));
+				Logger.get().println(name + ": " + postParser.composeUrl(post.id));
 			else if (post.message.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println("mentioned " + name + ": " + parser.composeUrl(page, post));
+				Logger.get().println("mentioned " + name + ": " + postParser.composeUrl(post.id));
 	}
 
 	@Override
 	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
-		new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					parser.getPosts(thread.getUrl(), PageCrawler.this);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();
+		postParser.setUrl(thread.getUrl());
+		try {
+			postParser.getPosts();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	@Override

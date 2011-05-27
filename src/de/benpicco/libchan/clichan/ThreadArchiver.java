@@ -13,38 +13,35 @@ import de.benpicco.libchan.handler.FollowupThreadHandler;
 import de.benpicco.libchan.handler.PostCountHandler;
 import de.benpicco.libchan.handler.StatisticsHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
-import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
-import de.benpicco.libchan.util.Tuple;
 
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
-	private final ChanManager						manager;
-	private final List<Tuple<String, PostArchiver>>	threads;
-	private final List<Tuple<String, PostArchiver>>	newThreads;
-	private GenericImageBoardParser					parser;
+	private final ChanManager				manager;
+	private final List<ImageBoardParser>	threads;
+	private final List<ImageBoardParser>	newThreads;
 
-	private final ArchiveOptions					o;
+	private final ArchiveOptions			o;
 
 	public ThreadArchiver(ArchiveOptions options) {
 		this.o = options;
-		threads = new ArrayList<Tuple<String, PostArchiver>>();
-		newThreads = new ArrayList<Tuple<String, PostArchiver>>();
+		threads = new ArrayList<ImageBoardParser>();
+		newThreads = new ArrayList<ImageBoardParser>();
 		manager = new ChanManager(o.config);
-	}
-
-	/**
-	 * Archives the thread with the id that was part of the original url.
-	 */
-	public void saveThread() {
-		addThread(-1);
 	}
 
 	public void addThread(String url) {
 		if (threads.contains(url))
 			return;
+
+		ImageBoardParser parser = manager.getParser(url);
+		if (parser == null) {
+			Logger.get().error("No parser found for " + url);
+			return;
+		}
 
 		Logger.get().println("Adding " + url);
 
@@ -56,24 +53,17 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		if (o.saveHtml)
 			handler.add(new ArchiveHtmlHandler(o.target, o.threadFolders));
 		if (o.followUpTag != null)
-			handler.add(new FollowupThreadHandler(o.followUpTag, this));
+			handler.add(new FollowupThreadHandler(parser, o.followUpTag, this));
 		if (o.names != null)
 			handler.add(new UserNotifyHandler(o.names));
 		if (o.recordStats)
 			handler.add(new StatisticsHandler(o.target, o.threadFolders));
 
+		parser.setPostHandler(new PostArchiver(handler));
 		synchronized (newThreads) {
-			newThreads.add(new Tuple<String, PostArchiver>(url, new PostArchiver(handler)));
+			newThreads.add(parser);
 		}
 
-	}
-
-	/**
-	 * Archives the thread with the specified id on the same board as the
-	 * original url.
-	 */
-	public void addThread(final int id) {
-		addThread(parser.composeUrl(threads.get(0).first, id)); // XXX
 	}
 
 	class PostArchiver implements PostHandler {
@@ -108,29 +98,22 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 				newThreads.clear();
 			}
 
-			parser = manager.getParser(threads.get(0).first); // XXX
-			if (parser == null) {
-				Logger.get().error("Can't find suitable parser for URL");
-				return;
-			}
-
-			Iterator<Tuple<String, PostArchiver>> iter = threads.iterator();
+			Iterator<ImageBoardParser> iter = threads.iterator();
 
 			while (iter.hasNext()) {
-				Tuple<String, PostArchiver> thread = iter.next();
-				final String url = thread.first;
+				ImageBoardParser thread = iter.next();
 
-				Logger.get().println("Receiving " + url);
+				Logger.get().println("Receiving " + thread.getUrl());
 				try {
-					parser.getPosts(url, thread.second);
+					thread.getPosts();
 				} catch (MalformedURLException e) {
-					Logger.get().error("Ivalid URL: " + url);
+					Logger.get().error("Ivalid URL: " + thread.getUrl());
 					iter.remove();
 				} catch (FileNotFoundException e) {
-					Logger.get().error("Thread " + url + " does not exist.");
+					Logger.get().error("Thread " + thread.getUrl() + " does not exist.");
 					iter.remove();
 				} catch (IOException e) {
-					Logger.get().error("Error downloading " + url + ": " + e.getMessage());
+					Logger.get().error("Error downloading " + thread.getUrl() + ": " + e.getMessage());
 				}
 			}
 

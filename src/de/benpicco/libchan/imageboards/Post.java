@@ -21,6 +21,7 @@ public class Post implements Cloneable {
 	public final List<Image>	images;
 	public String				countryball;
 	public int					op;
+	public int					bytePos;
 
 	public Post() {
 		this.images = new LinkedList<Image>();

@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
@@ -15,6 +16,7 @@ import de.benpicco.libchan.util.Logger;
 public class FollowupThreadHandler implements PostHandler {
 	private final String			followUpTag;
 	private final NewThreadReceiver	handler;
+	private final ImageBoardParser	parser;		// for composing the URL
 	// We don't want to create multiple threads on multiple mentions of the same
 	// follow-up thread
 	private final List<Integer>		followUps;
@@ -33,9 +35,10 @@ public class FollowupThreadHandler implements PostHandler {
 	 * @param followUpTag
 	 * @param handler
 	 */
-	public FollowupThreadHandler(String followUpTag, NewThreadReceiver handler) {
+	public FollowupThreadHandler(ImageBoardParser parser, String followUpTag, NewThreadReceiver handler) {
 		this.followUpTag = followUpTag.toUpperCase();
 		this.handler = handler;
+		this.parser = parser;
 		followUps = new LinkedList<Integer>();
 	}
 
@@ -52,7 +55,7 @@ public class FollowupThreadHandler implements PostHandler {
 						if (!followUps.contains(newId)) {
 							followUps.add(newId);
 							Logger.get().println("Detected follow-up thread: " + newThreadId);
-							handler.addThread(newId);
+							handler.addThread(parser.composeUrl(newId));
 						} else
 							Logger.get().println("follow-up thread " + newId + " has already been detected.");
 					}

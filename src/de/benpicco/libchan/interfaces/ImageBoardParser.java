@@ -2,16 +2,21 @@ package de.benpicco.libchan.interfaces;
 
 import java.io.IOException;
 
-import de.benpicco.libchan.imageboards.Post;
-
 public interface ImageBoardParser {
-	public void getPosts(String url, PostHandler rec) throws IOException;
 
-	public void getThreads(String url, ThreadHandler rec) throws IOException;
+	public void setPostHandler(PostHandler rec);
 
-	public void getBoards(BoardHandler rec) throws IOException;
+	public void setThreadHandler(ThreadHandler rec);
 
-	public String composeUrl(String url, Post post);
+	public void setBoardHandler(BoardHandler rec);
 
-	public String composeUrl(String url, int post);
+	public void getPosts() throws IOException;
+
+	public void getThreads() throws IOException;
+
+	public void getBoards() throws IOException;
+
+	public String composeUrl(int post);
+
+	public String getUrl();
 }
