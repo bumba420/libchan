@@ -246,7 +246,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		@Override
 		public void onAddPost(Post post) {
 			if (post.isFirstPost)
-				threadReceiver.onAddThread(new Thread(post, composeUrl(post.id), 0));
+				threadReceiver.onAddThread(new Thread(post, composeUrl(post), 0));
 			// TODO: count replies & parse omittedInfo
 		}
 
@@ -267,6 +267,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	public String composeUrl(int post) {
 		return baseUrl + getBoard(url) + threadURL.first + post + threadURL.second;
+	}
+
+	public String composeUrl(Post post) {
+		return baseUrl + getBoard(url) + threadURL.first + post.op + threadURL.second
+				+ (post.isFirstPost ? "" : "#" + post.id);
 	}
 
 	public String getBaseUrl() {

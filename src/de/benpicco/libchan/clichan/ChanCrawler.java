@@ -55,9 +55,9 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	public void onAddPost(Post post) {
 		for (String name : names)
 			if (post.user.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println(name + ": " + postParser.composeUrl(post.id));
+				Logger.get().println(name + ": " + postParser.composeUrl(post));
 			else if (post.message.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println("mentioned " + name + ": " + postParser.composeUrl(post.id));
+				Logger.get().println("mentioned " + name + ": " + postParser.composeUrl(post));
 	}
 
 	@Override
