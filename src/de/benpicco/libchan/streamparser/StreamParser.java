@@ -13,6 +13,7 @@ import de.benpicco.libchan.imageboards.Tags;
 public class StreamParser implements Cloneable {
 	private final List<ParseItem>	tags;
 	private int						bytesRead;
+	private boolean					parsing;
 
 	public StreamParser() {
 		tags = new ArrayList<ParseItem>();
@@ -29,19 +30,21 @@ public class StreamParser implements Cloneable {
 		return new StreamParser(cpyTags);
 	}
 
-	public void reset() {
+	private void reset() {
 		for (ParseItem item : tags)
 			item.reset();
 	}
 
 	public synchronized void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
+		reset();
 		InputStreamReader reader = new InputStreamReader(stream);
 
 		char[] buffer = new char[512];
 		int read = 0;
 		bytesRead = 0;
+		parsing = true;
 
-		while (read >= 0) {
+		while (read >= 0 && parsing) {
 			read = reader.read(buffer);
 
 			for (int i = 0; i < read; ++i) {
@@ -49,17 +52,29 @@ public class StreamParser implements Cloneable {
 				for (ParseItem pi : tags)
 					if (pi.match(buffer[i]))
 						for (int j = 0; j < pi.tags.length; ++j)
-							receiver.parsedString(pi.tags[j], pi.items[j]);
+							if (parsing)
+								receiver.parsedString(pi.tags[j], pi.items[j]);
 			}
 		}
+		parsing = false;
 	}
 
 	public void addTag(String pattern) {
 		tags.add(new ParseItem(pattern));
 	}
 
+	/**
+	 * @return the current position in the stream in bytes
+	 */
 	public int getPos() {
 		return bytesRead;
+	}
+
+	/**
+	 * forces the parsing to stop before the end of the stream is reached
+	 */
+	public void halt() {
+		parsing = false;
 	}
 }
 

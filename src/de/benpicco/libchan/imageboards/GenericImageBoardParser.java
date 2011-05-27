@@ -43,7 +43,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private final Tuple<String, String>	threadURL;
 	private final String				threadMark;
 
+	private int							lastPosAbs		= 0;
 	private int							lastPos			= 0;
+	private int							newLastPos		= 0;
+	private int							lastId			= 0;
+	private boolean						refreshing;
 
 	private String						url;
 
@@ -74,6 +78,13 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		if (postReceiver == null)
 			return;
 
+		int lastIdPre = lastId;
+		if (lastId > 0) {
+			refreshing = true;
+			lastPosAbs = lastPos;
+			newLastPos = lastPos;
+		}
+
 		int tries = 5;
 		while (tries-- > 0) {
 			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -83,7 +94,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			InputStream in = new BufferedInputStream(connection.getInputStream());
 
 			try {
-				parser.reset();
 				parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
@@ -97,7 +107,18 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				}
 			}
 		}
+		if (lastId < lastIdPre) {
+			Logger.get().println("Deletion detected, refreshing entire page");
+			getPosts();
+		}
 		postReceiver.onPostsParsingDone();
+	}
+
+	private void reset() {
+		lastId = 0;
+		lastPos = 0;
+		lastPosAbs = 0;
+		newLastPos = 0;
 	}
 
 	@Override
@@ -176,11 +197,26 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentPost.isFirstPost || firstPost == null)
 				firstPost = currentPost;
 			currentPost.op = firstPost.id;
-			currentPost.bytePos = parser.getPos();
+
+			if (refreshing) {
+				refreshing = false;
+				if (lastId > 0 && lastId != currentPost.id) { // deletion
+					reset();
+					parser.halt();
+				}
+				currentPost = null;
+			}
+
+			lastPos = newLastPos;
+			newLastPos = lastPosAbs + parser.getPos();
+
+			if (currentPost == null)
+				return;
+
+			lastId = currentPost.id;
 
 			currentPost.cleanup();
-			for (Image img : currentPost.images) { // XXX quick and dirty hack
-				// to get unique filenames
+			for (Image img : currentPost.images) { // get unique filenames
 				if (img.filename == null)
 					continue;
 				int dot = img.filename.lastIndexOf('.');
@@ -294,6 +330,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	public void setUrl(String url) {
+		reset();
 		this.url = url;
 	}
 
