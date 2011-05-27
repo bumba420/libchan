@@ -6,7 +6,6 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import de.benpicco.libchan.handler.ArchiveHtmlHandler;
 import de.benpicco.libchan.handler.DownloadImageHandler;
@@ -24,13 +23,15 @@ import de.benpicco.libchan.util.Tuple;
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	private final ChanManager						manager;
 	private final List<Tuple<String, PostArchiver>>	threads;
+	private final List<Tuple<String, PostArchiver>>	newThreads;
 	private GenericImageBoardParser					parser;
 
 	private final ArchiveOptions					o;
 
 	public ThreadArchiver(ArchiveOptions options) {
 		this.o = options;
-		threads = new CopyOnWriteArrayList<Tuple<String, PostArchiver>>();
+		threads = new ArrayList<Tuple<String, PostArchiver>>();
+		newThreads = new ArrayList<Tuple<String, PostArchiver>>();
 		manager = new ChanManager(o.config);
 	}
 
@@ -61,7 +62,9 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		if (o.recordStats)
 			handler.add(new StatisticsHandler(o.target, o.threadFolders));
 
-		threads.add(new Tuple<String, PostArchiver>(url, new PostArchiver(handler)));
+		synchronized (newThreads) {
+			newThreads.add(new Tuple<String, PostArchiver>(url, new PostArchiver(handler)));
+		}
 
 	}
 
@@ -99,14 +102,18 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 	@Override
 	public void run() {
+		do {
+			synchronized (newThreads) {
+				threads.addAll(newThreads);
+				newThreads.clear();
+			}
 
-		parser = manager.getParser(threads.get(0).first); // XXX
-		if (parser == null) {
-			Logger.get().error("Can't find suitable parser for URL");
-			return;
-		}
+			parser = manager.getParser(threads.get(0).first); // XXX
+			if (parser == null) {
+				Logger.get().error("Can't find suitable parser for URL");
+				return;
+			}
 
-		while (threads.size() > 0) {
 			Iterator<Tuple<String, PostArchiver>> iter = threads.iterator();
 
 			while (iter.hasNext()) {
@@ -134,6 +141,6 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 				}
 			else
 				return;
-		}
+		} while (threads.size() > 0);
 	}
 }
