@@ -33,8 +33,15 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		manager = new ChanManager(o.config);
 	}
 
+	private boolean contains(List<ImageBoardParser> parsers, String url) {
+		for (ImageBoardParser parser : parsers)
+			if (parser.getUrl().equals(url))
+				return true;
+		return false;
+	}
+
 	public void addThread(String url) {
-		if (threads.contains(url))
+		if (contains(threads, url) || contains(newThreads, url))
 			return;
 
 		ImageBoardParser parser = manager.getParser(url);
@@ -60,10 +67,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			handler.add(new StatisticsHandler(o.target, o.threadFolders));
 
 		parser.setPostHandler(new PostArchiver(handler));
-		synchronized (newThreads) {
-			newThreads.add(parser);
-		}
-
+		newThreads.add(parser);
 	}
 
 	class PostArchiver implements PostHandler {
@@ -93,10 +97,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	@Override
 	public void run() {
 		do {
-			synchronized (newThreads) {
-				threads.addAll(newThreads);
-				newThreads.clear();
-			}
+			threads.addAll(newThreads);
+			newThreads.clear();
 
 			Iterator<ImageBoardParser> iter = threads.iterator();
 

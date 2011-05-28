@@ -97,6 +97,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
+				reset();
+				lastIdPre = 0;
 				if (tries == 0)
 					Logger.get().error("Failed downloading " + url + ": " + e);
 				else {
