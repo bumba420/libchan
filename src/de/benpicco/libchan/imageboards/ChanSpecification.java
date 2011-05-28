@@ -30,6 +30,10 @@ public class ChanSpecification implements IParseDataReceiver {
 	private Tuple<String, String>	threadURL		= new Tuple<String, String>("", "");
 	private Imageboard				board			= new Imageboard();
 	private String					threadMark		= "";
+	private String					boardIndex		= "";									// list
+																							// of
+																							// all
+																							// boards
 
 	private final String			file;
 
@@ -75,8 +79,6 @@ public class ChanSpecification implements IParseDataReceiver {
 			value = StringEscapeUtils.unescapeJava(m.group().substring(1, m.group().length() - 1));
 		else if (data != null)
 			value = data.trim();
-
-		// Logger.get().println(key + " - " + value);
 
 		switch (key) {
 		case SITE_NAME:
@@ -127,6 +129,9 @@ public class ChanSpecification implements IParseDataReceiver {
 		case BOARD:
 			boardParser.addTag(value);
 			break;
+		case BOARD_INDEX:
+			boardIndex = value;
+			break;
 		case POST:
 			parser.addTag(value);
 			break;
@@ -158,7 +163,8 @@ public class ChanSpecification implements IParseDataReceiver {
 		for (Imageboard chan : supported)
 			if (url.startsWith(chan.baseurl))
 				return new GenericImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
-						boardParser.clone(), threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL, url);
+						boardParser.clone(), threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL, boardIndex,
+						url);
 		return null;
 	}
 }

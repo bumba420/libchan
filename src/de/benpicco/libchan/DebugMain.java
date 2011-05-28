@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import de.benpicco.clichan.StdLogger;
+import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.imageboards.Board;
-import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
@@ -18,9 +18,10 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = args[0];
+		String url = "http://krautchan.net/int/thread-5133900.html";
+		// String url = "http://boards.4chan.org/soc/res/4622417";
 
-		GenericImageBoardParser parser = new ChanSpecification("chans/4chan.chan").getImageBoardParser(url);
+		GenericImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
 		if (parser == null) {
 			System.err.println("No parser found");

@@ -42,6 +42,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private final String				countryPrefix;
 	private final Tuple<String, String>	threadURL;
 	private final String				threadMark;
+	private final String				boardIndex;
 
 	private int							lastPosAbs		= 0;
 	private int							lastPos			= 0;
@@ -57,7 +58,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	public GenericImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
 			StreamParser parser, StreamParser boardParser, String threadMark, String imgPrefix, String thumbPrefix,
-			String countryPrefix, Tuple<String, String> threadURL, String url) {
+			String countryPrefix, Tuple<String, String> threadURL, String boardIndex, String url) {
 		this.baseUrl = baseUrl;
 		this.postStarter = postStarter;
 		this.postEnder = postEnder;
@@ -69,6 +70,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.countryPrefix = countryPrefix;
 		this.threadURL = threadURL;
 		this.threadMark = threadMark;
+		this.boardIndex = boardIndex;
 
 		this.url = url;
 	}
@@ -293,13 +295,14 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				if (data.length() == 0)
 					return;
 
-				boolean finished = board != null;
-				if (!finished)
+				if (board == null)
 					board = new Board();
 
 				switch (tag) {
 				case BOARD_URL:
 					board.url = data;
+					if (board.url.startsWith("/"))
+						board.url = getBaseUrl() + board.url;
 					break;
 				case BOARD_TITLE:
 					board.name = StringEscapeUtils.unescapeHtml4(data);
@@ -308,7 +311,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 					return;
 				}
 
-				if (finished) {
+				if (board.name != null && board.url != null) {
 					Board tmp = board;
 					board = null;
 					boardReceiver.onAddBoard(tmp);
@@ -316,7 +319,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			}
 		};
 
-		InputStream in = new BufferedInputStream(new URL(baseUrl).openStream());
+		InputStream in = new BufferedInputStream(new URL(baseUrl + boardIndex).openStream());
 		boardParser.parseStream(in, parseDataReceiver);
 		boardReceiver.onBoardParsingDone();
 	}

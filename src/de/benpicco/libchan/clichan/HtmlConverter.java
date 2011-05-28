@@ -97,6 +97,7 @@ public class HtmlConverter {
 					.replace("$FILENAME", img.filename);
 
 		return postTemplate.replace("$ID", post.id + "").replace("$TITLE", post.title != null ? post.title : "")
+				.replace("$COUNTRY", post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
 				.replace("$USER", user).replace("$DATE", post.date).replace("$IMAGES", images)
 				.replace("$MESSAGE", message);
 	}
