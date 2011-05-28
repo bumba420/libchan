@@ -100,6 +100,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			threads.addAll(newThreads);
 			newThreads.clear();
 
+			Logger.get().println(
+					"There are " + threads.size() + " thread" + (threads.size() > 1 ? "s" : "") + " in the queue.");
 			Iterator<ImageBoardParser> iter = threads.iterator();
 
 			while (iter.hasNext()) {
