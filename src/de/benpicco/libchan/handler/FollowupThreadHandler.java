@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
@@ -44,21 +42,18 @@ public class FollowupThreadHandler implements PostHandler {
 
 	@Override
 	public void onAddPost(Post post) {
-		if (followUpTag != null) {
-			String newThread = StringUtils.substringAfter(post.message.toUpperCase(), followUpTag);
-			if (newThread != null && newThread.length() > 0) {
-				Matcher match = Pattern.compile(">>([0-9]+)").matcher(newThread);
-				if (match.find()) {
-					String newThreadId = match.group(1);
-					if (newThreadId != null && newThreadId.trim().length() > 0) {
-						int newId = Integer.parseInt(newThreadId);
-						if (!followUps.contains(newId)) {
-							followUps.add(newId);
-							Logger.get().println("Detected follow-up thread: " + newThreadId);
-							handler.addThread(parser.composeUrl(newId));
-						} else
-							Logger.get().println("follow-up thread " + newId + " has already been detected.");
-					}
+		if (followUpTag != null && post.message.toUpperCase().contains(followUpTag)) {
+			Matcher match = Pattern.compile(">>([0-9]+)").matcher(post.message);
+			if (match.find()) {
+				String newThreadId = match.group(1);
+				if (newThreadId != null && newThreadId.trim().length() > 0) {
+					int newId = Integer.parseInt(newThreadId);
+					if (!followUps.contains(newId)) {
+						followUps.add(newId);
+						Logger.get().println("Detected follow-up thread: " + newThreadId);
+						handler.addThread(parser.composeUrl(newId));
+					} else
+						Logger.get().println("follow-up thread " + newId + " has already been detected.");
 				}
 			}
 		}
