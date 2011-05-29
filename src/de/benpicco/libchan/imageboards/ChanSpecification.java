@@ -12,30 +12,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
-import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Logger;
-import de.benpicco.libchan.util.Tuple;
 
 public class ChanSpecification implements IParseDataReceiver {
+	private List<Imageboard>	supported	= new ArrayList<Imageboard>();
+	private Imageboard			board		= new Imageboard();
+	private ParserOptions		o			= new ParserOptions();
 
-	private List<Tags>				postStarter		= new ArrayList<Tags>();
-	private List<Tags>				postEnder		= new ArrayList<Tags>();
-	private List<Tags>				imageEnder		= new ArrayList<Tags>();
-	private List<Imageboard>		supported		= new ArrayList<Imageboard>();
-	private StreamParser			parser			= new StreamParser();
-	private StreamParser			boardParser		= new StreamParser();
-	private String					thumbPrefix		= "";
-	private String					imgPrefix		= "";
-	private String					countryPrefix	= "";
-	private Tuple<String, String>	threadURL		= new Tuple<String, String>("", "");
-	private Imageboard				board			= new Imageboard();
-	private String					threadMark		= "";
-	private String					boardIndex		= "";									// list
-																							// of
-																							// all
-																							// boards
-
-	private final String			file;
+	private final String		file;
 
 	public ChanSpecification(String file) {
 		this.file = file;
@@ -103,40 +87,40 @@ public class ChanSpecification implements IParseDataReceiver {
 				board.baseurl = value;
 				break;
 			case URL_PREFIX:
-				threadURL.first = value;
+				o.threadURL.first = value;
 				break;
 			case URL_POSTFIX:
-				threadURL.second = value;
+				o.threadURL.second = value;
 				break;
 			case START_POST:
-				postStarter.add(Tags.valueOf(value));
+				o.postStarter.add(Tags.valueOf(value));
 				break;
 			case END_POST:
-				postEnder.add(Tags.valueOf(value));
+				o.postEnder.add(Tags.valueOf(value));
 				break;
 			case END_IMAGE:
-				imageEnder.add(Tags.valueOf(value));
+				o.imageEnder.add(Tags.valueOf(value));
 				break;
 			case THUMBNAIL_PREFIX:
-				thumbPrefix = value;
+				o.thumbPrefix = value;
 				break;
 			case IMAGE_PREFIX:
-				imgPrefix = value;
+				o.imgPrefix = value;
 				break;
 			case COUNTRY_PREFIX:
-				countryPrefix = value;
+				o.countryPrefix = value;
 				break;
 			case BOARD:
-				boardParser.addTag(value);
+				o.boardParser.addTag(value);
 				break;
 			case BOARD_INDEX:
-				boardIndex = value;
+				o.boardIndex = value;
 				break;
 			case POST:
-				parser.addTag(value);
+				o.parser.addTag(value);
 				break;
 			case POST_THREAD_MARK:
-				threadMark = value;
+				o.threadMark = value;
 				break;
 			default:
 				if (value == null) {
@@ -165,9 +149,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	public GenericImageBoardParser getImageBoardParser(String url) {
 		for (Imageboard chan : supported)
 			if (url.startsWith(chan.baseurl))
-				return new GenericImageBoardParser(chan.baseurl, postStarter, postEnder, imageEnder, parser.clone(),
-						boardParser.clone(), threadMark, imgPrefix, thumbPrefix, countryPrefix, threadURL, boardIndex,
-						url);
+				return new GenericImageBoardParser(url, chan.baseurl, new ParserOptions(o));
 		return null;
 	}
 }

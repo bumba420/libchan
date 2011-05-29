@@ -18,8 +18,7 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = "http://krautchan.net/int/thread-5133900.html";
-		// String url = "http://boards.4chan.org/soc/res/4622417";
+		String url = args[0];
 
 		GenericImageBoardParser parser = new ChanManager("chans/").getParser(url);
 

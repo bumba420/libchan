@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -15,64 +14,36 @@ import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
-import de.benpicco.libchan.streamparser.StreamParser;
 import de.benpicco.libchan.util.Logger;
-import de.benpicco.libchan.util.Tuple;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
+	private final ParserOptions	o;
+	private final String		baseUrl;
 
-	private PostHandler					postReceiver	= null;
-	private ThreadHandler				threadReceiver	= null;
-	private BoardHandler				boardReceiver	= null;
+	private PostHandler			postReceiver	= null;
+	private ThreadHandler		threadReceiver	= null;
+	private BoardHandler		boardReceiver	= null;
 
-	private Post						currentPost		= null;
-	private Image						currentImage	= null;
-	private Post						firstPost		= null;
+	private Post				currentPost		= null;
+	private Image				currentImage	= null;
+	private Post				firstPost		= null;
 
-	private final String				baseUrl;
-	private final List<Tags>			postStarter;
-	private final List<Tags>			postEnder;
-	private final List<Tags>			imageEnder;
+	private int					lastPosAbs		= 0;
+	private int					lastPos			= 0;
+	private int					newLastPos		= 0;
+	private int					lastId			= 0;
+	private boolean				refreshing;
 
-	private final StreamParser			parser;
-	private final StreamParser			boardParser;
-
-	private final String				imgPrefix;
-	private final String				thumbPrefix;
-	private final String				countryPrefix;
-	private final Tuple<String, String>	threadURL;
-	private final String				threadMark;
-	private final String				boardIndex;
-
-	private int							lastPosAbs		= 0;
-	private int							lastPos			= 0;
-	private int							newLastPos		= 0;
-	private int							lastId			= 0;
-	private boolean						refreshing;
-
-	private String						url;
+	private String				url;
 
 	private String absolute(String relUrl) {
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
 	}
 
-	public GenericImageBoardParser(String baseUrl, List<Tags> postStarter, List<Tags> postEnder, List<Tags> imageEnder,
-			StreamParser parser, StreamParser boardParser, String threadMark, String imgPrefix, String thumbPrefix,
-			String countryPrefix, Tuple<String, String> threadURL, String boardIndex, String url) {
-		this.baseUrl = baseUrl;
-		this.postStarter = postStarter;
-		this.postEnder = postEnder;
-		this.imageEnder = imageEnder;
-		this.parser = parser;
-		this.boardParser = boardParser;
-		this.imgPrefix = imgPrefix;
-		this.thumbPrefix = thumbPrefix;
-		this.countryPrefix = countryPrefix;
-		this.threadURL = threadURL;
-		this.threadMark = threadMark;
-		this.boardIndex = boardIndex;
-
+	public GenericImageBoardParser(String url, String baseUrl, ParserOptions o) {
 		this.url = url;
+		this.baseUrl = baseUrl;
+		this.o = o;
 	}
 
 	@Override
@@ -96,7 +67,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			InputStream in = new BufferedInputStream(connection.getInputStream());
 
 			try {
-				parser.parseStream(in, GenericImageBoardParser.this);
+				o.parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
 				reset();
@@ -128,7 +99,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	@Override
 	public void parsedString(Tags tag, String data) {
 		if (currentPost == null)
-			if (postStarter.contains(tag))
+			if (o.postStarter.contains(tag))
 				currentPost = new Post();
 			else
 				return;
@@ -154,13 +125,13 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentImage == null)
 				currentImage = new Image();
 			if (currentImage.url == null)
-				currentImage.url = absolute(imgPrefix + data.trim());
+				currentImage.url = absolute(o.imgPrefix + data.trim());
 			break;
 		case POST_THUMBNAIL:
 			if (currentImage == null)
 				currentImage = new Image();
 			if (currentImage.thumbnailUrl == null)
-				currentImage.thumbnailUrl = absolute(thumbPrefix + data.trim());
+				currentImage.thumbnailUrl = absolute(o.thumbPrefix + data.trim());
 			break;
 		case POST_FILENAME:
 			if (currentImage == null)
@@ -170,7 +141,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			break;
 		case POST_COUNTRY:
 			if (currentPost.countryball == null)
-				currentPost.countryball = absolute(countryPrefix + data);
+				currentPost.countryball = absolute(o.countryPrefix + data);
 			break;
 		case POST_TITLE:
 			if (currentPost.title == null)
@@ -182,8 +153,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			break;
 		case POST_THREAD:
 			if (currentPost.message == null)
-				currentPost.isFirstPost = threadMark.length() == 0 ? data.trim().length() == 0 : data
-						.contains(threadMark);
+				currentPost.isFirstPost = o.threadMark.length() == 0 ? data.trim().length() == 0 : data
+						.contains(o.threadMark);
 			break;
 		case NULL:
 			break;
@@ -191,13 +162,13 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			Logger.get().error("Warning: unhandled case " + tag + ": " + data);
 		}
 
-		if (currentImage != null && (imageEnder.contains(tag) || currentImage.isReady())) {
+		if (currentImage != null && (o.imageEnder.contains(tag) || currentImage.isReady())) {
 			currentImage.cleanup();
 			currentPost.addImage(currentImage);
 			currentImage = null;
 		}
 
-		if (postEnder.contains(tag)) {
+		if (o.postEnder.contains(tag)) {
 			if (currentPost.isFirstPost || firstPost == null)
 				firstPost = currentPost;
 			currentPost.op = firstPost.id;
@@ -206,13 +177,13 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				refreshing = false;
 				if (lastId > 0 && lastId != currentPost.id) { // deletion
 					reset();
-					parser.halt();
+					o.parser.halt();
 				}
 				currentPost = null;
 			}
 
 			lastPos = newLastPos;
-			newLastPos = lastPosAbs + parser.getPos();
+			newLastPos = lastPosAbs + o.parser.getPos();
 
 			if (currentPost == null)
 				return;
@@ -270,11 +241,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	public String composeUrl(int post) {
-		return baseUrl + getBoard(url) + threadURL.first + post + threadURL.second;
+		return baseUrl + getBoard(url) + o.threadURL.first + post + o.threadURL.second;
 	}
 
 	public String composeUrl(Post post) {
-		return baseUrl + getBoard(url) + threadURL.first + post.op + threadURL.second
+		return baseUrl + getBoard(url) + o.threadURL.first + post.op + o.threadURL.second
 				+ (post.isFirstPost ? "" : "#" + post.id);
 	}
 
@@ -319,8 +290,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			}
 		};
 
-		InputStream in = new BufferedInputStream(new URL(baseUrl + boardIndex).openStream());
-		boardParser.parseStream(in, parseDataReceiver);
+		InputStream in = new BufferedInputStream(new URL(baseUrl + o.boardIndex).openStream());
+		o.boardParser.parseStream(in, parseDataReceiver);
 		boardReceiver.onBoardParsingDone();
 	}
 
