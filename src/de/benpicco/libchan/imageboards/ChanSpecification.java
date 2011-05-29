@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.Logger;
 
@@ -58,6 +60,7 @@ public class ChanSpecification implements IParseDataReceiver {
 			value = data.trim();
 			if (value.startsWith("\"") && value.endsWith("\""))
 				value = value.substring(1, value.length() - 1);
+			value = StringEscapeUtils.unescapeJava(value);
 		}
 
 		try {
