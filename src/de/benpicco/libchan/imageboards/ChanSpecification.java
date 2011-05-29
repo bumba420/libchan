@@ -39,6 +39,7 @@ public class ChanSpecification implements IParseDataReceiver {
 
 	public ChanSpecification(String file) {
 		this.file = file;
+		supported.add(board);
 
 		try {
 			readConfig(file);
@@ -47,8 +48,6 @@ public class ChanSpecification implements IParseDataReceiver {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		supported.add(board);
 	}
 
 	private void readConfig(String file) throws IOException {
