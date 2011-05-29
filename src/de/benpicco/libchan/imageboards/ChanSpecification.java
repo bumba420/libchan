@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.Logger;
 
@@ -55,12 +53,8 @@ public class ChanSpecification implements IParseDataReceiver {
 
 	@Override
 	public void parsedString(Tags key, String data) {
-		Pattern p = Pattern.compile("(?<!\\\\)\"(.*?)(?<!\\\\)\"");
-		Matcher m = p.matcher(data);
 		String value = null;
-		if (m.find())
-			value = StringEscapeUtils.unescapeJava(m.group().substring(1, m.group().length() - 1));
-		else if (data != null)
+		if (data != null)
 			value = data.trim();
 
 		try {

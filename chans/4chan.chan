@@ -1,17 +1,18 @@
-SITE_NAME	"4chan"
-SITE_DESC	"The most popular Imageboard"
-SITE_URL	"http://boards.4chan.org"
+SITE_NAME	4chan
+SITE_DESC	The most popular Imageboard
+SITE_URL	http://boards.4chan.org
 
-BOARD	"<li><a href=\"$BOARD_URL$\" class=\"boardlink\" title=\"$BOARD_TITLE$\">"
+BOARD	<li><a href="$BOARD_URL$" class="boardlink" title="$BOARD_TITLE$">
 
-POST	"<input type=checkbox name=\"$POST_ID$\" value=delete><span class=\"$POST_THREAD$title\">$POST_TITLE$</span>$$<span class=\"$$postername\">$POST_USER$</span>$$ $POST_DATE$ <span id=$$<blockquote>$POST_MESSAGE$</blockquote>"
-POST	"<span title=\"$POST_FILENAME$\">$$</span>)</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
-POST	")</span><br><a href=\"$POST_IMGURL$\" target=_blank><img src=$POST_THUMBNAIL$ border=0"
-POST	" <span class=\"postertrip\">$POST_TRIP$</span> $POST_DATE$ <span"
+POST	<input type=checkbox name="$POST_ID$" value=delete><span class="$POST_THREAD$title">$POST_TITLE$</span>$$<span class="$$postername">$POST_USER$</span>$$ $POST_DATE$ <span id=$$<blockquote>$POST_MESSAGE$</blockquote>
+POST	<span title="$POST_FILENAME$">$$</span>
+# There is no filename in the frontpage
+POST	)</span><br><a href="$POST_IMGURL$" target=_blank><img src=$POST_THUMBNAIL$ border=0
+POST	<span class="postertrip">$POST_TRIP$</span> $POST_DATE$ <span
 
-POST_THREAD_MARK	"file"
+POST_THREAD_MARK	file
 
-URL_PREFIX	"res/"
+URL_PREFIX	res/
 
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL
