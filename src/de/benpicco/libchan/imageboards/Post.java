@@ -28,8 +28,8 @@ public class Post implements Cloneable {
 
 	public String toString() {
 		return "ID: " + id + "\n" + "Date: " + date + "\n" + (title != null ? "Title: " + title + "\n" : "") + "User: "
-				+ (countryball != null ? " [" + countryball + "]" : "") + "\n" + user
-				+ (tripcode != null ? " (" + tripcode + ")" : "") + (mail != null ? "Mail: " + mail + "\n" : "")
+				+ (countryball != null ? " [" + countryball + "]" : "") + user
+				+ (tripcode != null ? " (" + tripcode + ")" : "") + "\n" + (mail != null ? "Mail: " + mail + "\n" : "")
 				+ (images.size() > 0 ? "Images: " + images.toString() + "\n" : "") + message + "\n";
 	}
 

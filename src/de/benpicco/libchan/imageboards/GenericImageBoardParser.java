@@ -104,6 +104,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			else
 				return;
 
+		data = data.trim();
+
 		switch (tag) {
 		case POST_ID:
 			if (currentPost.id == 0)
@@ -125,19 +127,19 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentImage == null)
 				currentImage = new Image();
 			if (currentImage.url == null)
-				currentImage.url = absolute(o.imgPrefix + data.trim());
+				currentImage.url = absolute(o.imgPrefix + data);
 			break;
 		case POST_THUMBNAIL:
 			if (currentImage == null)
 				currentImage = new Image();
 			if (currentImage.thumbnailUrl == null)
-				currentImage.thumbnailUrl = absolute(o.thumbPrefix + data.trim());
+				currentImage.thumbnailUrl = absolute(o.thumbPrefix + data);
 			break;
 		case POST_FILENAME:
 			if (currentImage == null)
 				currentImage = new Image();
 			if (currentImage.filename == null)
-				currentImage.filename = data.trim();
+				currentImage.filename = data;
 			break;
 		case POST_COUNTRY:
 			if (currentPost.countryball == null)
@@ -152,9 +154,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				currentPost.message = data;
 			break;
 		case POST_THREAD:
-			if (currentPost.message == null)
-				currentPost.isFirstPost = o.threadMark.length() == 0 ? data.trim().length() == 0 : data
-						.contains(o.threadMark);
+			currentPost.isFirstPost = o.threadMark.length() == 0 ? data.length() > 0 : data.contains(o.threadMark);
 			break;
 		case NULL:
 			break;

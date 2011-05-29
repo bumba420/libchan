@@ -14,7 +14,7 @@ POST		<img style="display: block" id='thumbnail_$$' src=$POST_THUMBNAIL$ $$ onmo
 POST		<img src="/images/balls/$POST_COUNTRY$"
 POST		<span class="postdate">$POST_DATE$</span>
 POST		<blockquote>$POST_MESSAGE$</blockquote>
-POST		<div class="file_thread">$POST_THREAD$<
+POST		<div class="thread" style="clear: both" $POST_THREAD$>
 
 URL_PREFIX	thread-
 URL_POSTFIX	.html
@@ -22,4 +22,5 @@ URL_POSTFIX	.html
 COUNTRY_PREFIX	/images/balls/
 
 START_POST	POST_ID
+START_POST	POST_THREAD
 END_POST	POST_MESSAGE

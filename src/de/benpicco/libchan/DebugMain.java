@@ -18,7 +18,7 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = args[0];
+		String url = "http://krautchan.net/int/";
 
 		GenericImageBoardParser parser = new ChanManager("chans/").getParser(url);
 
@@ -32,10 +32,12 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		while (true) {
-			parser.getPosts();
-			java.lang.Thread.sleep(5000);
-		}
+		parser.getThreads();
+
+		// while (true) {
+		// parser.getPosts();
+		// java.lang.Thread.sleep(5000);
+		// }
 	}
 }
 

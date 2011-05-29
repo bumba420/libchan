@@ -54,8 +54,11 @@ public class ChanSpecification implements IParseDataReceiver {
 	@Override
 	public void parsedString(Tags key, String data) {
 		String value = null;
-		if (data != null)
+		if (data != null) {
 			value = data.trim();
+			if (value.startsWith("\"") && value.endsWith("\""))
+				value = value.substring(1, value.length() - 1);
+		}
 
 		try {
 			switch (key) {
@@ -124,7 +127,7 @@ public class ChanSpecification implements IParseDataReceiver {
 					Logger.get().println("Warning: ununsed option " + key);
 			}
 		} catch (IllegalArgumentException e) {
-			Logger.get().error("Invalid key " + key + " in " + file);
+			Logger.get().error("Error at key " + key + " in " + file + " (value: " + data + ")");
 		}
 	}
 

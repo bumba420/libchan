@@ -27,7 +27,7 @@ public class ParserOptions {
 		postStarter = o.postStarter;
 		imageEnder = o.imageEnder;
 		parser = o.parser.clone();
-		boardParser = o.parser.clone();
+		boardParser = o.boardParser.clone();
 		thumbPrefix = o.thumbPrefix;
 		imgPrefix = o.imgPrefix;
 		countryPrefix = o.countryPrefix;
