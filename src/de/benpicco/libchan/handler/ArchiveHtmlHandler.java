@@ -38,7 +38,7 @@ public class ArchiveHtmlHandler implements PostHandler {
 		if (!converter.isInizialised())
 			converter = null;
 		try {
-			FileUtil.copyFile(new File(templateDir + "style.css"), new File(targetDir + "style.css"));
+			FileUtil.copyDirectory(new File(templateDir + "static"), new File(targetDir));
 		} catch (IOException e) {
 			Logger.get().error("Unable to copy " + templateDir + "style.css");
 		}
