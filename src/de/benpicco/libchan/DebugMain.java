@@ -32,7 +32,7 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.getThreads();
+		parser.getPosts();
 
 		// while (true) {
 		// parser.getPosts();
