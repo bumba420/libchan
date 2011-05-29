@@ -80,70 +80,74 @@ public class ChanSpecification implements IParseDataReceiver {
 		else if (data != null)
 			value = data.trim();
 
-		switch (key) {
-		case SITE_NAME:
-			if (board.name != null) {
-				board = new Imageboard();
-				supported.add(board);
+		try {
+			switch (key) {
+			case SITE_NAME:
+				if (board.name != null) {
+					board = new Imageboard();
+					supported.add(board);
+				}
+				board.name = value;
+				break;
+			case SITE_DESC:
+				if (board.description != null) {
+					board = new Imageboard();
+					supported.add(board);
+				}
+				board.description = value;
+				break;
+			case SITE_URL:
+				if (board.baseurl != null) {
+					board = new Imageboard();
+					supported.add(board);
+				}
+				board.baseurl = value;
+				break;
+			case URL_PREFIX:
+				threadURL.first = value;
+				break;
+			case URL_POSTFIX:
+				threadURL.second = value;
+				break;
+			case START_POST:
+				postStarter.add(Tags.valueOf(value));
+				break;
+			case END_POST:
+				postEnder.add(Tags.valueOf(value));
+				break;
+			case END_IMAGE:
+				imageEnder.add(Tags.valueOf(value));
+				break;
+			case THUMBNAIL_PREFIX:
+				thumbPrefix = value;
+				break;
+			case IMAGE_PREFIX:
+				imgPrefix = value;
+				break;
+			case COUNTRY_PREFIX:
+				countryPrefix = value;
+				break;
+			case BOARD:
+				boardParser.addTag(value);
+				break;
+			case BOARD_INDEX:
+				boardIndex = value;
+				break;
+			case POST:
+				parser.addTag(value);
+				break;
+			case POST_THREAD_MARK:
+				threadMark = value;
+				break;
+			default:
+				if (value == null) {
+					Logger.get().error("Syntax error in " + file + ": " + key + " does have invalid value " + data);
+					return;
+				} else
+					Logger.get().println("Warning: ununsed option " + key);
 			}
-			board.name = value;
-			break;
-		case SITE_DESC:
-			if (board.description != null) {
-				board = new Imageboard();
-				supported.add(board);
-			}
-			board.description = value;
-			break;
-		case SITE_URL:
-			if (board.baseurl != null) {
-				board = new Imageboard();
-				supported.add(board);
-			}
-			board.baseurl = value;
-			break;
-		case URL_PREFIX:
-			threadURL.first = value;
-			break;
-		case URL_POSTFIX:
-			threadURL.second = value;
-			break;
-		case START_POST:
-			postStarter.add(Tags.valueOf(value));
-			break;
-		case END_POST:
-			postEnder.add(Tags.valueOf(value));
-			break;
-		case END_IMAGE:
-			imageEnder.add(Tags.valueOf(value));
-			break;
-		case THUMBNAIL_PREFIX:
-			thumbPrefix = value;
-			break;
-		case IMAGE_PREFIX:
-			imgPrefix = value;
-			break;
-		case COUNTRY_PREFIX:
-			countryPrefix = value;
-			break;
-		case BOARD:
-			boardParser.addTag(value);
-			break;
-		case BOARD_INDEX:
-			boardIndex = value;
-			break;
-		case POST:
-			parser.addTag(value);
-			break;
-		case POST_THREAD_MARK:
-			threadMark = value;
-			break;
-		default:
-			if (value == null) {
-				Logger.get().error("Syntax error in " + file + ": " + key + " does have invalid value " + data);
-				return;
-			} else
-				Logger.get().println("Warning: ununsed option " + key);
+		} catch (IllegalArgumentException e) {
+			Logger.get().error("Invalid key " + key + " in " + file);
 		}
 	}
 

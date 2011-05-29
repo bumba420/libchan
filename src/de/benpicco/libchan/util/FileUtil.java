@@ -35,6 +35,18 @@ public class FileUtil {
 		}
 	}
 
+	public void copyDirectory(File srcDir, File dstDir) throws IOException {
+		if (srcDir.isDirectory()) {
+			if (!dstDir.exists())
+				dstDir.mkdir();
+
+			for (String child : srcDir.list())
+				copyDirectory(new File(srcDir, child), new File(dstDir, child));
+		} else {
+			copyFile(srcDir, dstDir);
+		}
+	}
+
 	public static String getJarLocation() {
 		if (jarLocation == null)
 			jarLocation = new PathHelper().jarLocation;

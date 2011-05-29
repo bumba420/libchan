@@ -8,8 +8,9 @@ BOARD		"<li id=\"board_$$\" class=\"board_newposts\"><a href=\"$BOARD_URL$\" tar
 POST		"<input name=\"post_$POST_ID$\""
 POST		"<span class=\"postername\">$POST_USER$</span>"
 POST		"<span class=\"postsubject\">$POST_TITLE$</span>"
+POST		"<div class=\"file_$$\">$$<span id=\"filename_$$\" style=\"display:none\">$POST_FILENAME$</span>$$<a href=\"$POST_IMGURL$\""
+POST		"<img src=\"$POST_THUMBNAIL$\" onmouseover=\"fileTooltip"
 POST		"<img style=\"display: block\" id='thumbnail_$$' src=$POST_THUMBNAIL$ "
-POST		"<span class=\"filename\"><a href=\"$POST_IMGURL$\""
 POST		"<img src=\"/images/balls/$POST_COUNTRY$\""
 POST		"<span class=\"postdate\">$POST_DATE$</span>"
 POST		"<blockquote>$POST_MESSAGE$</blockquote>"
@@ -22,4 +23,3 @@ COUNTRY_PREFIX		"/images/balls/"
 
 START_POST	POST_ID
 END_POST	POST_MESSAGE
-END_IMAGE	POST_THUMBNAIL

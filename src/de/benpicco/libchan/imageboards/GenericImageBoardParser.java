@@ -191,7 +191,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			Logger.get().error("Warning: unhandled case " + tag + ": " + data);
 		}
 
-		if (currentImage != null && imageEnder.contains(tag)) {
+		if (currentImage != null && (imageEnder.contains(tag) || currentImage.isReady())) {
 			currentImage.cleanup();
 			currentPost.addImage(currentImage);
 			currentImage = null;

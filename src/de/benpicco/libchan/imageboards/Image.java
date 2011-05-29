@@ -21,4 +21,8 @@ public class Image {
 				thumbnailUrl = url;
 		}
 	}
+
+	public boolean isReady() {
+		return thumbnailUrl != null && url != null && filename != null;
+	}
 }

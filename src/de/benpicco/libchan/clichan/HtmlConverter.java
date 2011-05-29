@@ -93,7 +93,8 @@ public class HtmlConverter {
 
 		String images = "";
 		for (Image img : post.images)
-			images += imgTemplate.replace("$IMGURL", img.url).replace("$THUMBNAIL", img.thumbnailUrl)
+			images += imgTemplate.replace("$IMGURL", StringEscapeUtils.escapeHtml4(img.url))
+					.replace("$THUMBNAIL", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
 					.replace("$FILENAME", img.filename);
 
 		return postTemplate.replace("$ID", post.id + "").replace("$TITLE", post.title != null ? post.title : "")
