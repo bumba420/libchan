@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for cliChan">
+
+<target name="init">
+	<mkdir dir="bin"/>
+	<mkdir dir="dist"/>
+</target>
+
+<target name="compile" depends="init">
+	<javac srcdir="src" destdir="bin" includeantruntime="false">
+		<classpath>
+			<fileset dir="lib">
+				<include name="**/*.jar"/>
+			</fileset>
+		</classpath>
+	</javac>
+</target>
+
+<target name="create_run_jar" depends="compile">
+	<copy todir="dist/chans"><fileset dir="chans"/>	</copy>
+	<copy todir="dist/template"><fileset dir="template"/></copy>
+	<copy todir="dist/"><fileset dir="scripts"/></copy>
+	<copy todir="dist/" file="README.TXT" />
+
+        <jar destfile="dist/cliChan.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="de.benpicco.clichan.CliChan"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-lang3-3.0-beta.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="lib/commons-cli-1.2.jar"/>
+        </jar>
+    </target>
+</project>
