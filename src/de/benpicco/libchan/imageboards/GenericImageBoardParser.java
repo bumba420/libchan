@@ -300,16 +300,19 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	@Override
 	public void setPostHandler(PostHandler rec) {
+		reset();
 		postReceiver = rec;
 	}
 
 	@Override
 	public void setThreadHandler(ThreadHandler rec) {
+		reset();
 		threadReceiver = rec;
 	}
 
 	@Override
 	public void setBoardHandler(BoardHandler rec) {
+		reset();
 		boardReceiver = rec;
 	}
 
