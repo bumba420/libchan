@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.Logger;
@@ -138,6 +139,10 @@ public class ChanSpecification implements IParseDataReceiver {
 		return supported;
 	}
 
+	public String name() {
+		return file;
+	}
+
 	/**
 	 * A ChanSpecification can be valid for many websites using the same
 	 * software. This function generates a parser for a specific site.
@@ -151,5 +156,18 @@ public class ChanSpecification implements IParseDataReceiver {
 			if (url.startsWith(chan.baseurl))
 				return new GenericImageBoardParser(url, chan.baseurl, new ParserOptions(o));
 		return null;
+	}
+
+	/**
+	 * will create an ImageBoardParser with the engine, no matter if it is
+	 * supported by it or not.
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public GenericImageBoardParser forceGetImageBoardParser(String url) {
+		final String http = "http://";
+		final String baseUrl = http + StringUtils.substringBetween(url, http, "/");
+		return new GenericImageBoardParser(url, baseUrl, new ParserOptions(o));
 	}
 }

@@ -18,9 +18,14 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = "http://krautchan.net/int/";
+		String url = "http://img.parachan.net/x/";
+		// String url = "http://www.0chan.ru/e/";
+		// String url = "http://operatorchan.org/k/";
 
-		GenericImageBoardParser parser = new ChanManager("chans/").getParser(url);
+		ChanManager mngr = new ChanManager("chans/");
+		GenericImageBoardParser parser = mngr.getParser(url);
+		if (parser == null)
+			parser = mngr.guessParser(url);
 
 		if (parser == null) {
 			System.err.println("No parser found");

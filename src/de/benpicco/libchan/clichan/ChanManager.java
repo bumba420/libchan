@@ -7,6 +7,8 @@ import java.util.List;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Imageboard;
+import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
 
 public class ChanManager {
@@ -26,6 +28,27 @@ public class ChanManager {
 
 	}
 
+	public synchronized GenericImageBoardParser guessParser(String url) {
+		GenericImageBoardParser ret = null;
+		PostCounter pc = new PostCounter();
+		for (ChanSpecification chan : chans) {
+			Logger.get().println("Trying " + chan.name() + "…");
+			ret = chan.forceGetImageBoardParser(url);
+			try {
+				pc.reset();
+				ret.setPostHandler(pc);
+				ret.getPosts();
+				if (pc.matches()) {
+					Logger.get().println("Success!");
+					return ret;
+				}
+			} catch (Exception e) {
+				continue;
+			}
+		}
+		return ret;
+	}
+
 	public synchronized GenericImageBoardParser getParser(String url) {
 		GenericImageBoardParser ret = null;
 		for (ChanSpecification chan : chans) {
@@ -42,4 +65,26 @@ public class ChanManager {
 			boards.addAll(chan.getSupported());
 		return boards;
 	}
+}
+
+class PostCounter implements PostHandler {
+	int	postCout	= 0;
+
+	public void reset() {
+		postCout = 0;
+	}
+
+	public boolean matches() {
+		return postCout > 0;
+	}
+
+	@Override
+	public void onAddPost(Post post) {
+		postCout++;
+	}
+
+	@Override
+	public void onPostsParsingDone() {
+	}
+
 }
