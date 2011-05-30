@@ -263,6 +263,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			@Override
 			public void parsedString(Tags tag, String data) {
+				data = data.trim();
 				if (data.length() == 0)
 					return;
 
@@ -276,7 +277,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 						board.url = getBaseUrl() + board.url;
 					break;
 				case BOARD_TITLE:
-					board.name = StringEscapeUtils.unescapeHtml4(data);
+					// filter html and make escaped characters readable again -
+					// some boards want to do fancy stuff in their navigation…
+					board.name = StringEscapeUtils.unescapeHtml4(data.replaceAll("\\<.*?\\>", "")).trim();
 					break;
 				default:
 					return;
