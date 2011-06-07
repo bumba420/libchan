@@ -1,6 +1,7 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
@@ -31,12 +32,18 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	GenericImageBoardParser	threadParser	= null;
 	GenericImageBoardParser	postParser		= null;
 
+	int[]					occurence;
+	int[]					mentioned;
+	int						threadId		= 0;
+
 	public PageCrawler(String page, ChanManager manager, final String[] names) {
 		threadParser = manager.getParser(page);
 		threadParser.setThreadHandler(this);
 		postParser = manager.getParser(page);
 		postParser.setPostHandler(this);
 		this.names = names;
+		occurence = new int[names.length];
+		mentioned = new int[names.length];
 	}
 
 	@Override
@@ -53,11 +60,27 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onAddPost(Post post) {
-		for (String name : names)
-			if (post.user.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println(name + ": " + postParser.composeUrl(post));
-			else if (post.message.toLowerCase().contains(name.toLowerCase()))
-				Logger.get().println("mentioned " + name + ": " + postParser.composeUrl(post));
+		// we only have one thread here
+		if (threadId > 0 && threadId != post.op)
+			printResults();
+		threadId = post.op;
+		for (int i = 0; i < names.length; ++i)
+			if (post.user.toLowerCase().contains(names[i].toLowerCase()))
+				occurence[i]++;
+			else if (post.message.toLowerCase().contains(names[i].toLowerCase()))
+				mentioned[i]++;
+	}
+
+	private void printResults() {
+		for (int i = 0; i < names.length; ++i)
+			if (occurence[i] > 0 || mentioned[i] > 0)
+				Logger.get().println(
+						occurence[i] + " posts from " + names[i]
+								+ (mentioned[i] > 0 ? " and " + mentioned[i] + " mentions" : "") + " in "
+								+ postParser.composeUrl(threadId));
+		Arrays.fill(occurence, 0);
+		Arrays.fill(mentioned, 0);
+		threadId = 0;
 	}
 
 	@Override
@@ -75,6 +98,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onPostsParsingDone() {
+		printResults();
 	}
 
 	@Override
