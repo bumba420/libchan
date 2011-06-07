@@ -1,6 +1,7 @@
 package de.benpicco.libchan.imageboards;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,9 +45,13 @@ public class ChanSpecification implements IParseDataReceiver {
 			if (!line.startsWith("#")) {
 				Matcher matcher = p.matcher(line);
 				if (matcher.matches()) {
-					Tags key = Tags.valueOf(matcher.group(1));
-					String value = matcher.group().substring(matcher.end(1)).trim();
-					parsedString(key, value);
+					try {
+						Tags key = Tags.valueOf(matcher.group(1));
+						String value = matcher.group().substring(matcher.end(1)).trim();
+						parsedString(key, value);
+					} catch (IllegalArgumentException e) {
+						Logger.get().error("Unknown Value '" + matcher.group(1) + "' in " + file);
+					}
 				}
 			}
 			line = reader.readLine();
@@ -66,6 +71,14 @@ public class ChanSpecification implements IParseDataReceiver {
 
 		try {
 			switch (key) {
+			case INCLUDE:
+				try {
+					String include = StringUtils.substringBeforeLast(file, File.separator) + File.separator + value;
+					readConfig(include);
+				} catch (IOException e) {
+					Logger.get().error("Error reading " + value + ": " + e.getMessage());
+				}
+				break;
 			case SITE_NAME:
 				if (board.name != null) {
 					board = new Imageboard();
