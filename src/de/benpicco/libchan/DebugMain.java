@@ -18,7 +18,7 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = "http://199xchan.org/360/";
+		String url = "http://boards.420chan.org/b/";
 		// String url = "http://www.0chan.ru/e/";
 		// String url = "http://operatorchan.org/k/";
 
@@ -37,7 +37,7 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.getPosts();
+		parser.getBoards();
 
 		// while (true) {
 		// parser.getPosts();

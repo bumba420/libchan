@@ -1,0 +1,72 @@
+SITE_NAME	7chan
+SITE_DESC	A popular alternative to 4chan
+SITE_URL	http://7chan.org
+
+SITE_NAME	OperatorChan
+SITE_DESC	The only weapons, military, and freedom oriented imageboard on the net.
+SITE_URL	http://operatorchan.org
+
+SITE_NAME	0chan
+SITE_DESC	One of the most popular Russian imageboards
+SITE_URL	http://www.0chan.ru
+
+SITE_NAME	Иксчан
+SITE_DESC	Суперборда для супергероев
+SITE_URL	http://xchan.ru
+
+SITE_NAME	Auschan
+SITE_DESC	Australian Imageboard
+SITE_URL	http://auschan.org
+
+SITE_NAME	199XChan
+SITE_DESC	kickin rad - video game focused imageboard
+SITE_URL	http://199xchan.org
+
+SITE_NAME	98chan
+SITE_DESC	500chan is dead, long live 98chan
+SITE_URL	http://98chan.org
+
+SITE_NAME	99chan
+SITE_DESC	99chan is an imageboard founded in June 2008. It was previously known as 78chan.
+SITE_URL	http://99chan.org
+
+SITE_NAME	Kusaba X
+SITE_DESC	Home of the Kusaba X software
+SITE_URL	http://kusabax.cultnet.net
+
+##############################################
+
+BOARD_INDEX	/menu.html
+BOARD		<li><a href="$BOARD_URL$" 
+BOARD		class="boardlink$$">$BOARD_TITLE$</a></li>
+
+POST	<div id="thread$POST_THREAD$">
+POST	<input type="checkbox" name="post[]" value="$POST_ID$" />
+# OperatorChan
+POST	<input type="checkbox" name="delete" value="$POST_ID$">
+
+POST	<span class="filetitle">$POST_TITLE$</span>
+POST	<span class="postername">$POST_USER$</span>
+POST	<span class="postertrip">$POST_TRIP$</span>
+# version 0.8
+POST	<span class="postername">$$</span>$$\n$POST_DATE$</label>
+# version 0.9
+POST	<span class="postername">$$</span>$$\n$POST_DATE$<span class="reflink">
+
+POST	<blockquote>$POST_MESSAGE$</blockquote>
+POST	<p class="message">$POST_MESSAGE$</p>
+
+# version 0.9
+POST	<div class="file_size">$$</a>$$($$,$$, $POST_FILENAME$)$$</div>$$<div id="thumb_$$" class="post_thumb">$$<a target="_blank" href="$POST_IMGURL$"><img src="$POST_THUMBNAIL$" 
+# version 0.8
+POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
+POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"
+# todo: POST_FILENAME - not present in kusaba
+
+URL_PREFIX	res/
+URL_POSTFIX	.html
+
+START_POST	POST_ID
+START_POST	POST_THREAD
+END_POST	POST_MESSAGE
+END_IMAGE	POST_MESSAGE

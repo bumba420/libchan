@@ -45,8 +45,11 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			return;
 
 		ImageBoardParser parser = manager.getParser(url);
+		if (parser == null)
+			parser = manager.guessParser(url);
+
 		if (parser == null) {
-			Logger.get().error("No parser found for " + url);
+			Logger.get().error("No suitable parser for " + url);
 			return;
 		}
 

@@ -29,24 +29,23 @@ public class ChanManager {
 	}
 
 	public synchronized GenericImageBoardParser guessParser(String url) {
-		GenericImageBoardParser ret = null;
 		PostCounter pc = new PostCounter();
 		for (ChanSpecification chan : chans) {
 			Logger.get().println("Trying " + chan.name() + "…");
-			ret = chan.forceGetImageBoardParser(url);
+			GenericImageBoardParser parser = chan.forceGetImageBoardParser(url);
 			try {
 				pc.reset();
-				ret.setPostHandler(pc);
-				ret.getPosts();
+				parser.setPostHandler(pc);
+				parser.getPosts();
 				if (pc.matches()) {
 					Logger.get().println("Success!");
-					return ret;
+					return parser;
 				}
 			} catch (Exception e) {
 				continue;
 			}
 		}
-		return ret;
+		return null;
 	}
 
 	public synchronized GenericImageBoardParser getParser(String url) {
