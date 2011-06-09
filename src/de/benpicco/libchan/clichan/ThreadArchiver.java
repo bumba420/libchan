@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import de.benpicco.libchan.handler.ArchiveHtmlHandler;
@@ -24,6 +25,10 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	private final List<ImageBoardParser>	threads;
 	private final List<ImageBoardParser>	newThreads;
 
+	// only needed to watch for deleted posts
+	private List<Post>						postList	= null;
+	private int								postNum		= 0;
+
 	private final ArchiveOptions			o;
 
 	public ThreadArchiver(ArchiveOptions options) {
@@ -31,6 +36,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		threads = new ArrayList<ImageBoardParser>();
 		newThreads = new ArrayList<ImageBoardParser>();
 		manager = new ChanManager(o.config);
+		if (o.delete)
+			postList = new LinkedList<Post>();
 	}
 
 	private boolean contains(List<ImageBoardParser> parsers, String url) {
@@ -85,13 +92,27 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		public void onAddPost(final Post post) {
 			if (post.id > lastId) {
 				lastId = post.id;
+				if (postList != null)
+					postList.add(post);
 				for (PostHandler h : handler)
 					h.onAddPost(post);
+			} else if (postList != null) { // see which post got deleted
+				if (postList.size() > postNum) {
+					Post oldPost = postList.get(postNum);
+					while (oldPost.id < post.id) {
+						postList.remove(postNum);
+						Logger.get().println("Received " + post.id + " -> Post " + oldPost.id + " deleted");
+						Logger.get().println(oldPost.toString());
+						oldPost = postList.get(postNum);
+					}
+					postNum++;
+				}
 			}
 		}
 
 		@Override
 		public void onPostsParsingDone() {
+			postNum = 0;
 			for (PostHandler h : handler)
 				h.onPostsParsingDone();
 		}

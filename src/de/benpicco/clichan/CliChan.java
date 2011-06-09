@@ -42,6 +42,7 @@ public class CliChan {
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
 		cliOptions.addOption("v", "version", false, "show version");
+		cliOptions.addOption("d", "delete-deleted", false, "watch for deleted pots and remove deleted images");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "archive thread as html");
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
@@ -59,7 +60,8 @@ public class CliChan {
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
-		o = new Option("u", "url", true, "url to process, may be a thread or a board in when the --find option is used");
+		o = new Option("u", "url", true,
+				"one or more urls to process, may be a thread or a board in when the --find option is used");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
@@ -83,13 +85,14 @@ public class CliChan {
 					options.names.add(name.toLowerCase());
 			}
 			if (commandLine.hasOption('v')) {
-				System.out.println("cliChan " + VERSION + " using libChan");
+				System.out.println("cliChan " + VERSION + " using libChan\nhttp://libchan.googlecode.com/");
 				System.exit(0);
 			}
 			options.saveHtml = commandLine.hasOption("html");
 			options.threadFolders = !commandLine.hasOption("nothreadfolders");
 			options.archiveThread = !commandLine.hasOption("noarchive");
 			options.recordStats = commandLine.hasOption("stats");
+			options.delete = commandLine.hasOption("d");
 
 			if (commandLine.hasOption("list")) {
 				ChanManager manager = new ChanManager(options.config);
