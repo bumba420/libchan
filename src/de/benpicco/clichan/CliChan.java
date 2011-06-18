@@ -12,6 +12,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import de.benpicco.libchan.clichan.ArchiveOptions;
+import de.benpicco.libchan.clichan.BoardArchiver;
 import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.ThreadArchiver;
@@ -31,7 +32,7 @@ public class CliChan {
 		options.config = FileUtil.getJarLocation() + "chans" + File.separator;
 		String[] namesToSearch = null;
 		options.saveHtml = false;
-		options.archiveThread = true;
+		options.saveImages = true;
 		options.threadFolders = true;
 		options.recordStats = false;
 
@@ -42,7 +43,8 @@ public class CliChan {
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
 		cliOptions.addOption("v", "version", false, "show version");
-		cliOptions.addOption("d", "delete-deleted", false, "watch for deleted pots and remove deleted images");
+		cliOptions.addOption("archiveAll", true, "Archive all threads on a board, refresh interval for the main page");
+		cliOptions.addOption("d", "deleteDeleted", false, "watch for deleted pots and remove deleted images");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "archive thread as html");
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
@@ -88,9 +90,17 @@ public class CliChan {
 				System.out.println("cliChan " + VERSION + " using libChan\nhttp://libchan.googlecode.com/");
 				System.exit(0);
 			}
+
+			if (commandLine.hasOption("archiveAll")) {
+				options.boardInterval = Integer.parseInt(commandLine.getOptionValue("archiveAll")) * 1000;
+				if (options.interval <= 0)
+					options.interval = options.boardInterval;
+				options.followUpTag = null; // new threads will get added anyway
+			}
+
 			options.saveHtml = commandLine.hasOption("html");
 			options.threadFolders = !commandLine.hasOption("nothreadfolders");
-			options.archiveThread = !commandLine.hasOption("noarchive");
+			options.saveImages = !commandLine.hasOption("noarchive");
 			options.recordStats = commandLine.hasOption("stats");
 			options.delete = commandLine.hasOption("d");
 
@@ -112,8 +122,13 @@ public class CliChan {
 		}
 
 		ThreadArchiver archiver = null;
+		BoardArchiver boardArchiver = null;
+
 		if (namesToSearch == null)
 			archiver = new ThreadArchiver(options);
+
+		if (options.boardInterval > 0)
+			boardArchiver = new BoardArchiver(options);
 
 		for (String url : urls) {
 			int anchor = url.indexOf('#');
@@ -122,11 +137,15 @@ public class CliChan {
 
 			if (namesToSearch != null)
 				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.config);
+			if (boardArchiver != null)
+				boardArchiver.addBoard(url);
 			else
 				archiver.addThread(url);
 		}
 
-		if (archiver != null)
+		if (boardArchiver != null)
+			boardArchiver.run();
+		else if (archiver != null)
 			archiver.run();
 	}
 }

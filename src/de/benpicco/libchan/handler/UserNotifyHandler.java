@@ -7,11 +7,11 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
-public class UserNotifyHandler implements PostHandler {
+public class UserNotifyHandler implements PostProcessor {
 
 	private final List<String>	names;
 
@@ -65,4 +65,7 @@ public class UserNotifyHandler implements PostHandler {
 	public void onPostsParsingDone() {
 	}
 
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
+	}
 }

@@ -1,10 +1,10 @@
 package de.benpicco.libchan.handler;
 
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.Logger;
 
-public class PostCountHandler implements PostHandler {
+public class PostCountHandler implements PostProcessor {
 	final int	treshold;
 	int			count		= 0;
 	int			threadId	= 0;
@@ -25,5 +25,11 @@ public class PostCountHandler implements PostHandler {
 	@Override
 	public void onPostsParsingDone() {
 		Logger.get().println("Thread " + threadId + " with " + count + " posts received.");
+	}
+
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
+		if (newPost == null)
+			--count;
 	}
 }

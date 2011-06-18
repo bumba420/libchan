@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 import de.benpicco.clichan.StdLogger;
+import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
@@ -15,12 +17,30 @@ import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
 
 public class DebugMain {
+
+	private static void archiveThread(String url) {
+		ArchiveOptions options = new ArchiveOptions();
+		options.config = "chans/";
+		options.target = "/tmp/libChan/";
+		// options.saveHtml = true;
+		options.saveImages = true;
+		options.threadFolders = true;
+		options.interval = 30000;
+		options.delete = true;
+
+		ThreadArchiver archiver = new ThreadArchiver(options);
+		archiver.addThread(url);
+		archiver.run();
+	}
+
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = "";
+		String url = "http://krautchan.net/int/thread-5317899.html";
 		// String url = "http://www.0chan.ru/e/";
 		// String url = "http://operatorchan.org/k/";
+
+		archiveThread(url);
 
 		ChanManager mngr = new ChanManager("chans/");
 		GenericImageBoardParser parser = mngr.getParser(url);

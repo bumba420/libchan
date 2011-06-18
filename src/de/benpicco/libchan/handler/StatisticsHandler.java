@@ -9,10 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 
-public class StatisticsHandler implements PostHandler {
+public class StatisticsHandler implements PostProcessor {
 
 	final HashMap<Integer, Stats>	usermapping;
 	final ArrayList<Stats>			users;
@@ -84,6 +84,12 @@ public class StatisticsHandler implements PostHandler {
 			graph.append("}");
 			graph.close();
 		}
+	}
+
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
+		// TODO Auto-generated method stub
+
 	}
 }
 

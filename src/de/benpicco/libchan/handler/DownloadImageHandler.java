@@ -4,10 +4,10 @@ import java.io.File;
 
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 
-public class DownloadImageHandler implements PostHandler {
+public class DownloadImageHandler implements PostProcessor {
 	final String	targetDir;
 	final boolean	threadFolder;
 
@@ -44,5 +44,11 @@ public class DownloadImageHandler implements PostHandler {
 
 	@Override
 	public void onPostsParsingDone() {
+	}
+
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
+		// TODO Auto-generated method stub
+
 	}
 }

@@ -8,10 +8,10 @@ import java.util.regex.Pattern;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.Logger;
 
-public class FollowupThreadHandler implements PostHandler {
+public class FollowupThreadHandler implements PostProcessor {
 	private final String			followUpTag;
 	private final NewThreadReceiver	handler;
 	private final ImageBoardParser	parser;		// for composing the URL
@@ -61,5 +61,9 @@ public class FollowupThreadHandler implements PostHandler {
 
 	@Override
 	public void onPostsParsingDone() {
+	}
+
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
 	}
 }

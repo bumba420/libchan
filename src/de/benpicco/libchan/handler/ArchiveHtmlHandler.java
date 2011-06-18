@@ -10,11 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import de.benpicco.libchan.clichan.HtmlConverter;
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
-public class ArchiveHtmlHandler implements PostHandler {
+public class ArchiveHtmlHandler implements PostProcessor {
 
 	private final String	baseDir;
 	private final boolean	threadFolder;
@@ -113,5 +113,11 @@ public class ArchiveHtmlHandler implements PostHandler {
 		}
 
 		return newPost;
+	}
+
+	@Override
+	public void onPostModified(Post oldPost, Post newPost) {
+		// TODO Auto-generated method stub
+
 	}
 }

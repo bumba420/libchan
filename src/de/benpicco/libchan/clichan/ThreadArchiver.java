@@ -18,6 +18,7 @@ import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.Logger;
 
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
@@ -30,6 +31,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	private int								postNum		= 0;
 
 	private final ArchiveOptions			o;
+	private boolean							running;
 
 	public ThreadArchiver(ArchiveOptions options) {
 		this.o = options;
@@ -47,7 +49,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		return false;
 	}
 
-	public void addThread(String url) {
+	public synchronized void addThread(String url) {
 		if (contains(threads, url) || contains(newThreads, url))
 			return;
 
@@ -62,9 +64,9 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 		Logger.get().println("Adding " + url);
 
-		ArrayList<PostHandler> handler = new ArrayList<PostHandler>();
+		ArrayList<PostProcessor> handler = new ArrayList<PostProcessor>();
 
-		if (o.archiveThread)
+		if (o.saveImages)
 			handler.add(new DownloadImageHandler(o.target, o.threadFolders));
 		handler.add(new PostCountHandler(500)); // TODO: remove magic number
 		if (o.saveHtml)
@@ -81,38 +83,61 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	}
 
 	class PostArchiver implements PostHandler {
-		List<PostHandler>	handler;
+		List<PostProcessor>	handler;
 		private int			lastId	= 0;
 
-		public PostArchiver(List<PostHandler> handler) {
+		public PostArchiver(List<PostProcessor> handler) {
 			this.handler = handler;
+		}
+
+		/**
+		 * private helper function, does no sanity checking
+		 * 
+		 * @param oldPost
+		 */
+		private void removePost(int postNum) {
+			Post oldPost = postList.remove(postNum);
+			for (PostProcessor h : handler)
+				h.onPostModified(oldPost, null);
+			Logger.get().println("Post " + oldPost.id + " deleted");
+			Logger.get().println(oldPost.toString());
 		}
 
 		@Override
 		public void onAddPost(final Post post) {
 			if (post.id > lastId) {
 				lastId = post.id;
+				if (postNum > 0) { // last post got deleted, new post was done
+									// afterwardss
+					for (; postNum < postList.size(); postNum++)
+						removePost(postNum);
+					postNum++;
+				}
+
 				if (postList != null)
 					postList.add(post);
+
 				for (PostHandler h : handler)
 					h.onAddPost(post);
 			} else if (postList != null) { // see which post got deleted
-				if (postList.size() > postNum) {
-					Post oldPost = postList.get(postNum);
-					while (oldPost.id < post.id) {
-						postList.remove(postNum);
-						Logger.get().println("Received " + post.id + " -> Post " + oldPost.id + " deleted");
-						Logger.get().println(oldPost.toString());
-						oldPost = postList.get(postNum);
-					}
-					postNum++;
+				Post oldPost = postList.get(postNum);
+				while (oldPost.id < post.id) {
+					removePost(postNum);
+					oldPost = postList.get(postNum);
 				}
+				postNum++;
 			}
 		}
 
 		@Override
 		public void onPostsParsingDone() {
-			postNum = 0;
+			if (postNum > 0) {
+				for (; postNum < postList.size(); postNum++)
+					// deleted posts that are the last posts
+					removePost(postNum);
+
+				postNum = 0;
+			}
 			for (PostHandler h : handler)
 				h.onPostsParsingDone();
 		}
@@ -120,6 +145,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 	@Override
 	public void run() {
+		running = true;
 		do {
 			threads.addAll(newThreads);
 			newThreads.clear();
@@ -153,5 +179,10 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			else
 				return;
 		} while (threads.size() > 0);
+		running = false;
+	}
+
+	public boolean isRunnig() {
+		return running;
 	}
 }

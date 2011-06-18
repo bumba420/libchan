@@ -82,8 +82,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				}
 			}
 		}
-		if (lastId < lastIdPre) {
+		if (lastId < lastIdPre || refreshing) {
 			Logger.get().println("Deletion detected, refreshing entire page");
+			reset();
 			getPosts();
 		}
 		postReceiver.onPostsParsingDone();
@@ -94,6 +95,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		lastPos = 0;
 		lastPosAbs = 0;
 		newLastPos = 0;
+		refreshing = false;
 	}
 
 	@Override
@@ -175,7 +177,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			if (refreshing) {
 				refreshing = false;
-				if (lastId > 0 && lastId != currentPost.id) { // deletion
+				if (lastId != currentPost.id) { // deletion
 					reset();
 					o.parser.halt();
 				}
@@ -211,6 +213,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			return;
 
 		PostHandler oldRecceiver = postReceiver;
+		reset();
 		postReceiver = new ThreadParser();
 		getPosts();
 		postReceiver = oldRecceiver;
