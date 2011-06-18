@@ -9,9 +9,15 @@ public class ArchiveOptions {
 	public int			interval;
 
 	/**
+	 * If an entire board should be archived, this sets the delay between two
+	 * refreshs of the main page.
+	 */
+	public int			boardInterval;
+
+	/**
 	 * save images
 	 */
-	public boolean		archiveThread;
+	public boolean		saveImages;
 
 	/**
 	 * where to save all the stuff
