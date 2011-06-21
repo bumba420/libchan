@@ -137,7 +137,7 @@ public class CliChan {
 
 			if (namesToSearch != null)
 				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.config);
-			if (boardArchiver != null)
+			else if (boardArchiver != null)
 				boardArchiver.addBoard(url);
 			else
 				archiver.addThread(url);
