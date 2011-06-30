@@ -105,10 +105,10 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 		@Override
 		public void onAddPost(final Post post) {
-			if (post.id > lastId) {
+			if (post.id > lastId) { // new posts
 				lastId = post.id;
 				if (postNum > 0) { // last post got deleted, new post was done
-									// afterwardss
+									// afterwards
 					for (; postNum < postList.size(); postNum++)
 						removePost(postNum);
 					postNum++;
@@ -125,6 +125,9 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 					removePost(postNum);
 					oldPost = postList.get(postNum);
 				}
+				if (!Post.equals(oldPost, post))
+					for (PostProcessor h : handler)
+						h.onPostModified(oldPost, post);
 				postNum++;
 			}
 		}

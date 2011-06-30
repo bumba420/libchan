@@ -25,4 +25,9 @@ public class Image {
 	public boolean isReady() {
 		return thumbnailUrl != null && url != null && filename != null;
 	}
+
+	public static boolean equals(Image img1, Image img2) {
+		return img1.thumbnailUrl.equals(img2.thumbnailUrl) && img1.url.equals(img2.url)
+				&& img1.filename.equals(img2.filename);
+	}
 }
