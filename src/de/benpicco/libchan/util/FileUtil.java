@@ -101,6 +101,14 @@ public class FileUtil {
 		return filename.replaceAll(regex, replacement);
 	}
 
+	/**
+	 * Creates a folder with the given name and appends a separator char if
+	 * necessary
+	 * 
+	 * @param target
+	 *            new folder
+	 * @return name of the nwe folder (with closing separator)
+	 */
 	public static String prepareDir(String target) {
 		String dir = target.endsWith(File.separator) ? target : target + File.separator;
 		new File(dir).mkdir();
