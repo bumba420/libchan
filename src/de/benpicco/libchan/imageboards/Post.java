@@ -63,4 +63,18 @@ public class Post implements Cloneable {
 			ret = "(undefined)";
 		return ret;
 	}
+
+	public static boolean equals(Post p1, Post p2) {
+		if (p1.images.size() != p2.images.size())
+			return false;
+
+		for (int i = 0; i < p1.images.size(); ++i)
+			if (!Image.equals(p1.images.get(i), p2.images.get(i)))
+				return false;
+
+		return p1.id == p2.id && p1.isFirstPost == p2.isFirstPost && p1.title.equals(p2.title)
+				&& p1.user.equals(p2.user) && p1.tripcode.equals(p2.tripcode) && p1.mail.equals(p2.mail)
+				&& p1.message.equals(p2.message) && p1.date.equals(p2.date) && p1.countryball.equals(p2.countryball)
+				&& p1.op == p2.op;
+	}
 }
