@@ -153,8 +153,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			threads.addAll(newThreads);
 			newThreads.clear();
 
-			Logger.get().println(
-					"There are " + threads.size() + " thread" + (threads.size() > 1 ? "s" : "") + " in the queue.");
+			Logger.get().println("Monitoring " + threads.size() + " thread" + (threads.size() > 1 ? "s" : ""));
 			Iterator<ImageBoardParser> iter = threads.iterator();
 
 			while (iter.hasNext()) {
@@ -179,6 +178,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 					Thread.sleep(o.interval);
 				} catch (InterruptedException e) {
 				}
+			else if (newThreads.size() > 0) // download follow up thread
+				continue;
 			else
 				return;
 		} while (threads.size() > 0);
