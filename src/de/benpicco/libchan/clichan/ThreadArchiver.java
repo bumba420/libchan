@@ -26,7 +26,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 	private final List<ImageBoardParser>	threads;
 	private final List<ImageBoardParser>	newThreads;
 
-	// only needed to watch for deleted posts
+	// only needed if we check for deleted posts
 	private List<Post>						postList	= null;
 	private int								postNum		= 0;
 

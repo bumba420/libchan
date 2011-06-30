@@ -6,6 +6,7 @@ import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
+import de.benpicco.libchan.util.Logger;
 
 public class DownloadImageHandler implements PostProcessor {
 	final String	targetDir;
@@ -18,6 +19,10 @@ public class DownloadImageHandler implements PostProcessor {
 		targetDir = FileUtil.prepareDir(target);
 	}
 
+	private String folder(Post post) {
+		return targetDir + tf + post.getDir() + File.separator;
+	}
+
 	@Override
 	public void onAddPost(final Post post) {
 		if (post.isFirstPost && threadFolder) {
@@ -25,7 +30,7 @@ public class DownloadImageHandler implements PostProcessor {
 			new File(targetDir + tf).mkdir();
 		}
 
-		final String dir = targetDir + tf + post.getDir() + File.separator;
+		final String dir = folder(post);
 
 		if (post.images.size() > 0)
 			new File(dir).mkdir();
@@ -34,10 +39,8 @@ public class DownloadImageHandler implements PostProcessor {
 
 			@Override
 			public void run() {
-				for (Image img : post.images) {
-					String filename = dir + img.filename.replace(File.separatorChar, ' ');
-					FileUtil.downloadFile(img.url, filename, 5);
-				}
+				for (Image img : post.images)
+					FileUtil.downloadFile(img.url, dir + img.filename, 5);
 			}
 		})).start();
 	}
@@ -48,7 +51,15 @@ public class DownloadImageHandler implements PostProcessor {
 
 	@Override
 	public void onPostModified(Post oldPost, Post newPost) {
-		// TODO Auto-generated method stub
+		// we move deleted files to a separate directory
+		final String dir = folder(oldPost);
+		for (Image img : oldPost.images) {
+			if (newPost == null || newPost.images == null || !newPost.images.contains(img)) {
+				Logger.get().println("File " + img.filename + " deleted");
+				String delDir = FileUtil.prepareDir(dir + "deleted");
+				new File(dir + img.filename).renameTo(new File(delDir + img.filename));
+			}
 
+		}
 	}
 }

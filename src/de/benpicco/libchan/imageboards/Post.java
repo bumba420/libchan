@@ -64,6 +64,18 @@ public class Post implements Cloneable {
 		return ret;
 	}
 
+	public boolean equals(Object o) {
+		return o instanceof Post && equals(this, (Post) o);
+	}
+
+	private static boolean saveEquals(Object a, Object b) {
+		if (a == null && b == null)
+			return true;
+		if (a == null || b == null)
+			return false;
+		return a.equals(b);
+	}
+
 	public static boolean equals(Post p1, Post p2) {
 		if (p1.images.size() != p2.images.size())
 			return false;
@@ -72,9 +84,9 @@ public class Post implements Cloneable {
 			if (!Image.equals(p1.images.get(i), p2.images.get(i)))
 				return false;
 
-		return p1.id == p2.id && p1.isFirstPost == p2.isFirstPost && p1.title.equals(p2.title)
-				&& p1.user.equals(p2.user) && p1.tripcode.equals(p2.tripcode) && p1.mail.equals(p2.mail)
-				&& p1.message.equals(p2.message) && p1.date.equals(p2.date) && p1.countryball.equals(p2.countryball)
-				&& p1.op == p2.op;
+		return p1.id == p2.id && p1.isFirstPost == p2.isFirstPost && saveEquals(p1.title, p2.title)
+				&& saveEquals(p1.user, p2.user) && saveEquals(p1.tripcode, p2.tripcode) && saveEquals(p1.mail, p2.mail)
+				&& saveEquals(p1.message, p2.message) && saveEquals(p1.date, p2.date)
+				&& saveEquals(p1.countryball, p2.countryball) && p1.op == p2.op;
 	}
 }
