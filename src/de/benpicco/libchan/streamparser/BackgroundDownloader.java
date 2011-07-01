@@ -28,7 +28,7 @@ public class BackgroundDownloader {
 
 	public Chunk get() throws IOException {
 		if (worker == null)
-			new Thread(new Worker()).start();
+			new Thread(worker = new Worker()).start();
 
 		if (exception != null)
 			throw exception;
@@ -51,7 +51,7 @@ public class BackgroundDownloader {
 			char[] buffer = new char[buffsize];
 			try {
 				int read = 0;
-				while ((read = in.read(buffer)) > 0 && running) {
+				while ((read = in.read(buffer)) >= 0 && running) {
 					fifo.add(new Chunk(buffer, read));
 					buffer = new char[buffsize];
 				}
