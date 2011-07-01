@@ -40,7 +40,7 @@ public class ArchiveHtmlHandler implements PostProcessor {
 		try {
 			FileUtil.copyDirectory(new File(templateDir + "static"), new File(targetDir));
 		} catch (IOException e) {
-			Logger.get().error("Unable to copy " + templateDir + "style.css");
+			Logger.get().error("Error copying html template: " + e.getMessage());
 		}
 	}
 
