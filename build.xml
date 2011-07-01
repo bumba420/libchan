@@ -19,8 +19,9 @@
 <target name="create_run_jar" depends="compile">
 	<copy todir="dist/chans"><fileset dir="chans"/>	</copy>
 	<copy todir="dist/template"><fileset dir="template"/></copy>
-	<copy todir="dist/"><fileset dir="scripts"/></copy>
 	<copy todir="dist/" file="README.TXT" />
+	<copy todir="dist/" file="LICENSE.TXT" />
+	<copy todir="dist/" file="NOTICE.TXT" />
 
         <jar destfile="dist/cliChan.jar" filesetmanifest="mergewithoutmain">
             <manifest>
