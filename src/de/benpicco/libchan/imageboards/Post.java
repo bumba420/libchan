@@ -11,7 +11,6 @@ import de.benpicco.libchan.util.FileUtil;
 
 public class Post implements Cloneable {
 	public int					id;
-	public boolean				isFirstPost;
 	public String				title;
 	public String				user;
 	public String				tripcode;
@@ -86,9 +85,13 @@ public class Post implements Cloneable {
 			if (!Image.equals(p1.images.get(i), p2.images.get(i)))
 				return false;
 
-		return p1.id == p2.id && p1.isFirstPost == p2.isFirstPost && saveEquals(p1.title, p2.title)
-				&& saveEquals(p1.user, p2.user) && saveEquals(p1.tripcode, p2.tripcode) && saveEquals(p1.mail, p2.mail)
+		return p1.id == p2.id && saveEquals(p1.title, p2.title) && saveEquals(p1.user, p2.user)
+				&& saveEquals(p1.tripcode, p2.tripcode) && saveEquals(p1.mail, p2.mail)
 				&& saveEquals(p1.message, p2.message) && saveEquals(p1.date, p2.date)
 				&& saveEquals(p1.countryball, p2.countryball) && p1.op == p2.op;
+	}
+
+	public boolean isFirstPost() {
+		return op == id;
 	}
 }

@@ -25,7 +25,7 @@ public class DownloadImageHandler implements PostProcessor {
 
 	@Override
 	public void onAddPost(final Post post) {
-		if (post.isFirstPost && threadFolder) {
+		if (post.isFirstPost() && threadFolder) {
 			tf = post.id + File.separator;
 			new File(targetDir + tf).mkdir();
 		}

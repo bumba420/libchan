@@ -51,7 +51,7 @@ public class ArchiveHtmlHandler implements PostProcessor {
 
 	@Override
 	public void onAddPost(Post post) {
-		if (post.isFirstPost) {
+		if (post.isFirstPost()) {
 			threadId = post.id;
 			initialise();
 		}
@@ -59,13 +59,13 @@ public class ArchiveHtmlHandler implements PostProcessor {
 
 		if (writer == null)
 			try {
-				writer = new FileWriter(targetDir + threadId + ".html", !post.isFirstPost);
+				writer = new FileWriter(targetDir + threadId + ".html", !post.isFirstPost());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 
 		try {
-			if (post.isFirstPost)
+			if (post.isFirstPost())
 				writer.write(converter.getHeader(localPost));
 			writer.append(converter.postToHtml(localPost));
 			writer.flush();
