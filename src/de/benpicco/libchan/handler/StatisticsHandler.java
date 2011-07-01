@@ -33,7 +33,7 @@ public class StatisticsHandler implements PostProcessor {
 
 	@Override
 	public void onAddPost(Post post) {
-		if (post.isFirstPost) {
+		if (post.isFirstPost()) {
 			threadId = post.id;
 			if (threadFolder)
 				targetDir = FileUtil.prepareDir(baseDir + threadId);

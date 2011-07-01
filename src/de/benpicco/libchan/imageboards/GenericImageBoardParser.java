@@ -35,6 +35,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private boolean				refreshing;
 
 	private String				url;
+	private boolean				isFirstPost;
 
 	private String absolute(String relUrl) {
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
@@ -156,7 +157,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				currentPost.message = data;
 			break;
 		case POST_THREAD:
-			currentPost.isFirstPost = o.threadMark.length() == 0 ? data.length() > 0 : data.contains(o.threadMark);
+			isFirstPost = o.threadMark.length() == 0 ? data.length() > 0 : data.contains(o.threadMark);
 			break;
 		case NULL:
 			break;
@@ -171,9 +172,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		}
 
 		if (o.postEnder.contains(tag)) {
-			if (currentPost.isFirstPost || firstPost == null)
+			if (isFirstPost || firstPost == null)
 				firstPost = currentPost;
 			currentPost.op = firstPost.id;
+			isFirstPost = false;
 
 			if (refreshing) {
 				refreshing = false;
@@ -220,14 +222,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	class ThreadParser implements PostHandler {
-		boolean	firstPost	= true;
 
 		@Override
 		public void onAddPost(Post post) {
-			if (firstPost) // the first post on a page always is a new thread
-				post.isFirstPost = true;
-			firstPost = false;
-			if (post.isFirstPost)
+			if (post.isFirstPost())
 				threadReceiver.onAddThread(new Thread(post, composeUrl(post), 0));
 			// TODO: count replies & parse omittedInfo
 		}
@@ -235,7 +233,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		@Override
 		public void onPostsParsingDone() {
 			threadReceiver.onThreadsParsingDone();
-			firstPost = true;
 		}
 	}
 
@@ -254,7 +251,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	public String composeUrl(Post post) {
 		return baseUrl + getBoard(url) + o.threadURL.first + post.op + o.threadURL.second
-				+ (post.isFirstPost ? "" : "#" + post.id);
+				+ (post.isFirstPost() ? "" : "#" + post.id);
 	}
 
 	public String getBaseUrl() {

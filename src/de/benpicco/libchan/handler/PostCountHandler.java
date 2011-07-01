@@ -15,7 +15,7 @@ public class PostCountHandler implements PostProcessor {
 
 	@Override
 	public void onAddPost(Post post) {
-		if (post.isFirstPost)
+		if (post.isFirstPost())
 			threadId = post.id;
 
 		if (++count > treshold)
