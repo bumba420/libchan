@@ -50,6 +50,8 @@ public class Post implements Cloneable {
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
 		if (user != null)
 			user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
+		if (tripcode != null) // there might be some leftover html from mail…
+			tripcode = tripcode.replaceAll("\\<.*?>", "");
 
 		title = StringEscapeUtils.unescapeHtml4(title);
 
