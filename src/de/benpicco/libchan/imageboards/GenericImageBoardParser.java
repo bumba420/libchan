@@ -220,9 +220,13 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	class ThreadParser implements PostHandler {
+		boolean	firstPost	= true;
 
 		@Override
 		public void onAddPost(Post post) {
+			if (firstPost) // the first post on a page always is a new thread
+				post.isFirstPost = true;
+			firstPost = false;
 			if (post.isFirstPost)
 				threadReceiver.onAddThread(new Thread(post, composeUrl(post), 0));
 			// TODO: count replies & parse omittedInfo
@@ -231,6 +235,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		@Override
 		public void onPostsParsingDone() {
 			threadReceiver.onThreadsParsingDone();
+			firstPost = true;
 		}
 	}
 

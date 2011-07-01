@@ -14,6 +14,7 @@ public class StreamParser implements Cloneable {
 	private final List<ParseItem>	tags;
 	private int						bytesRead;
 	private boolean					parsing;
+	private BackgroundDownloader	reader;
 
 	public StreamParser() {
 		tags = new ArrayList<ParseItem>();
@@ -37,15 +38,18 @@ public class StreamParser implements Cloneable {
 
 	public synchronized void parseStream(InputStream stream, IParseDataReceiver receiver) throws IOException {
 		reset();
-		InputStreamReader reader = new InputStreamReader(stream);
+		reader = new BackgroundDownloader(512, new InputStreamReader(stream));
 
-		char[] buffer = new char[512];
 		int read = 0;
 		bytesRead = 0;
 		parsing = true;
 
 		while (read >= 0 && parsing) {
-			read = reader.read(buffer);
+			Chunk c = reader.get();
+			if (c == null)
+				break;
+			char[] buffer = c.data;
+			read = c.len;
 
 			for (int i = 0; i < read; ++i) {
 				++bytesRead;
@@ -75,6 +79,8 @@ public class StreamParser implements Cloneable {
 	 */
 	public void halt() {
 		parsing = false;
+		if (reader != null)
+			reader.stop();
 	}
 }
 
