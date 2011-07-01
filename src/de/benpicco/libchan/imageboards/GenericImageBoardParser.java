@@ -7,14 +7,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.Misc;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
 	private final ParserOptions	o;
@@ -284,7 +283,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				case BOARD_TITLE:
 					// filter html and make escaped characters readable again -
 					// some boards want to do fancy stuff in their navigation…
-					board.name = StringEscapeUtils.unescapeHtml4(data.replaceAll("\\<.*?\\>", "")).trim();
+					board.name = Misc.unescapeHtml(data.replaceAll("\\<.*?\\>", "")).trim();
 					break;
 				default:
 					return;

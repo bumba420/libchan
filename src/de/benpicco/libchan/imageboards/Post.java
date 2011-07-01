@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.util.FileUtil;
+import de.benpicco.libchan.util.Misc;
 
 public class Post implements Cloneable {
 	public int					id;
@@ -39,10 +39,7 @@ public class Post implements Cloneable {
 	protected void cleanup() {
 
 		message = message.replaceAll("(<br>|<br />|<p>|</p>)", "\n").replaceAll("\\<.*?>", "").trim();
-		try {
-			message = StringEscapeUtils.unescapeHtml4(message);
-		} catch (Exception e) {
-		}
+		message = Misc.unescapeHtml(message);
 
 		Iterator<Image> iter = images.iterator();
 		while (iter.hasNext())
@@ -51,11 +48,11 @@ public class Post implements Cloneable {
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
 		if (user != null)
-			user = StringEscapeUtils.unescapeHtml4(user.replaceAll("\\<.*?>", ""));
+			user = Misc.unescapeHtml(user.replaceAll("\\<.*?>", ""));
 		if (tripcode != null) // there might be some leftover html from mail…
 			tripcode = tripcode.replaceAll("\\<.*?>", "");
 
-		title = StringEscapeUtils.unescapeHtml4(title);
+		title = Misc.unescapeHtml(title);
 
 		if (title != null && title.length() == 0)
 			title = null;
