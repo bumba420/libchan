@@ -78,7 +78,7 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 
 	@Override
 	public void onThreadsParsingDone() {
-		if (!archiver.isRunnig())
+		if (archiver.threads() > 0 && !archiver.isRunnig())
 			new Thread(archiver).start();
 	}
 }

@@ -190,6 +190,10 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		running = false;
 	}
 
+	public int threads() {
+		return threads.size() + newThreads.size();
+	}
+
 	public boolean isRunnig() {
 		return running;
 	}
