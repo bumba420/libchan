@@ -40,21 +40,15 @@ public class StreamParser implements Cloneable {
 		reset();
 		reader = new BackgroundDownloader(512, new InputStreamReader(stream));
 
-		int read = 0;
 		bytesRead = 0;
 		parsing = true;
+		Chunk c;
 
-		while (read >= 0 && parsing) {
-			Chunk c = reader.get();
-			if (c == null)
-				break;
-			char[] buffer = c.data;
-			read = c.len;
-
-			for (int i = 0; i < read; ++i) {
+		while ((c = reader.get()) != null && parsing) {
+			for (int i = 0; i < c.len; ++i) {
 				++bytesRead;
 				for (ParseItem pi : tags)
-					if (pi.match(buffer[i]))
+					if (pi.match(c.data[i]))
 						for (int j = 0; j < pi.tags.length; ++j)
 							if (parsing)
 								receiver.parsedString(pi.tags[j], pi.items[j]);
