@@ -37,7 +37,7 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		String url = "http://7chan.org/lit/";
+		String url = "http://7chan.org/tg/res/16359.html";
 		// String url = "http://www.0chan.ru/e/";
 		// String url = "http://operatorchan.org/k/";
 
