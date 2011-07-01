@@ -46,6 +46,7 @@ POST	<input type="checkbox" name="post[]" value="$POST_ID$" />
 POST	<input type="checkbox" name="delete" value="$POST_ID$">
 
 POST	<span class="filetitle">$POST_TITLE$</span>
+POST	<span class="subject">$POST_TITLE$</span>
 POST	<span class="postername">$POST_USER$</span>
 POST	<span class="postertrip">$POST_TRIP$</span>
 # version 0.8
@@ -68,5 +69,6 @@ URL_POSTFIX	.html
 
 START_POST	POST_ID
 START_POST	POST_THREAD
+START_POST	POST_FILENAME
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE
