@@ -127,8 +127,13 @@ public class CliChan {
 		if (namesToSearch == null)
 			archiver = new ThreadArchiver(options);
 
-		if (options.boardInterval > 0)
+		if (options.boardInterval > 0) {
+			if (urls.length > 1)
+				options.noBoardFolders = false;
+			else
+				options.noBoardFolders = true;
 			boardArchiver = new BoardArchiver(options);
+		}
 
 		for (String url : urls) {
 			int anchor = url.indexOf('#');

@@ -36,9 +36,7 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 		if (p == null)
 			Logger.get().error("No parser found for " + url);
 
-		if (!options.noBoardFolders)
-
-			p.setThreadHandler(this);
+		p.setThreadHandler(this);
 		boards.add(p);
 	}
 
