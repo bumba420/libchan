@@ -40,7 +40,7 @@ BOARD_INDEX	/menu.html
 BOARD		<li><a href="$BOARD_URL$" 
 BOARD		class="boardlink$$">$BOARD_TITLE$</a></li>
 
-POST	<div id="thread$POST_THREAD$">
+POST	<span id="unhidethread$POST_THREAD$"
 POST	<input type="checkbox" name="post[]" value="$POST_ID$" />
 # OperatorChan
 POST	<input type="checkbox" name="delete" value="$POST_ID$">
