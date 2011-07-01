@@ -19,6 +19,7 @@ public class BackgroundDownloader {
 	private boolean						finished	= false;
 	private IOException					exception	= null;
 	private Worker						worker		= null;
+	private boolean						nothread	= true;	// TODO: figure out why this slows down the crawler
 
 	public BackgroundDownloader(int buffsize, Reader in) {
 		this.in = in;
@@ -27,6 +28,9 @@ public class BackgroundDownloader {
 	}
 
 	public Chunk get() throws IOException {
+		if (nothread)
+			return read();
+
 		if (worker == null)
 			new Thread(worker = new Worker()).start();
 
@@ -42,19 +46,25 @@ public class BackgroundDownloader {
 		}
 	}
 
+	private Chunk read() throws IOException {
+		char[] buffer = new char[buffsize];
+		int read = in.read(buffer);
+		if (read > 0)
+			return new Chunk(buffer, read);
+		else
+			return null;
+	}
+
 	class Worker implements Runnable {
 
 		private boolean	running	= true;
 
 		@Override
 		public void run() {
-			char[] buffer = new char[buffsize];
+			Chunk c;
 			try {
-				int read = 0;
-				while ((read = in.read(buffer)) >= 0 && running) {
-					fifo.add(new Chunk(buffer, read));
-					buffer = new char[buffsize];
-				}
+				while ((c = read()) != null && running)
+					fifo.add(c);
 			} catch (IOException e) {
 				exception = e;
 			}
