@@ -49,7 +49,11 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		return false;
 	}
 
-	public synchronized void addThread(String url) {
+	public void addThread(String url) {
+		addThread(url, o.target);
+	}
+
+	public synchronized void addThread(String url, String target) {
 		if (contains(threads, url) || contains(newThreads, url))
 			return;
 
@@ -67,16 +71,16 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		ArrayList<PostProcessor> handler = new ArrayList<PostProcessor>();
 
 		if (o.saveImages)
-			handler.add(new DownloadImageHandler(o.target, o.threadFolders));
+			handler.add(new DownloadImageHandler(target, o.threadFolders));
 		handler.add(new PostCountHandler(500)); // TODO: remove magic number
 		if (o.saveHtml)
-			handler.add(new ArchiveHtmlHandler(o.target, o.threadFolders));
+			handler.add(new ArchiveHtmlHandler(target, o.threadFolders));
 		if (o.followUpTag != null)
 			handler.add(new FollowupThreadHandler(parser, o.followUpTag, this));
 		if (o.names != null)
 			handler.add(new UserNotifyHandler(o.names));
 		if (o.recordStats)
-			handler.add(new StatisticsHandler(o.target, o.threadFolders));
+			handler.add(new StatisticsHandler(target, o.threadFolders));
 
 		parser.setPostHandler(new PostArchiver(handler));
 		newThreads.add(parser);

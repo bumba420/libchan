@@ -10,7 +10,7 @@ public class ArchiveOptions {
 
 	/**
 	 * If an entire board should be archived, this sets the delay between two
-	 * refreshs of the main page.
+	 * refreshes of the main page.
 	 */
 	public int			boardInterval;
 
@@ -57,4 +57,9 @@ public class ArchiveOptions {
 	 * watch for deleted posts and delete the image
 	 */
 	public boolean		delete;
+
+	/**
+	 * do not create a folder for every board when monitoring an entire board
+	 */
+	public boolean		noBoardFolders;
 }
