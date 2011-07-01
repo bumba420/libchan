@@ -33,5 +33,14 @@ to get just the statistical data to the current directiry without saving anythin
 
 for a graphical representation of the relations between users.
 
+If you want to detect deleted images, append the --deleteDeleted option (EXPERIMENTAL), those images will be moved in a seperate folder (deleted)
+
+To archive an entire imageboard, use the base url of a board and add the -archiveAll option, the parameter specifies how often the main page is refreshed to find new threads.
+You also want to add a refresh Interval for individual threads with the -i option.
+E.g. use
+	java -jar cliChan.jar -u http://boards.4chan.org/soc/ http://boards.4chan.org/sci/ -archiveAll 15 -i 60
+
+to check /sci/ and /soc/ for new threads every 15s and refresh those threads every minute.
+
 
 [1] http://www.java.com/download/
