@@ -39,7 +39,10 @@ public class Post implements Cloneable {
 	protected void cleanup() {
 
 		message = message.replaceAll("(<br>|<br />|<p>|</p>)", "\n").replaceAll("\\<.*?>", "").trim();
-		message = StringEscapeUtils.unescapeHtml4(message);
+		try {
+			message = StringEscapeUtils.unescapeHtml4(message);
+		} catch (Exception e) {
+		}
 
 		Iterator<Image> iter = images.iterator();
 		while (iter.hasNext())
