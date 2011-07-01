@@ -128,6 +128,8 @@ public class CliChan {
 			archiver = new ThreadArchiver(options);
 
 		if (options.boardInterval > 0) {
+			if (options.interval <= 0)
+				options.interval = options.boardInterval * 3;
 			if (urls.length > 1)
 				options.noBoardFolders = false;
 			else
