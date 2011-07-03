@@ -1,6 +1,6 @@
 POST		<input type="checkbox" name="delete" value="$POST_ID$"
 POST		<input type="checkbox" name="num" value="$POST_ID$"
-POST		<span class="filesize">$$<a target="_blank" href="$POST_IMGURL$">$POST_FILENAME$</a>$$<img src="$POST_THUMBNAIL$" width="
+POST		<span class="filesize">$$<a target="_blank" href="$POST_IMGURL$">$POST_FILENAME$</a>$$<span class="thumbnailmsg">$$<img src="$POST_THUMBNAIL$" width="
 POST		<span class="$$postername">$POST_USER$</span>$POST_DATE$</label>
 POST		<span class="$$title">$POST_TITLE$</span>
 POST		<span class="filetitle"$POST_THREAD$</span>
