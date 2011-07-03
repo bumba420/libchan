@@ -54,7 +54,8 @@ public class Post implements Cloneable {
 		if (date != null)
 			date = Misc.unescapeHtml(date).trim();
 
-		title = Misc.unescapeHtml(title);
+		if (title != null)
+			title = Misc.unescapeHtml(title).trim();
 
 		if (title != null && title.length() == 0)
 			title = null;

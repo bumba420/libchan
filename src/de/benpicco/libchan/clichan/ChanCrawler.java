@@ -17,13 +17,14 @@ public class ChanCrawler {
 		Logger.get().println("Searching " + board + " for " + printNames);
 
 		ChanManager manager = new ChanManager(config);
-		if (manager.getParser(board) == null) {
+		GenericImageBoardParser parser = manager.getParser(board);
+		if (parser == null) {
 			Logger.get().error("No .chan specification for " + board + " present.");
 			return;
 		}
 
 		for (int i = startpage; i < endpage; ++i)
-			new Thread(new PageCrawler(board + i, manager, names)).run();
+			new Thread(new PageCrawler(parser.getPage(i), manager, names)).run();
 	}
 }
 
@@ -41,7 +42,9 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 		threadParser.setThreadHandler(this);
 		postParser = manager.getParser(page);
 		postParser.setPostHandler(this);
-		this.names = names;
+		this.names = new String[names.length];
+		for (int i = 0; i < names.length; ++i)
+			this.names[i] = names[i].toLowerCase();
 		occurence = new int[names.length];
 		mentioned = new int[names.length];
 	}
@@ -65,9 +68,9 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 			printResults();
 		threadId = post.op;
 		for (int i = 0; i < names.length; ++i)
-			if (post.user.toLowerCase().contains(names[i].toLowerCase()))
+			if (post.user.toLowerCase().contains(names[i]))
 				occurence[i]++;
-			else if (post.message.toLowerCase().contains(names[i].toLowerCase()))
+			else if (post.message.toLowerCase().contains(names[i]))
 				mentioned[i]++;
 	}
 

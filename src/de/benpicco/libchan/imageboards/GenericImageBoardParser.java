@@ -257,6 +257,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		return baseUrl;
 	}
 
+	public String getPage(int i) {
+		return url + i + o.threadURL.second;
+	}
+
 	@Override
 	public synchronized void getBoards() throws IOException {
 		if (boardReceiver == null)
