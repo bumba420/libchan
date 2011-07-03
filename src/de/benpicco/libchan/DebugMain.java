@@ -38,8 +38,8 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		// String url = "http://ernstchan.net/c/";
-		String url = "http://2ch.so/p/";
+		String url = "http://ernstchan.net/c/";
+		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
