@@ -1,3 +1,5 @@
+INCLUDE         wakaba.include
+
 SITE_NAME       Ernstchan
 SITE_DESC       Ich habe keine Probleme mehr, ich habe ja Ernstchan.
 SITE_URL        http://ernstchan.net
@@ -7,5 +9,6 @@ BOARD           <li><a href="$BOARD_URL$" $$>$BOARD_TITLE$</a></li>
 
 POST		<span class="filename">$$<a target="_blank" title="$POST_FILENAME$" href="$POST_IMGURL$">
 
-INCLUDE         wakaba.include
+URL_PREFIX	faden/
+URL_POSTFIX	
 
