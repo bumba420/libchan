@@ -18,6 +18,30 @@ SITE_NAME	Auschan
 SITE_DESC	Australian Imageboard
 SITE_URL	http://auschan.org
 
+SITE_NAME	underfoule
+SITE_DESC	French Imageboard
+SITE_URL	http://underfoule.net
+
+SITE_NAME	Newfapchan
+SITE_DESC	the new FapChan
+SITE_URL	http://www.newfapchan.org
+
+SITE_NAME	BBW Chan
+SITE_DESC	home of the big and beautiful
+SITE_URL	http://bbw-chan.net
+
+SITE_NAME	SSBBW Chan
+SITE_DESC	The Home of Everything SSBBW
+SITE_URL	http://www.ssbbwchan.com
+
+SITE_NAME	iChan
+SITE_DESC	iChan Network
+SITE_URL	http://ichan.org
+
+SITE_NAME	Animuchan
+SITE_DESC	Animu Imageboard
+SITE_URL	http://www.animuchan.org
+
 SITE_NAME	199XChan
 SITE_DESC	kickin rad - video game focused imageboard
 SITE_URL	http://199xchan.org
@@ -53,8 +77,10 @@ POST	<span class="postertrip">$POST_TRIP$</span>
 POST	<span class="postername">$$</span>$$\n$POST_DATE$</label>
 # version 0.9
 POST	<span class="postername">$$</span>$$\n$POST_DATE$<span class="reflink">
+# underfoule.net
+POST	<span class="polandball"><img src='$POST_COUNTRY$'
 
-POST	<blockquote>$POST_MESSAGE$</blockquote>
+POST	<blockquote$$>$POST_MESSAGE$</blockquote>
 POST	<p class="message">$POST_MESSAGE$</p>
 
 # version 0.9
@@ -71,5 +97,6 @@ START_POST	POST_ID
 START_POST	POST_THREAD
 START_POST	POST_FILENAME
 START_POST	POST_IMGURL
+START_POST	POST_COUNTRY
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE

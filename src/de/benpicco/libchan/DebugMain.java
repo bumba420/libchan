@@ -37,9 +37,9 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		// String url = "http://desuchan.net/nij/";
-		String url = "http://2ch.so/r/";
-		// String url = "http://www.0chan.ru/e/";
+		// String url = "http://desuchan.net/a/";
+		// String url = "http://ernstchan.net/c/";
+		String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);

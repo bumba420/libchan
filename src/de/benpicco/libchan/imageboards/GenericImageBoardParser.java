@@ -277,8 +277,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				switch (tag) {
 				case BOARD_URL:
 					board.url = data;
-					if (board.url.startsWith("/"))
+					if (!board.url.startsWith("http://")) {
+						board.url = board.url.startsWith("/") ? board.url : "/" + board.url;
 						board.url = getBaseUrl() + board.url;
+					}
 					break;
 				case BOARD_TITLE:
 					// filter html and make escaped characters readable again -
