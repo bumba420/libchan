@@ -3,6 +3,6 @@ SITE_DESC       DESU DESU DESU
 SITE_URL        http://desuchan.net
 
 BOARD_INDEX     /include/site/menu.html
-BOARD   	<li><a href="$BOARD_URL$" target="main">$BOARD_TITLE$</a></li>
+BOARD   	<li><a href="$BOARD_URL$" $$>$BOARD_TITLE$</a></li>
 
 INCLUDE		wakaba.include

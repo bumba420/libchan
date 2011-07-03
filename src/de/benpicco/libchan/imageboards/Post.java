@@ -51,6 +51,8 @@ public class Post implements Cloneable {
 			user = Misc.unescapeHtml(user.replaceAll("\\<.*?>", ""));
 		if (tripcode != null) // there might be some leftover html from mail…
 			tripcode = tripcode.replaceAll("\\<.*?>", "");
+		if (date != null)
+			date = Misc.unescapeHtml(date).trim();
 
 		title = Misc.unescapeHtml(title);
 
