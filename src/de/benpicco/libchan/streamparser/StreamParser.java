@@ -79,7 +79,7 @@ public class StreamParser implements Cloneable {
 }
 
 class ParseItem {
-	private int				count		= 0;
+	private int				pos			= 0;
 	private int				item		= 0;
 	private StringBuilder	itemBuilder	= null;
 	private int				lastItem	= 0;
@@ -121,28 +121,27 @@ class ParseItem {
 		if (pattern.length == 0)
 			return false;
 
-		if (pattern[count] == c)
-			++count;
-		else if (pattern[count] == 0) {
-			if (itemBuilder != null && count > lastItem) {
-				items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
-				item++;
-			}
-			if (count > lastItem)
+		if (pattern[pos] == c)
+			++pos;
+		else if (pattern[pos] == 0) {
+			if (itemBuilder != null && pos > lastItem)
+				items[item++] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
+
+			if (pos > lastItem)
 				itemBuilder = new StringBuilder();
 
-			lastItem = ++count;
-			if (pattern[count] == c)
-				++count;
+			lastItem = ++pos;
+			if (pattern[pos] == c)
+				++pos;
 		} else {
-			count = lastItem;
+			pos = lastItem;
 		}
 
 		if (itemBuilder != null)
 			itemBuilder.append(c);
 
-		if (count >= pattern.length) {
-			items[item] = itemBuilder.substring(0, itemBuilder.length() - (count - lastItem));
+		if (pos >= pattern.length) {
+			items[item] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
 
 			reset();
 			return true;
@@ -151,7 +150,7 @@ class ParseItem {
 	}
 
 	void reset() {
-		count = 0;
+		pos = 0;
 		lastItem = 0;
 		item = 0;
 		itemBuilder = null;
