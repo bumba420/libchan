@@ -1,6 +1,12 @@
-Bugs:
- handle newlines properly
+Boards:
+ 420chan.org
+ northpole.fi
+ dobrochan.ru (hanabira)
+ lolks.ru (Kareha)
 
+Bugs:
+ try to find closest match
+ 
 Ideas:
  [Pokechan] dashboard (add Chan)
 
