@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import de.benpicco.libchan.interfaces.BoardHandler;
@@ -47,7 +46,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	@Override
-	public synchronized void getPosts() throws MalformedURLException, IOException {
+	public synchronized void getPosts() throws IOException {
 		if (postReceiver == null)
 			return;
 
@@ -64,16 +63,16 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			connection.setInstanceFollowRedirects(true);
 			if (lastPos > 0)
 				connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
-			InputStream in = new BufferedInputStream(connection.getInputStream());
 
 			try {
+				InputStream in = new BufferedInputStream(connection.getInputStream());
 				o.parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
 				reset();
 				lastIdPre = 0;
 				if (tries == 0)
-					Logger.get().error("Failed downloading " + url + ": " + e);
+					throw e;
 				else {
 					try {
 						java.lang.Thread.sleep(500);
