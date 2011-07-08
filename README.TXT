@@ -42,5 +42,11 @@ E.g. use
 
 to check /sci/ and /soc/ for new threads every 15s and refresh those threads every minute.
 
+If you want to download all vocaroo recordings in a thread, add the -vocaroo option.
+If you only want to save vocaroo recordings of certain posters, you can add their names as parameter
+e.g.
+	java -jar cliChan.jar -u http://boards.4chan.org/soc/res/3820026 -vocaroo "Random Poster" foobar "bla fasel"
+
+will save all recordings of Random Poster, foobar and bla fasel
 
 [1] http://www.java.com/download/
