@@ -1,14 +1,17 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
+import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
+import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 public class ChanManager {
@@ -68,18 +71,35 @@ public class ChanManager {
 
 class PostCounter implements PostHandler {
 	int	postCout	= 0;
+	int	fileCount	= 0;
 
 	public void reset() {
 		postCout = 0;
 	}
 
 	public boolean matches() {
-		return postCout > 0;
+		if (postCout > 0)
+			Logger.get().println("Recognized " + postCout + " posts.");
+
+		return fileCount > 0;
 	}
 
 	@Override
 	public void onAddPost(Post post) {
 		postCout++;
+		for (Image img : post.images) {
+			try {
+				String devzero = "/dev/null";
+
+				// TODO: test on windows
+				if (System.getProperty("os.name").toLowerCase().contains("windows"))
+					devzero = "nul:nul";
+
+				FileUtil.downloadFile(img.thumbnailUrl, devzero);
+				fileCount++;
+			} catch (IOException e) {
+			}
+		}
 	}
 
 	@Override
