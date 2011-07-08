@@ -14,6 +14,7 @@ import de.benpicco.libchan.handler.FollowupThreadHandler;
 import de.benpicco.libchan.handler.PostCountHandler;
 import de.benpicco.libchan.handler.StatisticsHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
+import de.benpicco.libchan.handler.VocarrooHandler;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
@@ -81,6 +82,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			handler.add(new UserNotifyHandler(o.names));
 		if (o.recordStats)
 			handler.add(new StatisticsHandler(target, o.threadFolders));
+		if (o.vocaroo != null)
+			handler.add(new VocarrooHandler(target, o.threadFolders, o.vocaroo));
 
 		parser.setPostHandler(new PostArchiver(handler));
 		newThreads.add(parser);

@@ -8,13 +8,11 @@ import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.Misc;
 
 public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
-		String printNames = "";
-		for (int i = 0; i < names.length; ++i)
-			printNames += (i > 0 ? ", " : "") + names[i];
-		Logger.get().println("Searching " + board + " for " + printNames);
+		Logger.get().println("Searching " + board + " for " + Misc.printNames(names));
 
 		ChanManager manager = new ChanManager(config);
 		GenericImageBoardParser parser = manager.getParser(board);

@@ -23,11 +23,12 @@ public class DebugMain {
 		options.config = "chans/";
 		options.target = "/tmp/libChan/";
 		// options.saveHtml = true;
-		options.saveImages = true;
+		// options.saveImages = true;
 		options.threadFolders = true;
-		options.interval = 30000;
+		// options.interval = 30000;
 		options.delete = true;
 		options.followUpTag = "new thread";
+		options.vocaroo = new String[0];
 
 		ThreadArchiver archiver = new ThreadArchiver(options);
 		archiver.addThread(url);
@@ -38,11 +39,11 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "http://ernstchan.net/c/";
+		String url = "http://boards.4chan.org/soc/res/5750815";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
-		// archiveThread(url);
+		archiveThread(url);
 
 		ChanManager mngr = new ChanManager("chans/");
 		GenericImageBoardParser parser = mngr.getParser(url);
@@ -59,7 +60,7 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.getPosts();
+		// parser.getPosts();
 
 		// while (true) {
 		// parser.getPosts();
