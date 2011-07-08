@@ -39,11 +39,11 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "http://boards.4chan.org/soc/res/5750815";
+		String url = "http://archive.no-ip.org/soc/";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
-		archiveThread(url);
+		// archiveThread(url);
 
 		ChanManager mngr = new ChanManager("chans/");
 		GenericImageBoardParser parser = mngr.getParser(url);
@@ -61,6 +61,8 @@ public class DebugMain {
 		parser.setBoardHandler(rec);
 
 		// parser.getPosts();
+		parser.getThreads();
+		// parser.getBoards();
 
 		// while (true) {
 		// parser.getPosts();
