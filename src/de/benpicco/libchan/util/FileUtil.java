@@ -55,7 +55,7 @@ public class FileUtil {
 
 	public static void downloadFile(String url, String filename, int tries) {
 		File file = new File(filename);
-		while (--tries > 0)
+		while (--tries >= 0)
 			try {
 				if (file.exists()) {
 					Logger.get().println(filename + " already exists, skipping.");
