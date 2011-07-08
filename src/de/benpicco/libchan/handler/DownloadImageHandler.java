@@ -35,14 +35,14 @@ public class DownloadImageHandler implements PostProcessor {
 		if (post.images.size() > 0)
 			new File(dir).mkdir();
 
-		(new java.lang.Thread(new Runnable() {
+		new java.lang.Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				for (Image img : post.images)
 					FileUtil.downloadFile(img.url, dir + img.filename, 5);
 			}
-		})).start();
+		}).start();
 	}
 
 	@Override

@@ -62,4 +62,11 @@ public class ArchiveOptions {
 	 * do not create a folder for every board when monitoring an entire board
 	 */
 	public boolean		noBoardFolders;
+
+	/**
+	 * download vocaroo recordings for the given users, if this is empty, all
+	 * vocaroos will be downloaded, if this is null, no vocaroos will be
+	 * downloaded.
+	 */
+	public String[]		vocaroo;
 }

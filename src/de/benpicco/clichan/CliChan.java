@@ -67,6 +67,13 @@ public class CliChan {
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
 
+		o = new Option(
+				"vocaroo",
+				"Download vocaroo links. If you add a list of usernames as a parameter, only recordings by these users will be downloaded.");
+		o.setArgs(Integer.MAX_VALUE);
+		o.setOptionalArg(true);
+		cliOptions.addOption(o);
+
 		final CommandLineParser cliParser = new GnuParser();
 		try {
 			CommandLine commandLine = cliParser.parse(cliOptions, args);
@@ -86,6 +93,10 @@ public class CliChan {
 				for (String name : names)
 					options.names.add(name.toLowerCase());
 			}
+			if (commandLine.hasOption("vocaroo"))
+				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
+						.getOptionValues("vocaroo");
+
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan " + VERSION + " using libChan\nhttp://libchan.googlecode.com/");
 				System.exit(0);
@@ -112,7 +123,8 @@ public class CliChan {
 			}
 
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.err.println(e.getLocalizedMessage());
+			return;
 		}
 
 		if (urls == null) {

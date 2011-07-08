@@ -17,4 +17,17 @@ public class Misc {
 			return input;
 		}
 	}
+
+	/**
+	 * Returns a comma separated String of the items in an array.
+	 * 
+	 * @param names
+	 * @return
+	 */
+	public static String printNames(String[] names) {
+		String printNames = "";
+		for (int i = 0; i < names.length; ++i)
+			printNames += (i > 0 ? ", " : "") + names[i];
+		return printNames;
+	}
 }
