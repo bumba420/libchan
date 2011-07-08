@@ -51,6 +51,7 @@ public class CliChan {
 		cliOptions.addOption("noarchive", false, "Do not download images from the thread");
 		cliOptions.addOption("stats", false, "record poster statistics");
 		cliOptions.addOption("list", false, "list all supported imageboards");
+		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -93,6 +94,10 @@ public class CliChan {
 				for (String name : names)
 					options.names.add(name.toLowerCase());
 			}
+			if (commandLine.hasOption("tag"))
+				options.followUpTag = commandLine.getOptionValue("tag");
+			if (commandLine.hasOption("nofollow"))
+				options.followUpTag = null;
 			if (commandLine.hasOption("vocaroo"))
 				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
 						.getOptionValues("vocaroo");

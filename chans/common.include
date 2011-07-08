@@ -1,0 +1,5 @@
+
+POST	<span class="filetitle">$POST_TITLE$</span>
+POST	<span class="postername">$POST_USER$</span>
+POST	<span class="postertrip">$POST_TRIP$</span>
+POST	<blockquote>$POST_MESSAGE$</blockquote>
