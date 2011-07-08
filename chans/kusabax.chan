@@ -26,6 +26,30 @@ SITE_NAME	Karachan
 SITE_DESC	Polish Imageboard
 SITE_URL	http://www.karachan.org
 
+SITE_NAME	PAWSRU.ORG
+SITE_DESC	In Soviet Russia paws like you :3
+SITE_URL	http://pawsru.org/pawsX
+
+SITE_NAME	247 Chan
+SITE_DESC	porns, porn, random, jailbait, teens, helicopters
+SITE_URL	http://www.247chan.com
+
+SITE_NAME	ChanDump
+SITE_DESC	A Chan with FREEDOM of SPEECH. High quality porn also! Bans are only usualy handed out for spaming and CP.
+SITE_URL	http://chandump.com
+
+SITE_NAME	New Chan
+SITE_DESC	NewChan has random, news, adult boards and more. SFW and NSFW sections. Enjoy.
+SITE_URL	http://www.newchan.com
+
+SITE_NAME	Dewchan
+SITE_DESC	One of those average chans with little to no content, but some funny shit. NSFW, SFW, Hats, you name it.
+SITE_URL	http://boards.dewchan.org
+
+SITE_NAME	Gaychan
+SITE_DESC	Gaychan is an imageboard and discussion community for gay, bi and questioning males. Our site has both SFW and NSFW areas.
+SITE_URL	http://www.gaychan.com/boards
+
 SITE_NAME	Newfapchan
 SITE_DESC	the new FapChan
 SITE_URL	http://www.newfapchan.org
@@ -77,12 +101,12 @@ POST	<span class="filetitle">$POST_TITLE$</span>
 POST	<span class="subject">$POST_TITLE$</span>
 POST	<span class="postername">$POST_USER$</span>
 POST	<span class="postertrip">$POST_TRIP$</span>
+# underfoule, karachan
+POST	<span class="polandball"><img src='$POST_COUNTRY$'
 # version 0.8
 POST	<span class="postername">$$</span>$$\n$POST_DATE$</label>
 # version 0.9
 POST	<span class="postername">$$</span>$$\n$POST_DATE$<span class="reflink">
-# underfoule.net
-POST	<span class="polandball"><img src='$POST_COUNTRY$'
 
 POST	<blockquote$$>$POST_MESSAGE$</blockquote>
 POST	<p class="message">$POST_MESSAGE$</p>
