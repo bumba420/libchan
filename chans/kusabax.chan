@@ -66,6 +66,18 @@ SITE_NAME	iChan
 SITE_DESC	iChan Network
 SITE_URL	http://ichan.org
 
+SITE_NAME	Tohno-chan
+SITE_DESC	True Otaku Hikikomori Neet Organization channel
+SITE_URL	http://tohno-chan.com
+
+SITE_NAME       Not4Chan
+SITE_DESC       bringing loli into your home since 2007
+SITE_URL        http://notfourchan.net
+
+SITE_NAME       Tentacle
+SITE_DESC       The most Extreme Anonymous Hentai Imageboard Board on the Web ^_^
+SITE_URL        http://www.tentakle.com
+
 SITE_NAME	Animuchan
 SITE_DESC	Animu Imageboard
 SITE_URL	http://www.animuchan.org
