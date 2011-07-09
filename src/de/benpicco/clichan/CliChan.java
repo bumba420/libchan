@@ -21,7 +21,7 @@ import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 public class CliChan {
-	public final static String	VERSION	= "0.3.1";
+	public final static String	VERSION	= "0.3.2";
 
 	public static void main(String[] args) {
 		ArchiveOptions options = new ArchiveOptions();
