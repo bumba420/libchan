@@ -3,6 +3,7 @@ package de.benpicco.jChan;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,11 +15,14 @@ import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SpringLayout;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
@@ -26,6 +30,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import de.benpicco.libchan.clichan.ArchiveOptions;
+import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.util.FileUtil;
@@ -34,10 +39,14 @@ import de.benpicco.libchan.util.LoggerBackend;
 
 public class SwingChan {
 
-	private JFrame		frmLibchan;
-	private JTextField	urlField;
-	private JTextField	targetField;
-	private JTextField	voccTextField;
+	private JFrame			frmLibchan;
+	private JTextField		urlField;
+	private JTextField		targetField;
+	private JTextField		voccTextField;
+	private JTextField		textField_searchBoard;
+	private JTextField		textField_SearchTerms;
+
+	private final String	chanDir	= FileUtil.getJarLocation(SwingChan.this) + "chans";
 
 	/**
 	 * Launch the application.
@@ -61,9 +70,7 @@ public class SwingChan {
 	public SwingChan() {
 		initialize();
 		Logger.get().println(
-				"Definitions for "
-						+ new ChanManager(FileUtil.getJarLocation(SwingChan.this) + "chans").getSupported().size()
-						+ " imageboards present.");
+				"Definitions for " + new ChanManager(chanDir).getSupported().size() + " imageboards present.");
 	}
 
 	/**
@@ -71,84 +78,178 @@ public class SwingChan {
 	 */
 	private void initialize() {
 		frmLibchan = new JFrame();
-		frmLibchan.setResizable(false);
+		frmLibchan.setResizable(true);
 		frmLibchan.setTitle("libChan " + ThreadArchiver.VERSION);
-		frmLibchan.setBounds(100, 100, 600, 433);
+		frmLibchan.setBounds(100, 100, 600, 510);
 		frmLibchan.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frmLibchan.getContentPane().setLayout(null);
+		frmLibchan.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
+
+		final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		frmLibchan.getContentPane().add(tabbedPane);
+
+		final JPanel panel_archive = new JPanel();
+		tabbedPane.addTab("Archive", null, panel_archive, null);
+		SpringLayout sl_panel_archive = new SpringLayout();
+		panel_archive.setLayout(sl_panel_archive);
 
 		urlField = new JTextField();
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, urlField, 15, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, urlField, 22, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, urlField, 34, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, urlField, 414, SpringLayout.WEST, panel_archive);
+		panel_archive.add(urlField);
 		urlField.setText("http://");
-		urlField.setBounds(12, 12, 392, 19);
-		frmLibchan.getContentPane().add(urlField);
 		urlField.setColumns(10);
 
+		final JButton btnOk = new JButton("ok");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, btnOk, 12, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, btnOk, 426, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, btnOk, 37, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, btnOk, 483, SpringLayout.WEST, panel_archive);
+		panel_archive.add(btnOk);
+
+		targetField = new JTextField();
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, targetField, 44, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, targetField, 22, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, targetField, 63, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, targetField, 414, SpringLayout.WEST, panel_archive);
+		panel_archive.add(targetField);
+		targetField.setColumns(10);
+
+		targetField.setText(System.getProperty("user.home") + File.separator + "libChan");
+
+		final JButton button = new JButton("...");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, button, 41, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, button, 426, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, button, 66, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, button, 461, SpringLayout.WEST, panel_archive);
+		panel_archive.add(button);
+
 		final JCheckBox chckbxDowloadImages = new JCheckBox("dowload Images");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxDowloadImages, 71, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxDowloadImages, 22, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxDowloadImages, 94, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxDowloadImages, 185, SpringLayout.WEST, panel_archive);
+		panel_archive.add(chckbxDowloadImages);
 		chckbxDowloadImages.setSelected(true);
-		chckbxDowloadImages.setBounds(12, 68, 163, 23);
-		frmLibchan.getContentPane().add(chckbxDowloadImages);
+
+		final JCheckBox chckbxMonitorThreads = new JCheckBox("monitor threads");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxMonitorThreads, 71, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxMonitorThreads, 241, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxMonitorThreads, 94, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxMonitorThreads, 412, SpringLayout.WEST, panel_archive);
+		panel_archive.add(chckbxMonitorThreads);
 
 		final JCheckBox chckbxDownloadHtml = new JCheckBox("download html");
-		chckbxDownloadHtml.setBounds(12, 95, 153, 23);
-		frmLibchan.getContentPane().add(chckbxDownloadHtml);
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxDownloadHtml, 98, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxDownloadHtml, 22, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxDownloadHtml, 121, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxDownloadHtml, 175, SpringLayout.WEST, panel_archive);
+		panel_archive.add(chckbxDownloadHtml);
+
+		final JLabel lblInterval = new JLabel("interval");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, lblInterval, 102, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, lblInterval, 251, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, lblInterval, 117, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, lblInterval, 321, SpringLayout.WEST, panel_archive);
+		panel_archive.add(lblInterval);
+
+		final JSpinner intervalSpinner = new JSpinner();
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, intervalSpinner, 100, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, intervalSpinner, 316, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, intervalSpinner, 358, SpringLayout.WEST, panel_archive);
+		panel_archive.add(intervalSpinner);
+		intervalSpinner.setModel(new SpinnerNumberModel(new Integer(45), new Integer(1), null, new Integer(1)));
+		intervalSpinner.setEnabled(false);
+
+		final JLabel lblSeconds = new JLabel("seconds");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, lblSeconds, 99, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, lblSeconds, 366, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, lblSeconds, 120, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, lblSeconds, 436, SpringLayout.WEST, panel_archive);
+		panel_archive.add(lblSeconds);
+
+		final JCheckBox chckbxSeperateFolderFor = new JCheckBox("seperate folder for threads");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxSeperateFolderFor, 122, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxSeperateFolderFor, 244, SpringLayout.WEST,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxSeperateFolderFor, 145, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxSeperateFolderFor, 483, SpringLayout.WEST,
+				panel_archive);
+		panel_archive.add(chckbxSeperateFolderFor);
+		chckbxSeperateFolderFor.setSelected(true);
+
+		final JCheckBox chckbxDeleteDeletedImages = new JCheckBox("delete deleted images");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxDeleteDeletedImages, 125, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxDeleteDeletedImages, 22, SpringLayout.WEST,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxDeleteDeletedImages, 148, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxDeleteDeletedImages, 240, SpringLayout.WEST,
+				panel_archive);
+		panel_archive.add(chckbxDeleteDeletedImages);
 
 		final JCheckBox chckbxGenerateStatistics = new JCheckBox("generate statistics");
-		chckbxGenerateStatistics.setBounds(12, 146, 192, 23);
-		frmLibchan.getContentPane().add(chckbxGenerateStatistics);
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxGenerateStatistics, 149, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxGenerateStatistics, 22, SpringLayout.WEST,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxGenerateStatistics, 172, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxGenerateStatistics, 214, SpringLayout.WEST,
+				panel_archive);
+		panel_archive.add(chckbxGenerateStatistics);
+
+		final JCheckBox chckbxFollowNewThreads = new JCheckBox("follow new threads");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxFollowNewThreads, 176, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxFollowNewThreads, 22, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxFollowNewThreads, 199, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive
+				.putConstraint(SpringLayout.EAST, chckbxFollowNewThreads, 193, SpringLayout.WEST, panel_archive);
+		panel_archive.add(chckbxFollowNewThreads);
+		chckbxFollowNewThreads.setSelected(true);
+
+		voccTextField = new JTextField();
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, voccTextField, 180, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, voccTextField, 266, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, voccTextField, 199, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, voccTextField, 498, SpringLayout.WEST, panel_archive);
+		panel_archive.add(voccTextField);
+		voccTextField.setEnabled(false);
+		voccTextField.setColumns(10);
+
+		JLabel lblOnlyFrom = new JLabel("only by");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, lblOnlyFrom, 180, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, lblOnlyFrom, 207, SpringLayout.WEST, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, lblOnlyFrom, 199, SpringLayout.NORTH, panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, lblOnlyFrom, 270, SpringLayout.WEST, panel_archive);
+		panel_archive.add(lblOnlyFrom);
 
 		final JCheckBox chckbxDownloadVocarooLinks = new JCheckBox("download Vocaroo links");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxDownloadVocarooLinks, 149, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxDownloadVocarooLinks, 243, SpringLayout.WEST,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.SOUTH, chckbxDownloadVocarooLinks, 172, SpringLayout.NORTH,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxDownloadVocarooLinks, 461, SpringLayout.WEST,
+				panel_archive);
+		panel_archive.add(chckbxDownloadVocarooLinks);
 		chckbxDownloadVocarooLinks.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				voccTextField.setEnabled(chckbxDownloadVocarooLinks.isSelected());
 			}
 		});
-		chckbxDownloadVocarooLinks.setBounds(233, 146, 218, 23);
-		frmLibchan.getContentPane().add(chckbxDownloadVocarooLinks);
-
-		final JCheckBox chckbxFollowNewThreads = new JCheckBox("follow new threads");
-		chckbxFollowNewThreads.setSelected(true);
-		chckbxFollowNewThreads.setBounds(12, 173, 171, 23);
-		frmLibchan.getContentPane().add(chckbxFollowNewThreads);
-
-		final JSpinner intervalSpinner = new JSpinner();
-		intervalSpinner.setModel(new SpinnerNumberModel(new Integer(45), new Integer(1), null, new Integer(1)));
-		intervalSpinner.setEnabled(false);
-		intervalSpinner.setBounds(306, 97, 42, 20);
-		frmLibchan.getContentPane().add(intervalSpinner);
-
-		final JCheckBox chckbxMonitorThreads = new JCheckBox("monitor threads");
 		chckbxMonitorThreads.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				intervalSpinner.setEnabled(chckbxMonitorThreads.isSelected());
 			}
 		});
-		chckbxMonitorThreads.setBounds(231, 68, 171, 23);
-		frmLibchan.getContentPane().add(chckbxMonitorThreads);
-
-		final JLabel lblInterval = new JLabel("interval");
-		lblInterval.setBounds(241, 99, 70, 15);
-		frmLibchan.getContentPane().add(lblInterval);
-
-		final JLabel lblSeconds = new JLabel("seconds");
-		lblSeconds.setBounds(356, 96, 70, 21);
-		frmLibchan.getContentPane().add(lblSeconds);
-
-		final JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 218, 560, 173);
-		frmLibchan.getContentPane().add(scrollPane);
-
-		final JTextPane textPane = new JTextPane();
-		scrollPane.setViewportView(textPane);
-		textPane.setEditable(false);
-
-		Logger.add(new TextPaneLogger(textPane));
-
-		targetField = new JTextField();
-		targetField.setBounds(12, 41, 392, 19);
-		frmLibchan.getContentPane().add(targetField);
-		targetField.setColumns(10);
-
-		final JButton button = new JButton("...");
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser fc = new JFileChooser(targetField.getText());
@@ -161,26 +262,11 @@ public class SwingChan {
 				}
 			}
 		});
-		button.setBounds(416, 38, 35, 25);
-		frmLibchan.getContentPane().add(button);
-
-		targetField.setText(System.getProperty("user.home") + File.separator + "libChan");
-
-		final JCheckBox chckbxSeperateFolderFor = new JCheckBox("seperate folder for threads");
-		chckbxSeperateFolderFor.setSelected(true);
-		chckbxSeperateFolderFor.setBounds(234, 119, 239, 23);
-		frmLibchan.getContentPane().add(chckbxSeperateFolderFor);
-
-		final JCheckBox chckbxDeleteDeletedImages = new JCheckBox("delete deleted images");
-		chckbxDeleteDeletedImages.setBounds(12, 122, 218, 23);
-		frmLibchan.getContentPane().add(chckbxDeleteDeletedImages);
-
-		final JButton btnOk = new JButton("ok");
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArchiveOptions opts = new ArchiveOptions();
 				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() * 1000 : 0;
-				opts.chanConfig = FileUtil.getJarLocation(SwingChan.this) + "chans" + File.separator;
+				opts.chanConfig = chanDir;
 				opts.htmlTemplate = FileUtil.getJarLocation(SwingChan.this) + "template" + File.separator;
 				opts.delete = chckbxDeleteDeletedImages.isSelected();
 				opts.followUpTag = chckbxFollowNewThreads.isSelected() ? "NEW THREAD" : null;
@@ -189,48 +275,113 @@ public class SwingChan {
 				opts.saveImages = chckbxDowloadImages.isSelected();
 				opts.target = targetField.getText();
 				opts.threadFolders = chckbxSeperateFolderFor.isSelected();
-				opts.vocaroo = chckbxDownloadVocarooLinks.isSelected() ? voccTextField.getText().split(",") : null;
-				if (opts.vocaroo != null)
-					if (opts.vocaroo.length == 1 && opts.vocaroo[0].trim().length() == 0)
-						opts.vocaroo = new String[0];
-					else
-						for (int i = 0; i < opts.vocaroo.length; ++i)
-							opts.vocaroo[i] = opts.vocaroo[i].trim();
-
-				for (Component c : frmLibchan.getContentPane().getComponents())
-					c.setEnabled(false);
+				opts.vocaroo = chckbxDownloadVocarooLinks.isSelected() ? split(voccTextField.getText()) : null;
 
 				ThreadArchiver archiver = new ThreadArchiver(opts);
 				archiver.addThread(urlField.getText());
-				new Thread(new BackgroundThread(archiver)).start();
+				new Thread(new BackgroundThread(archiver, panel_archive)).start();
 			}
 		});
-		btnOk.setBounds(416, 9, 57, 25);
-		frmLibchan.getContentPane().add(btnOk);
 
-		voccTextField = new JTextField();
-		voccTextField.setEnabled(false);
-		voccTextField.setBounds(256, 177, 232, 19);
-		frmLibchan.getContentPane().add(voccTextField);
-		voccTextField.setColumns(10);
+		final JPanel panel_search = new JPanel();
+		tabbedPane.addTab("Search", null, panel_search, null);
+		panel_search.setLayout(null);
 
-		JLabel lblOnlyFrom = new JLabel("only by");
-		lblOnlyFrom.setBounds(197, 177, 111, 15);
-		frmLibchan.getContentPane().add(lblOnlyFrom);
+		textField_searchBoard = new JTextField();
+		textField_searchBoard.setBounds(61, 4, 347, 24);
+		textField_searchBoard.setText("http://");
+		textField_searchBoard.setColumns(10);
+		panel_search.add(textField_searchBoard);
+
+		JLabel lblBoard = new JLabel("Board:");
+		lblBoard.setBounds(10, 7, 62, 18);
+		panel_search.add(lblBoard);
+
+		JLabel lblPages = new JLabel("Pages:");
+		lblPages.setBounds(10, 46, 62, 18);
+		panel_search.add(lblPages);
+
+		final JSpinner spinnerStartPage = new JSpinner();
+		spinnerStartPage.setBounds(61, 46, 46, 20);
+		spinnerStartPage.setModel(new SpinnerNumberModel(new Integer(0), new Integer(0), null, new Integer(1)));
+		panel_search.add(spinnerStartPage);
+
+		final JSpinner spinnerEndPage = new JSpinner();
+		spinnerEndPage.setBounds(148, 46, 56, 20);
+		spinnerEndPage.setModel(new SpinnerNumberModel(new Integer(15), new Integer(0), null, new Integer(1)));
+		panel_search.add(spinnerEndPage);
+
+		JLabel lblSearchFor = new JLabel("search for:");
+		lblSearchFor.setBounds(10, 80, 97, 18);
+		panel_search.add(lblSearchFor);
+
+		textField_SearchTerms = new JTextField();
+		textField_SearchTerms.setBounds(95, 78, 313, 22);
+		panel_search.add(textField_SearchTerms);
+		textField_SearchTerms.setColumns(10);
+
+		JLabel lblTo = new JLabel("to");
+		lblTo.setBounds(113, 46, 38, 18);
+		panel_search.add(lblTo);
+
+		JButton btnSearch = new JButton("Search");
+		btnSearch.setBounds(436, 2, 97, 28);
+		btnSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				final int start = (Integer) spinnerStartPage.getValue();
+				final int end = (Integer) spinnerEndPage.getValue();
+				final String board = textField_searchBoard.getText();
+				final String[] names = split(textField_SearchTerms.getText());
+				if (names.length > 0) {
+					Runnable runnable = new Runnable() {
+
+						@Override
+						public void run() {
+							ChanCrawler.lookFor(names, board, start, end, chanDir);
+						}
+					};
+					new Thread(new BackgroundThread(runnable, panel_search)).start();
+				}
+			}
+		});
+		panel_search.add(btnSearch);
+
+		final JScrollPane scrollPane = new JScrollPane();
+		frmLibchan.getContentPane().add(scrollPane);
+
+		final JTextPane textPane = new JTextPane();
+		scrollPane.setViewportView(textPane);
+		textPane.setEditable(false);
+
+		Logger.add(new TextPaneLogger(textPane));
+	}
+
+	private String[] split(String s) {
+		String[] split = s.split(",");
+		if (split.length == 1 && split[0].trim().length() == 0)
+			return new String[0];
+		else
+			for (int i = 0; i < split.length; ++i)
+				split[i] = split[i].trim();
+		return split;
 	}
 
 	class BackgroundThread implements Runnable {
 		private final Runnable	task;
+		private final JPanel	panel;
 
-		public BackgroundThread(Runnable task) {
+		public BackgroundThread(Runnable task, JPanel panel) {
 			this.task = task;
+			this.panel = panel;
 		}
 
 		@Override
 		public void run() {
+			for (Component c : panel.getComponents())
+				c.setEnabled(false);
 			task.run();
 
-			for (Component c : frmLibchan.getContentPane().getComponents())
+			for (Component c : panel.getComponents())
 				c.setEnabled(true);
 		}
 	}
