@@ -36,6 +36,7 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.LoggerBackend;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class SwingChan {
 
@@ -80,7 +81,7 @@ public class SwingChan {
 		frmLibchan = new JFrame();
 		frmLibchan.setResizable(true);
 		frmLibchan.setTitle("libChan " + ThreadArchiver.VERSION);
-		frmLibchan.setBounds(100, 100, 600, 510);
+		frmLibchan.setBounds(100, 100, 600, 560);
 		frmLibchan.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLibchan.getContentPane().setLayout(new GridLayout(0, 1, 0, 0));
 
@@ -240,6 +241,25 @@ public class SwingChan {
 		sl_panel_archive.putConstraint(SpringLayout.EAST, chckbxDownloadVocarooLinks, 461, SpringLayout.WEST,
 				panel_archive);
 		panel_archive.add(chckbxDownloadVocarooLinks);
+
+		JLabel lblParallelDownloads = new JLabel("parallel downloads");
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, lblParallelDownloads, 6, SpringLayout.SOUTH,
+				chckbxFollowNewThreads);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, lblParallelDownloads, -178, SpringLayout.WEST, lblInterval);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, lblParallelDownloads, 0, SpringLayout.EAST,
+				chckbxGenerateStatistics);
+		panel_archive.add(lblParallelDownloads);
+
+		final JSpinner spinnerParallelDownloads = new JSpinner();
+		sl_panel_archive.putConstraint(SpringLayout.NORTH, spinnerParallelDownloads, 6, SpringLayout.SOUTH,
+				chckbxFollowNewThreads);
+		sl_panel_archive.putConstraint(SpringLayout.WEST, spinnerParallelDownloads, 22, SpringLayout.WEST,
+				panel_archive);
+		sl_panel_archive.putConstraint(SpringLayout.EAST, spinnerParallelDownloads, -6, SpringLayout.WEST,
+				lblParallelDownloads);
+		spinnerParallelDownloads
+				.setModel(new SpinnerNumberModel(new Integer(20), new Integer(1), null, new Integer(1)));
+		panel_archive.add(spinnerParallelDownloads);
 		chckbxDownloadVocarooLinks.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
 				voccTextField.setEnabled(chckbxDownloadVocarooLinks.isSelected());
@@ -264,6 +284,8 @@ public class SwingChan {
 		});
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				ThreadPool.setPoolSize((Integer) spinnerParallelDownloads.getValue());
+
 				ArchiveOptions opts = new ArchiveOptions();
 				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() * 1000 : 0;
 				opts.chanConfig = chanDir;
