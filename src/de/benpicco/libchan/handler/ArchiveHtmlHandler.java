@@ -23,7 +23,7 @@ public class ArchiveHtmlHandler implements PostProcessor {
 
 	private String			targetDir;
 	private Writer			writer		= null;
-	private String			templateDir	= FileUtil.getJarLocation() + "template" + File.separator;
+	private final String	templateDir;
 	private HtmlConverter	converter	= null;
 	private int				threadId	= 0;
 
@@ -44,9 +44,10 @@ public class ArchiveHtmlHandler implements PostProcessor {
 		}
 	}
 
-	public ArchiveHtmlHandler(String target, boolean threadFolder) {
+	public ArchiveHtmlHandler(String target, String templateDir, boolean threadFolder) {
 		baseDir = FileUtil.prepareDir(target);
 		this.threadFolder = threadFolder;
+		this.templateDir = templateDir;
 	}
 
 	@Override

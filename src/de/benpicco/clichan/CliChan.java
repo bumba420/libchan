@@ -27,7 +27,8 @@ public class CliChan {
 		options.target = ".";
 		options.followUpTag = "NEW THREAD";
 		options.interval = -1;
-		options.config = FileUtil.getJarLocation() + "chans" + File.separator;
+		options.chanConfig = FileUtil.getJarLocation(new CliChan()) + "chans" + File.separator;
+		options.htmlTemplate = FileUtil.getJarLocation(new CliChan()) + "template" + File.separator;
 		String[] namesToSearch = null;
 		options.saveHtml = false;
 		options.saveImages = true;
@@ -83,7 +84,7 @@ public class CliChan {
 			if (commandLine.hasOption('i'))
 				options.interval = Integer.parseInt(commandLine.getOptionValue('i')) * 1000;
 			if (commandLine.hasOption('c'))
-				options.config = commandLine.getOptionValue('c');
+				options.chanConfig = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
 				namesToSearch = commandLine.getOptionValues('f');
 			if (commandLine.hasOption('n')) {
@@ -120,7 +121,7 @@ public class CliChan {
 			options.delete = commandLine.hasOption("d");
 
 			if (commandLine.hasOption("list")) {
-				ChanManager manager = new ChanManager(options.config);
+				ChanManager manager = new ChanManager(options.chanConfig);
 				for (Imageboard board : manager.getSupported())
 					System.out.println(board);
 				return;
@@ -159,7 +160,7 @@ public class CliChan {
 				url = url.substring(0, anchor);
 
 			if (namesToSearch != null)
-				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.config);
+				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.chanConfig);
 			else if (boardArchiver != null)
 				boardArchiver.addBoard(url);
 			else
