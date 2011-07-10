@@ -171,7 +171,7 @@ public class SwingChan {
 		frmLibchan.getContentPane().add(chckbxSeperateFolderFor);
 
 		final JCheckBox chckbxDeleteDeletedImages = new JCheckBox("delete deleted images");
-		chckbxDeleteDeletedImages.setBounds(22, 119, 218, 23);
+		chckbxDeleteDeletedImages.setBounds(12, 122, 218, 23);
 		frmLibchan.getContentPane().add(chckbxDeleteDeletedImages);
 
 		final JButton btnOk = new JButton("ok");
@@ -189,6 +189,12 @@ public class SwingChan {
 				opts.target = targetField.getText();
 				opts.threadFolders = chckbxSeperateFolderFor.isSelected();
 				opts.vocaroo = chckbxDownloadVocarooLinks.isSelected() ? voccTextField.getText().split(",") : null;
+				if (opts.vocaroo != null)
+					if (opts.vocaroo.length == 1 && opts.vocaroo[0].trim().length() == 0)
+						opts.vocaroo = new String[0];
+					else
+						for (int i = 0; i < opts.vocaroo.length; ++i)
+							opts.vocaroo[i] = opts.vocaroo[i].trim();
 
 				for (Component c : frmLibchan.getContentPane().getComponents())
 					c.setEnabled(false);
