@@ -21,8 +21,6 @@ import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 public class CliChan {
-	public final static String	VERSION	= "0.3.2";
-
 	public static void main(String[] args) {
 		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
@@ -103,7 +101,8 @@ public class CliChan {
 						.getOptionValues("vocaroo");
 
 			if (commandLine.hasOption('v')) {
-				System.out.println("cliChan " + VERSION + " using libChan\nhttp://libchan.googlecode.com/");
+				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
+						+ "\nhttp://libchan.googlecode.com/");
 				System.exit(0);
 			}
 
