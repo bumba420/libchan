@@ -52,5 +52,6 @@
             </manifest>
             <fileset dir="bin" includes="de/benpicco/jChan/**"/>
         </jar>
+	<chmod file="dist/*.jar" perm="a+x"/>
     </target>
 </project>
