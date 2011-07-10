@@ -178,7 +178,7 @@ public class SwingChan {
 		btnOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ArchiveOptions opts = new ArchiveOptions();
-				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() : 0;
+				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() * 1000 : 0;
 				opts.chanConfig = FileUtil.getJarLocation(SwingChan.this) + "chans" + File.separator;
 				opts.htmlTemplate = FileUtil.getJarLocation(SwingChan.this) + "template" + File.separator;
 				opts.delete = chckbxDeleteDeletedImages.isSelected();
