@@ -37,6 +37,7 @@ public class SwingChan {
 	private JFrame		frmLibchan;
 	private JTextField	urlField;
 	private JTextField	targetField;
+	private JTextField	voccTextField;
 
 	/**
 	 * Launch the application.
@@ -95,12 +96,17 @@ public class SwingChan {
 		frmLibchan.getContentPane().add(chckbxGenerateStatistics);
 
 		final JCheckBox chckbxDownloadVocarooLinks = new JCheckBox("download Vocaroo links");
-		chckbxDownloadVocarooLinks.setBounds(12, 119, 218, 23);
+		chckbxDownloadVocarooLinks.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				voccTextField.setEnabled(chckbxDownloadVocarooLinks.isSelected());
+			}
+		});
+		chckbxDownloadVocarooLinks.setBounds(233, 146, 218, 23);
 		frmLibchan.getContentPane().add(chckbxDownloadVocarooLinks);
 
 		final JCheckBox chckbxFollowNewThreads = new JCheckBox("follow new threads");
 		chckbxFollowNewThreads.setSelected(true);
-		chckbxFollowNewThreads.setBounds(12, 173, 218, 23);
+		chckbxFollowNewThreads.setBounds(12, 173, 171, 23);
 		frmLibchan.getContentPane().add(chckbxFollowNewThreads);
 
 		final JSpinner intervalSpinner = new JSpinner();
@@ -165,7 +171,7 @@ public class SwingChan {
 		frmLibchan.getContentPane().add(chckbxSeperateFolderFor);
 
 		final JCheckBox chckbxDeleteDeletedImages = new JCheckBox("delete deleted images");
-		chckbxDeleteDeletedImages.setBounds(233, 146, 218, 23);
+		chckbxDeleteDeletedImages.setBounds(22, 119, 218, 23);
 		frmLibchan.getContentPane().add(chckbxDeleteDeletedImages);
 
 		final JButton btnOk = new JButton("ok");
@@ -182,20 +188,44 @@ public class SwingChan {
 				opts.saveImages = chckbxDowloadImages.isSelected();
 				opts.target = targetField.getText();
 				opts.threadFolders = chckbxSeperateFolderFor.isSelected();
+				opts.vocaroo = chckbxDownloadVocarooLinks.isSelected() ? voccTextField.getText().split(",") : null;
 
 				for (Component c : frmLibchan.getContentPane().getComponents())
 					c.setEnabled(false);
 
 				ThreadArchiver archiver = new ThreadArchiver(opts);
 				archiver.addThread(urlField.getText());
-				archiver.run();
-
-				for (Component c : frmLibchan.getContentPane().getComponents())
-					c.setEnabled(true);
+				new Thread(new BackgroundThread(archiver)).start();
 			}
 		});
 		btnOk.setBounds(416, 9, 57, 25);
 		frmLibchan.getContentPane().add(btnOk);
+
+		voccTextField = new JTextField();
+		voccTextField.setEnabled(false);
+		voccTextField.setBounds(256, 177, 232, 19);
+		frmLibchan.getContentPane().add(voccTextField);
+		voccTextField.setColumns(10);
+
+		JLabel lblOnlyFrom = new JLabel("only by");
+		lblOnlyFrom.setBounds(197, 177, 111, 15);
+		frmLibchan.getContentPane().add(lblOnlyFrom);
+	}
+
+	class BackgroundThread implements Runnable {
+		private final Runnable	task;
+
+		public BackgroundThread(Runnable task) {
+			this.task = task;
+		}
+
+		@Override
+		public void run() {
+			task.run();
+
+			for (Component c : frmLibchan.getContentPane().getComponents())
+				c.setEnabled(true);
+		}
 	}
 }
 
