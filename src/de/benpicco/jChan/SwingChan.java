@@ -71,8 +71,9 @@ public class SwingChan {
 	 */
 	private void initialize() {
 		frmLibchan = new JFrame();
+		frmLibchan.setResizable(false);
 		frmLibchan.setTitle("libChan " + ThreadArchiver.VERSION);
-		frmLibchan.setBounds(100, 100, 520, 433);
+		frmLibchan.setBounds(100, 100, 600, 433);
 		frmLibchan.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLibchan.getContentPane().setLayout(null);
 
@@ -133,7 +134,7 @@ public class SwingChan {
 		frmLibchan.getContentPane().add(lblSeconds);
 
 		final JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(12, 218, 476, 173);
+		scrollPane.setBounds(12, 218, 560, 173);
 		frmLibchan.getContentPane().add(scrollPane);
 
 		final JTextPane textPane = new JTextPane();
