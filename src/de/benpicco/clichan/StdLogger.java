@@ -16,11 +16,6 @@ public class StdLogger implements LoggerBackend {
 	}
 
 	@Override
-	public void print(String msg) {
-		System.out.print(msg);
-	}
-
-	@Override
 	public void error(String msg) {
 		System.err.println(time() + msg);
 	}
