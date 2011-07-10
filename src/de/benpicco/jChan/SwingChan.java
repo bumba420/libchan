@@ -169,7 +169,7 @@ public class SwingChan {
 		sl_panel_archive.putConstraint(SpringLayout.EAST, lblSeconds, 436, SpringLayout.WEST, panel_archive);
 		panel_archive.add(lblSeconds);
 
-		final JCheckBox chckbxSeperateFolderFor = new JCheckBox("seperate folder for threads");
+		final JCheckBox chckbxSeperateFolderFor = new JCheckBox("separate folders for threads");
 		sl_panel_archive.putConstraint(SpringLayout.NORTH, chckbxSeperateFolderFor, 122, SpringLayout.NORTH,
 				panel_archive);
 		sl_panel_archive.putConstraint(SpringLayout.WEST, chckbxSeperateFolderFor, 244, SpringLayout.WEST,
