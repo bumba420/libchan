@@ -103,7 +103,7 @@ public class CliChan {
 				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
 						.getOptionValues("vocaroo");
 			if (commandLine.hasOption("t"))
-				ThreadPool.setMaxThread(Integer.parseInt(commandLine.getOptionValue("t")));
+				ThreadPool.setPoolSize(Integer.parseInt(commandLine.getOptionValue("t")));
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION

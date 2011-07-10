@@ -13,7 +13,7 @@ public class ThreadPool {
 		governThread(1);
 	}
 
-	public static void setMaxThread(int threads) {
+	public static void setPoolSize(int threads) {
 		poolSize = threads;
 	}
 
