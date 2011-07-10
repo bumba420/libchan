@@ -24,7 +24,7 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 		this.options = options;
 		archiver = new ThreadArchiver(options);
 		boards = new ArrayList<ImageBoardParser>();
-		manager = new ChanManager(options.config);
+		manager = new ChanManager(options.chanConfig);
 	}
 
 	// Assumption: addBoard() is not called while running, if this is ever

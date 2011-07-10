@@ -60,7 +60,8 @@ public class SwingChan {
 	public SwingChan() {
 		initialize();
 		Logger.get().println(
-				"Definitions for " + new ChanManager(FileUtil.getJarLocation() + "chans").getSupported().size()
+				"Definitions for "
+						+ new ChanManager(FileUtil.getJarLocation(SwingChan.this) + "chans").getSupported().size()
 						+ " imageboards present.");
 	}
 
@@ -172,7 +173,8 @@ public class SwingChan {
 			public void actionPerformed(ActionEvent arg0) {
 				ArchiveOptions opts = new ArchiveOptions();
 				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() : 0;
-				opts.config = FileUtil.getJarLocation() + "chans" + File.separator;
+				opts.chanConfig = FileUtil.getJarLocation(SwingChan.this) + "chans" + File.separator;
+				opts.htmlTemplate = FileUtil.getJarLocation(SwingChan.this) + "template" + File.separator;
 				opts.delete = chckbxDeleteDeletedImages.isSelected();
 				opts.followUpTag = chckbxFollowNewThreads.isSelected() ? "NEW THREAD" : null;
 				opts.recordStats = chckbxGenerateStatistics.isSelected();
