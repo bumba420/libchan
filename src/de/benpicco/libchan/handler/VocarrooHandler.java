@@ -9,6 +9,7 @@ import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class VocarrooHandler implements PostProcessor {
 
@@ -48,9 +49,8 @@ public class VocarrooHandler implements PostProcessor {
 
 			@Override
 			public void run() {
-				while (match.find()) {
-					FileUtil.downloadFile(voccUrl + match.group(1), dir + post.id + "_" + match.group(1) + ".wav", 5);
-				}
+				while (match.find())
+					ThreadPool.addDownload(voccUrl + match.group(1), dir + post.id + "_" + match.group(1) + ".wav");
 			}
 		}).start();
 	}

@@ -13,6 +13,7 @@ import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class ArchiveHtmlHandler implements PostProcessor {
 
@@ -75,8 +76,8 @@ public class ArchiveHtmlHandler implements PostProcessor {
 		}
 
 		for (Image img : post.images)
-			FileUtil.downloadFile(img.thumbnailUrl,
-					targetDir + thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/"), 3);
+			ThreadPool.addDownload(img.thumbnailUrl,
+					targetDir + thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/"));
 	}
 
 	@Override

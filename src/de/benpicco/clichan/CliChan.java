@@ -19,6 +19,7 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class CliChan {
 	public static void main(String[] args) {
@@ -51,6 +52,7 @@ public class CliChan {
 		cliOptions.addOption("stats", false, "record poster statistics");
 		cliOptions.addOption("list", false, "list all supported imageboards");
 		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
+		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -100,6 +102,8 @@ public class CliChan {
 			if (commandLine.hasOption("vocaroo"))
 				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
 						.getOptionValues("vocaroo");
+			if (commandLine.hasOption("t"))
+				ThreadPool.setMaxThread(Integer.parseInt(commandLine.getOptionValue("t")));
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
