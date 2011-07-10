@@ -69,7 +69,7 @@ public class SwingChan {
 	 */
 	private void initialize() {
 		frmLibchan = new JFrame();
-		frmLibchan.setTitle("libChan");
+		frmLibchan.setTitle("libChan " + ThreadArchiver.VERSION);
 		frmLibchan.setBounds(100, 100, 520, 433);
 		frmLibchan.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLibchan.getContentPane().setLayout(null);
