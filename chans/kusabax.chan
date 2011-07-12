@@ -26,6 +26,14 @@ SITE_NAME	Karachan
 SITE_DESC	Polish Imageboard
 SITE_URL	http://www.karachan.org
 
+SITE_NAME	BRchan
+SITE_DESC	Brazilian imageboard
+SITE_URL	http://www.brchan.org
+
+SITE_NAME	Ponychan
+SITE_DESC	An imageboard centering around discussion of Lauren Faust's latest series, My Little Pony: Friendship Is Magic.
+SITE_URL	http://www.ponychan.net/chan
+
 SITE_NAME	PAWSRU.ORG
 SITE_DESC	In Soviet Russia paws like you :3
 SITE_URL	http://pawsru.org/pawsX
