@@ -1,0 +1,26 @@
+SITE_NAME       Krautchan
+SITE_DESC       The biggest German imageboard
+SITE_URL	http://krautchan.net
+
+BOARD_INDEX	/nav
+BOARD		<li id="board_$$" class="board_newposts"><a href="$BOARD_URL$" target="main">$BOARD_TITLE$</a></li>
+
+POST		<input name="post_$POST_ID$"
+POST		<span class="postername">$POST_USER$</span>
+POST		<span class="postsubject">$POST_TITLE$</span>
+POST		<div class="file_$$">$$<span id="filename_$$" style="display:none">$POST_FILENAME$</span>$$<a href="$POST_IMGURL$"
+POST		<img src="$POST_THUMBNAIL$" onmouseover="fileTooltip
+POST		<img style="display: block" id='thumbnail_$$' src=$POST_THUMBNAIL$ $$ onmouseover
+POST		<img src="/images/balls/$POST_COUNTRY$"
+POST		<span class="postdate">$POST_DATE$</span>
+POST		<blockquote>$POST_MESSAGE$</blockquote>
+POST		<div class="thread" style="clear: both" $POST_THREAD$>
+
+URL_PREFIX	thread-
+URL_POSTFIX	.html
+
+COUNTRY_PREFIX	/images/balls/
+
+START_POST	POST_ID
+START_POST	POST_THREAD
+END_POST	POST_MESSAGE

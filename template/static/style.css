@@ -1,0 +1,46 @@
+a:link {text-decoration: none; color: #c02a03;}
+a:hover {color:#d51105;}
+
+body {
+	font-size: 90%;
+	font-family:arial,helvetica,sans-serif;
+	background-color: #ffffee;
+}
+
+div.post {
+	color: #c02a03;
+	margin: 3px;
+	margin-left: 20px;
+	background-color: #f0e0d6;
+	clear:left;
+	display: inline-block;
+	box-shadow:1px 1px 1px #666;
+	padding-bottom: 15px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+div.img {
+	display: inline;
+	float: left;
+	margin: 5px;
+	padding-bottom: 10px;
+	font-size: 80%;
+}
+
+div.message {
+	clear:left;
+}
+.message a:link {text-decoration: underline; color: blue;}
+.message a:hover {}
+
+span.user {
+
+	font-weight:bold;
+	color: #487743;	
+}
+
+span.title {
+	font-weight:bold;
+	color: #d51105;
+}

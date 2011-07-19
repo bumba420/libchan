@@ -1,0 +1,9 @@
+SITE_NAME       IIchan.ru
+SITE_DESC       IIchan.ru
+SITE_URL        http://iichan.ru/
+
+BOARD_INDEX	/n/list_ru.html
+BOARD		<div><a href="$BOARD_URL$" target="board">$BOARD_TITLE$</a></div> 
+
+INCLUDE         wakaba.include 
+
