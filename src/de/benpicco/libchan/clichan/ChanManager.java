@@ -20,6 +20,8 @@ public class ChanManager {
 
 	public ChanManager(String configDirectory) {
 		chans = new LinkedList<ChanSpecification>();
+		if (!configDirectory.endsWith(File.separator))
+			configDirectory += File.separator;
 
 		File cfgdir = new File(configDirectory);
 		if (cfgdir.exists()) {

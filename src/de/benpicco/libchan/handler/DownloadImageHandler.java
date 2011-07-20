@@ -7,6 +7,7 @@ import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class DownloadImageHandler implements PostProcessor {
 	final String	targetDir;
@@ -40,7 +41,7 @@ public class DownloadImageHandler implements PostProcessor {
 			@Override
 			public void run() {
 				for (Image img : post.images)
-					FileUtil.downloadFile(img.url, dir + img.filename, 5);
+					ThreadPool.addDownload(img.url, dir + img.filename);
 			}
 		}).start();
 	}

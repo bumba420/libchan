@@ -51,7 +51,12 @@ public class ArchiveOptions {
 	/**
 	 * chan config dir
 	 */
-	public String		config;
+	public String		chanConfig;
+
+	/**
+	 * html template directory
+	 */
+	public String		htmlTemplate;
 
 	/**
 	 * watch for deleted posts and delete the image
