@@ -17,20 +17,41 @@
 </target>
 
 <target name="create_run_jar" depends="compile">
-	<copy todir="dist/chans"><fileset dir="chans"/>	</copy>
-	<copy todir="dist/template"><fileset dir="template"/></copy>
+	<copy todir="dist/chans">	<fileset dir="chans"/>	</copy>
+	<copy todir="dist/template">	<fileset dir="template"/></copy>
+	<copy todir="dist/lib">		<fileset dir="lib"/></copy>
 	<copy todir="dist/" file="README.TXT" />
 	<copy todir="dist/" file="LICENSE.TXT" />
 	<copy todir="dist/" file="NOTICE.TXT" />
+
+        <jar destfile="dist/lib/libChan.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Class-Path" value="."/>
+		<attribute name="Class-path" value="lib/commons-lang3-3.0-beta.jar"/>
+            </manifest>
+            <fileset dir="bin" includes="de/benpicco/libchan/**"/>
+        </jar>
 
         <jar destfile="dist/cliChan.jar" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="de.benpicco.clichan.CliChan"/>
                 <attribute name="Class-Path" value="."/>
+		<attribute name="Class-path" value="lib/commons-cli-1.2.jar"/>
+		<attribute name="Class-path" value="lib/commons-lang3-3.0-beta.jar"/>
+		<attribute name="Class-path" value="lib/libChan.jar"/>
             </manifest>
-            <fileset dir="bin"/>
-            <zipfileset excludes="META-INF/*.SF" src="lib/commons-lang3-3.0-beta.jar"/>
-            <zipfileset excludes="META-INF/*.SF" src="lib/commons-cli-1.2.jar"/>
+            <fileset dir="bin" includes="de/benpicco/clichan/**"/>
         </jar>
+
+        <jar destfile="dist/libChan-GUI.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="de.benpicco.jChan.SwingChan"/>
+                <attribute name="Class-Path" value="."/>
+		<attribute name="Class-path" value="lib/commons-lang3-3.0-beta.jar"/>
+		<attribute name="Class-path" value="lib/libChan.jar"/>
+            </manifest>
+            <fileset dir="bin" includes="de/benpicco/jChan/**"/>
+        </jar>
+	<chmod file="dist/*.jar" perm="a+x"/>
     </target>
 </project>

@@ -19,17 +19,17 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.ThreadPool;
 
 public class CliChan {
-	public final static String	VERSION	= "0.3.1";
-
 	public static void main(String[] args) {
 		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
 		options.target = ".";
 		options.followUpTag = "NEW THREAD";
 		options.interval = -1;
-		options.config = FileUtil.getJarLocation() + "chans" + File.separator;
+		options.chanConfig = FileUtil.getJarLocation(new CliChan()) + "chans" + File.separator;
+		options.htmlTemplate = FileUtil.getJarLocation(new CliChan()) + "template" + File.separator;
 		String[] namesToSearch = null;
 		options.saveHtml = false;
 		options.saveImages = true;
@@ -52,6 +52,7 @@ public class CliChan {
 		cliOptions.addOption("stats", false, "record poster statistics");
 		cliOptions.addOption("list", false, "list all supported imageboards");
 		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
+		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -85,7 +86,7 @@ public class CliChan {
 			if (commandLine.hasOption('i'))
 				options.interval = Integer.parseInt(commandLine.getOptionValue('i')) * 1000;
 			if (commandLine.hasOption('c'))
-				options.config = commandLine.getOptionValue('c');
+				options.chanConfig = commandLine.getOptionValue('c');
 			if (commandLine.hasOption('f'))
 				namesToSearch = commandLine.getOptionValues('f');
 			if (commandLine.hasOption('n')) {
@@ -101,9 +102,12 @@ public class CliChan {
 			if (commandLine.hasOption("vocaroo"))
 				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
 						.getOptionValues("vocaroo");
+			if (commandLine.hasOption("t"))
+				ThreadPool.setPoolSize(Integer.parseInt(commandLine.getOptionValue("t")));
 
 			if (commandLine.hasOption('v')) {
-				System.out.println("cliChan " + VERSION + " using libChan\nhttp://libchan.googlecode.com/");
+				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
+						+ "\nhttp://libchan.googlecode.com/");
 				System.exit(0);
 			}
 
@@ -121,7 +125,7 @@ public class CliChan {
 			options.delete = commandLine.hasOption("d");
 
 			if (commandLine.hasOption("list")) {
-				ChanManager manager = new ChanManager(options.config);
+				ChanManager manager = new ChanManager(options.chanConfig);
 				for (Imageboard board : manager.getSupported())
 					System.out.println(board);
 				return;
@@ -160,7 +164,7 @@ public class CliChan {
 				url = url.substring(0, anchor);
 
 			if (namesToSearch != null)
-				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.config);
+				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.chanConfig);
 			else if (boardArchiver != null)
 				boardArchiver.addBoard(url);
 			else

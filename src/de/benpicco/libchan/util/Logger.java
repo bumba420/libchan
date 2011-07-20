@@ -23,12 +23,6 @@ public class Logger implements LoggerBackend {
 	}
 
 	@Override
-	public void print(String msg) {
-		for (LoggerBackend backend : backends)
-			backend.print(msg);
-	}
-
-	@Override
 	public void error(String msg) {
 		for (LoggerBackend backend : backends)
 			backend.error(msg);

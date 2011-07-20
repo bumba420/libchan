@@ -5,10 +5,17 @@ Boards:
  lolks.ru (Kareha)
  2chan.net (futaba)
  porn-chan.com (PyIB)
+ 4chanarchive.org
+ fchan.us
  swfchan.org
+
+Features:
+ alternative Client string (so we don't get blocked from e.g. BRchan)
+ posting
+
 Bugs:
  try to find closest match
  
 Ideas:
  [Pokechan] dashboard (add Chan)
-
+ use generated html as page cache ?

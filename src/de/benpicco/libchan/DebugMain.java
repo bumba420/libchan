@@ -20,7 +20,7 @@ public class DebugMain {
 
 	private static void archiveThread(String url) {
 		ArchiveOptions options = new ArchiveOptions();
-		options.config = "chans/";
+		options.chanConfig = "chans/";
 		options.target = "/tmp/libChan/";
 		// options.saveHtml = true;
 		// options.saveImages = true;

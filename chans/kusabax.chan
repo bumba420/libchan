@@ -26,6 +26,14 @@ SITE_NAME	Karachan
 SITE_DESC	Polish Imageboard
 SITE_URL	http://www.karachan.org
 
+SITE_NAME	BRchan
+SITE_DESC	Brazilian imageboard
+SITE_URL	http://www.brchan.org
+
+SITE_NAME	Ponychan
+SITE_DESC	An imageboard centering around discussion of Lauren Faust's latest series, My Little Pony: Friendship Is Magic.
+SITE_URL	http://www.ponychan.net/chan
+
 SITE_NAME	PAWSRU.ORG
 SITE_DESC	In Soviet Russia paws like you :3
 SITE_URL	http://pawsru.org/pawsX
@@ -65,6 +73,18 @@ SITE_URL	http://www.ssbbwchan.com
 SITE_NAME	iChan
 SITE_DESC	iChan Network
 SITE_URL	http://ichan.org
+
+SITE_NAME	Tohno-chan
+SITE_DESC	True Otaku Hikikomori Neet Organization channel
+SITE_URL	http://tohno-chan.com
+
+SITE_NAME       Not4Chan
+SITE_DESC       bringing loli into your home since 2007
+SITE_URL        http://notfourchan.net
+
+SITE_NAME       Tentacle
+SITE_DESC       The most Extreme Anonymous Hentai Imageboard Board on the Web ^_^
+SITE_URL        http://www.tentakle.com
 
 SITE_NAME	Animuchan
 SITE_DESC	Animu Imageboard

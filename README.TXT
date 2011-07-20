@@ -1,5 +1,7 @@
 clichan requires Java, you can download it at [1].
 
+For an experimantal GUI version, run libChan-GUI.jar. Currently not all features are exposed.
+
 You run the jar file by calling
 	java -jar cliChan.jar
 
