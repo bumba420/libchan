@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class FileUtil {
 	public static void copyFile(File sourceFile, File destFile) throws IOException {
 		if (!destFile.exists())
@@ -43,8 +45,10 @@ public class FileUtil {
 		}
 	}
 
-	public static String getJarLocation(Object o) {
-		return new PathHelper(o).jarLocation;
+	public static String getJarLocation() {
+		String[] path = System.getProperty("java.class.path").split(File.pathSeparator);
+		return StringUtils.substringBeforeLast(path[0], File.separator) + File.separator;
+
 	}
 
 	public static void downloadFile(String url, String filename, int tries) {
@@ -107,14 +111,5 @@ public class FileUtil {
 		String dir = target.endsWith(File.separator) ? target : target + File.separator;
 		new File(dir).mkdir();
 		return dir;
-	}
-}
-
-class PathHelper {
-	public final String	jarLocation;
-
-	public PathHelper(Object o) {
-		String tmp = o.getClass().getProtectionDomain().getCodeSource().getLocation().getPath();
-		jarLocation = tmp.substring(0, tmp.lastIndexOf(File.separatorChar) + 1);
 	}
 }
