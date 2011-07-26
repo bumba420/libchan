@@ -22,7 +22,8 @@ public class ThreadPool {
 			for (int j = 0; j <= i && threadCount <= poolSize; ++j, ++threadCount)
 				new workerThread(queue).start();
 		else
-			threadCount -= i;
+			threadCount += i;
+
 		if (threadCount < 0)
 			threadCount = 0;
 	}
