@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import de.benpicco.libchan.handler.ArchiveHtmlHandler;
@@ -15,23 +14,16 @@ import de.benpicco.libchan.handler.PostCountHandler;
 import de.benpicco.libchan.handler.StatisticsHandler;
 import de.benpicco.libchan.handler.UserNotifyHandler;
 import de.benpicco.libchan.handler.VocarrooHandler;
-import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.NewThreadReceiver;
-import de.benpicco.libchan.interfaces.PostHandler;
-import de.benpicco.libchan.interfaces.PostProcessor;
 import de.benpicco.libchan.util.Logger;
 
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
-	public final static String				VERSION		= "0.3.2";
+	public final static String				VERSION	= "0.3.2";
 
 	private final ChanManager				manager;
 	private final List<ImageBoardParser>	threads;
 	private final List<ImageBoardParser>	newThreads;
-
-	// only needed if we check for deleted posts
-	private List<Post>						postList	= null;
-	private int								postNum		= 0;
 
 	private final ArchiveOptions			o;
 	private boolean							running;
@@ -41,8 +33,6 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		threads = new ArrayList<ImageBoardParser>();
 		newThreads = new ArrayList<ImageBoardParser>();
 		manager = new ChanManager(o.chanConfig);
-		if (o.delete)
-			postList = new LinkedList<Post>();
 	}
 
 	private boolean contains(List<ImageBoardParser> parsers, String url) {
@@ -71,88 +61,25 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 		Logger.get().println("Adding " + url);
 
-		ArrayList<PostProcessor> handler = new ArrayList<PostProcessor>();
+		PostArchiver handler = new PostArchiver(o.delete);
 
 		if (o.saveImages)
-			handler.add(new DownloadImageHandler(target, o.threadFolders));
-		handler.add(new PostCountHandler(500)); // TODO: remove magic number
+			handler.addHandler(new DownloadImageHandler(target, o.threadFolders));
+		// TODO: remove magic number
+		handler.addHandler(new PostCountHandler(handler, 500));
 		if (o.saveHtml)
-			handler.add(new ArchiveHtmlHandler(target, o.htmlTemplate, o.threadFolders));
+			handler.addHandler(new ArchiveHtmlHandler(target, o.htmlTemplate, o.threadFolders));
 		if (o.followUpTag != null)
-			handler.add(new FollowupThreadHandler(parser, o.followUpTag, this));
+			handler.addHandler(new FollowupThreadHandler(parser, o.followUpTag, this));
 		if (o.names != null)
-			handler.add(new UserNotifyHandler(o.names));
+			handler.addHandler(new UserNotifyHandler(o.names));
 		if (o.recordStats)
-			handler.add(new StatisticsHandler(target, o.threadFolders));
+			handler.addHandler(new StatisticsHandler(target, o.threadFolders));
 		if (o.vocaroo != null)
-			handler.add(new VocarrooHandler(target, o.threadFolders, o.vocaroo));
+			handler.addHandler(new VocarrooHandler(target, o.threadFolders, o.vocaroo));
 
-		parser.setPostHandler(new PostArchiver(handler));
+		parser.setPostHandler(handler);
 		newThreads.add(parser);
-	}
-
-	class PostArchiver implements PostHandler {
-		List<PostProcessor>	handler;
-		private int			lastId	= 0;
-
-		public PostArchiver(List<PostProcessor> handler) {
-			this.handler = handler;
-		}
-
-		/**
-		 * private helper function, does no sanity checking
-		 * 
-		 * @param oldPost
-		 */
-		private void removePost(int postNum) {
-			Post oldPost = postList.remove(postNum);
-			for (PostProcessor h : handler)
-				h.onPostModified(oldPost, null);
-			Logger.get().println("Post " + oldPost.id + " deleted");
-			Logger.get().println(oldPost.toString());
-		}
-
-		@Override
-		public void onAddPost(final Post post) {
-			if (post.id > lastId) { // new posts
-				lastId = post.id;
-				if (postNum > 0) { // last post got deleted, new post was done
-									// afterwards
-					for (; postNum < postList.size(); postNum++)
-						removePost(postNum);
-					postNum++;
-				}
-
-				if (postList != null)
-					postList.add(post);
-
-				for (PostHandler h : handler)
-					h.onAddPost(post);
-			} else if (postList != null) { // see which post got deleted
-				Post oldPost = postList.get(postNum);
-				while (oldPost.id < post.id) {
-					removePost(postNum);
-					oldPost = postList.get(postNum);
-				}
-				if (!Post.equals(oldPost, post))
-					for (PostProcessor h : handler)
-						h.onPostModified(oldPost, post);
-				postNum++;
-			}
-		}
-
-		@Override
-		public void onPostsParsingDone() {
-			if (postNum > 0) {
-				for (; postNum < postList.size(); postNum++)
-					// deleted posts that are the last posts
-					removePost(postNum);
-
-				postNum = 0;
-			}
-			for (PostHandler h : handler)
-				h.onPostsParsingDone();
-		}
 	}
 
 	@Override
