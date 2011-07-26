@@ -28,8 +28,8 @@ public class CliChan {
 		options.target = ".";
 		options.followUpTag = "NEW THREAD";
 		options.interval = -1;
-		options.chanConfig = FileUtil.getJarLocation(new CliChan()) + "chans" + File.separator;
-		options.htmlTemplate = FileUtil.getJarLocation(new CliChan()) + "template" + File.separator;
+		options.chanConfig = FileUtil.getJarLocation() + "chans" + File.separator;
+		options.htmlTemplate = FileUtil.getJarLocation() + "template" + File.separator;
 		String[] namesToSearch = null;
 		options.saveHtml = false;
 		options.saveImages = true;

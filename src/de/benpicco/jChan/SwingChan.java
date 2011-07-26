@@ -47,7 +47,7 @@ public class SwingChan {
 	private JTextField		textField_searchBoard;
 	private JTextField		textField_SearchTerms;
 
-	private final String	chanDir	= FileUtil.getJarLocation(SwingChan.this) + "chans";
+	private final String	chanDir	= FileUtil.getJarLocation() + "chans";
 
 	/**
 	 * Launch the application.
@@ -289,7 +289,7 @@ public class SwingChan {
 				ArchiveOptions opts = new ArchiveOptions();
 				opts.interval = chckbxMonitorThreads.isSelected() ? (Integer) intervalSpinner.getValue() * 1000 : 0;
 				opts.chanConfig = chanDir;
-				opts.htmlTemplate = FileUtil.getJarLocation(SwingChan.this) + "template" + File.separator;
+				opts.htmlTemplate = FileUtil.getJarLocation() + "template" + File.separator;
 				opts.delete = chckbxDeleteDeletedImages.isSelected();
 				opts.followUpTag = chckbxFollowNewThreads.isSelected() ? "NEW THREAD" : null;
 				opts.recordStats = chckbxGenerateStatistics.isSelected();
