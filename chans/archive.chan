@@ -1,0 +1,18 @@
+SITE_NAME	no-ip 4chan Archive
+SITE_DESC	a 4chan archiver
+SITE_URL	http://archive.no-ip.org
+
+INCLUDE	common.include
+POST	<div id="p$POST_THREAD$">
+POST    <input type="checkbox" name="delete" value="$POST_ID$,
+POST	<label>$$</span>   $POST_DATE$</label>
+POST	<span>File:$$,$$,$POST_FILENAME$<$$<br /> <a href="$POST_IMGURL$"
+POST	<img class="thumb" src="$POST_THUMBNAIL$"
+
+BOARD_INDEX	/
+BOARD	<a href="$BOARD_URL$" title="">$BOARD_TITLE$</a>&nbsp;
+
+START_POST	POST_THREAD
+START_POST	POST_FILENAME
+START_POST	POST_ID
+END_POST	POST_MESSAGE
