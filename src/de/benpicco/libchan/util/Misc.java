@@ -30,4 +30,41 @@ public class Misc {
 			printNames += (i > 0 ? ", " : "") + names[i];
 		return printNames;
 	}
+
+	/**
+	 * Returns the position of the element in the array that contains key, or
+	 * -1. The array has to be lowercase
+	 * 
+	 * @param array
+	 * @param key
+	 * @return
+	 */
+	public static int containsAlike(String[] array, String key) {
+		if (array == null)
+			return -1;
+
+		key = key.toLowerCase();
+
+		for (int i = 0; i < array.length; ++i)
+			if ((key.contains(array[i])))
+				return i;
+		return -1;
+	}
+
+	/**
+	 * Returns the position of the element in the array that equals key, or -1.
+	 * 
+	 * @param array
+	 * @param key
+	 * @return
+	 */
+	public static int contains(String[] array, String key) {
+		if (array == null)
+			return -1;
+
+		for (int i = 0; i < array.length; ++i)
+			if (key.equals(array[i]))
+				return i;
+		return -1;
+	}
 }
