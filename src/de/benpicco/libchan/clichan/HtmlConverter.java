@@ -89,7 +89,8 @@ public class HtmlConverter {
 		final String user = post.mail == null ? post.user : "<a href=\"mailto:" + post.mail + "\">" + post.user
 				+ "</a>";
 		final String message = getLinkifiedText(StringEscapeUtils.escapeHtml4(post.message)
-				.replaceAll("&gt;&gt;([0-9]*)", "<a href=\"#$1\">&gt;&gt;$1</a>").replace("\n", "<br>"));
+				.replaceAll("&gt;&gt;([0-9]*)", "<a href=\"#$1\">&gt;&gt;$1</a>")
+				.replaceAll("\n&gt;(.*)", "\n<span class=\"quote\">&gt;$1</span>").replace("\n", "<br>"));
 
 		String images = "";
 		for (Image img : post.images)
