@@ -47,7 +47,8 @@ public class FileUtil {
 
 	public static String getJarLocation() {
 		String[] path = System.getProperty("java.class.path").split(File.pathSeparator);
-		return StringUtils.substringBeforeLast(path[0], File.separator) + File.separator;
+		return (path[0].contains(File.separator) ? StringUtils.substringBeforeLast(path[0], File.separator) : ".")
+				+ File.separator;
 
 	}
 
