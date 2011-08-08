@@ -66,6 +66,10 @@ SITE_NAME	Gaychan
 SITE_DESC	Gaychan is an imageboard and discussion community for gay, bi and questioning males. Our site has both SFW and NSFW areas.
 SITE_URL	http://www.gaychan.com/boards
 
+SITE_NAME	AnonIB
+SITE_DESC	Best image board! Yeah!
+SITE_URL	http://anonib.com
+
 SITE_NAME	Newfapchan
 SITE_DESC	the new FapChan
 SITE_URL	http://www.newfapchan.org
