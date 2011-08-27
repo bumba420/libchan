@@ -48,7 +48,7 @@ public class CliChan {
 		cliOptions.addOption("tag", true, "follow-up threads tag");
 		cliOptions.addOption("html", false, "archive thread as html");
 		cliOptions.addOption("nothreadfolders", false, "Do not create a folder for every thread");
-		cliOptions.addOption("noarchive", false, "Do not download images from the thread");
+		cliOptions.addOption("nopics", false, "Do not download images from the thread");
 		cliOptions.addOption("stats", false, "record poster statistics");
 		cliOptions.addOption("list", false, "list all supported imageboards");
 		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
