@@ -74,4 +74,10 @@ public class ArchiveOptions {
 	 * downloaded.
 	 */
 	public String[]		vocaroo;
+
+	/**
+	 * when warning about autosage should be shown
+	 */
+
+	public int			autosage;
 }

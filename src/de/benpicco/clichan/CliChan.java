@@ -35,6 +35,7 @@ public class CliChan {
 		options.saveImages = true;
 		options.threadFolders = true;
 		options.recordStats = false;
+		options.autosage = 500;
 
 		Logger.add(new StdLogger());
 
@@ -53,6 +54,7 @@ public class CliChan {
 		cliOptions.addOption("list", false, "list all supported imageboards");
 		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
 		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
+		cliOptions.addOption("autosage", true, "postcount for bump limit warning");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -102,8 +104,10 @@ public class CliChan {
 			if (commandLine.hasOption("vocaroo"))
 				options.vocaroo = commandLine.getOptionValues("vocaroo") == null ? new String[0] : commandLine
 						.getOptionValues("vocaroo");
-			if (commandLine.hasOption("t"))
-				ThreadPool.setPoolSize(Integer.parseInt(commandLine.getOptionValue("t")));
+			if (commandLine.hasOption('t'))
+				ThreadPool.setPoolSize(Integer.parseInt(commandLine.getOptionValue('t')));
+			if (commandLine.hasOption("autosage"))
+				options.autosage = Integer.parseInt(commandLine.getOptionValue("autosage"));
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION

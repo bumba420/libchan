@@ -39,7 +39,7 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "http://archive.no-ip.org/soc/";
+		String url = "http://boards.4chan.org/b/res/350150621";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
@@ -60,8 +60,8 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		// parser.getPosts();
-		parser.getThreads();
+		parser.getPosts();
+		// parser.getThreads();
 		// parser.getBoards();
 
 		// while (true) {

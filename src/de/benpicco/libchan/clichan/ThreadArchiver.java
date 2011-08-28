@@ -19,7 +19,7 @@ import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.util.Logger;
 
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
-	public final static String				VERSION	= "0.3.3.1";
+	public final static String				VERSION	= "0.3.4-hg";
 
 	private final ChanManager				manager;
 	private final List<ImageBoardParser>	threads;
@@ -65,8 +65,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 
 		if (o.saveImages)
 			handler.addHandler(new DownloadImageHandler(target, o.threadFolders));
-		// TODO: remove magic number
-		handler.addHandler(new PostCountHandler(handler, 500));
+		if (o.autosage > 0)
+			handler.addHandler(new PostCountHandler(handler, o.autosage));
 		if (o.saveHtml)
 			handler.addHandler(new ArchiveHtmlHandler(target, o.htmlTemplate, o.threadFolders));
 		if (o.followUpTag != null)
