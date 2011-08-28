@@ -1,20 +1,18 @@
-a:link {text-decoration: none; color: #c02a03;}
+a:link {text-decoration: none; color:inherit;}
 a:hover {color:#d51105;}
 
 body {
-	font-size: 90%;
-	font-family:arial,helvetica,sans-serif;
+	font-family:arial,helvetica,sans-serif;font-size:10pt;
 	background-color: #ffffee;
+	color:#800000;
 }
 
 div.post {
-	color: #c02a03;
 	margin: 3px;
-	margin-left: 20px;
 	background-color: #f0e0d6;
 	clear:left;
 	display: inline-block;
-	box-shadow:1px 1px 1px #666;
+	box-shadow:1px 1px 10px #666;
 	padding-bottom: 15px;
 	padding-right: 15px;
 	padding-left: 15px;
@@ -30,6 +28,7 @@ div.img {
 
 div.message {
 	clear:left;
+	margin-left: 10px;
 }
 .message a:link {text-decoration: underline; color: blue;}
 .message a:hover {}
