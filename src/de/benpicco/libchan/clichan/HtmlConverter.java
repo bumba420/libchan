@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -90,13 +91,13 @@ public class HtmlConverter {
 				+ "</a>";
 		final String message = getLinkifiedText(StringEscapeUtils.escapeHtml4(post.message)
 				.replaceAll("&gt;&gt;([0-9]+)", "<a href=\"#$1\">&gt;&gt;$1</a>")
-				.replaceAll("\n&gt;(.*)", "\n<span class=\"quote\">&gt;$1</span>").replace("\n", "<br>"));
+				.replaceAll("(?m)^&gt;(.*)", "\n<span class=\"quote\">&gt;$1</span>").replace("\n", "<br>"));
 
 		String images = "";
 		for (Image img : post.images)
 			images += imgTemplate.replace("$IMGURL", StringEscapeUtils.escapeHtml4(img.url))
 					.replace("$THUMBNAIL", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
-					.replace("$FILENAME", img.filename);
+					.replace("$FILENAME", URLEncoder.encode(img.filename));
 
 		return postTemplate.replace("$ID", post.id + "").replace("$TITLE", post.title != null ? post.title : "")
 				.replace("$COUNTRY", post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
