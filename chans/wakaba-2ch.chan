@@ -1,0 +1,9 @@
+SITE_NAME       Два.ч
+SITE_DESC       Big Russian Imageboard
+SITE_URL        http://2ch.so
+
+BOARD_INDEX     /menu.html
+BOARD           <dd><a target="main" href="$BOARD_URL$">$BOARD_TITLE$</a></dd>
+
+INCLUDE         wakaba.include 
+
