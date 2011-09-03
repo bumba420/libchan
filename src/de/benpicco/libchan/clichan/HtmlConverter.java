@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 
 import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
+import de.benpicco.libchan.imageboards.Tags;
 import de.benpicco.libchan.util.Logger;
 
 public class HtmlConverter {
@@ -95,17 +96,21 @@ public class HtmlConverter {
 
 		String images = "";
 		for (Image img : post.images)
-			images += imgTemplate.replace("$IMGURL", StringEscapeUtils.escapeHtml4(img.url))
-					.replace("$THUMBNAIL", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
-					.replace("$FILENAME", URLEncoder.encode(img.filename));
+			images += imgTemplate.replace("$" + Tags.POST_IMGURL + "$", StringEscapeUtils.escapeHtml4(img.url))
+					.replace("$" + Tags.POST_THUMBNAIL + "$", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
+					.replace("$" + Tags.POST_FILENAME + "$", URLEncoder.encode(img.filename));
 
-		return postTemplate.replace("$ID", post.id + "").replace("$TITLE", post.title != null ? post.title : "")
-				.replace("$COUNTRY", post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
-				.replace("$USER", user).replace("$DATE", post.date).replace("$IMAGES", images)
-				.replace("$MESSAGE", message);
+		return postTemplate
+				.replace("$" + Tags.POST_ID + "$", post.id + "")
+				.replace("$" + Tags.POST_TITLE + "$", post.title != null ? post.title : "")
+				.replace("$" + Tags.POST_COUNTRY + "$",
+						post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
+				.replace("$" + Tags.POST_USER + "$", user).replace("$" + Tags.POST_DATE + "$", post.date)
+				.replace("$IMAGES$", images).replace("$" + Tags.POST_MESSAGE + "$", message);
 	}
 
 	public String getHeader(Post opening) {
-		return threadHeader.replace("$TITLE", opening.title == null ? "Thread " + opening.id : opening.title);
+		return threadHeader.replace("$" + Tags.POST_TITLE + "$", opening.title == null ? "Thread " + opening.id
+				: opening.title);
 	}
 }
