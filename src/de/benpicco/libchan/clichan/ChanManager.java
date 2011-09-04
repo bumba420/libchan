@@ -18,7 +18,7 @@ public class ChanManager {
 
 	private List<ChanSpecification>	chans;
 
-	public ChanManager(String configDirectory) {
+	public ChanManager(String configDirectory, String templateDir) {
 		chans = new LinkedList<ChanSpecification>();
 		if (!configDirectory.endsWith(File.separator))
 			configDirectory += File.separator;
@@ -31,6 +31,8 @@ public class ChanManager {
 		} else
 			Logger.get().error(configDirectory + " does not contain any imageboard specifications");
 
+		if (templateDir != null)
+			chans.add(new ChanSpecification(templateDir, true));
 	}
 
 	public synchronized GenericImageBoardParser guessParser(String url) {

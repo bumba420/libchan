@@ -8,6 +8,7 @@ import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
+import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
@@ -21,6 +22,7 @@ public class DebugMain {
 	private static void archiveThread(String url) {
 		ArchiveOptions options = new ArchiveOptions();
 		options.chanConfig = "chans/";
+		options.htmlTemplate = "template/";
 		options.target = "/tmp/libChan/";
 		// options.saveHtml = true;
 		// options.saveImages = true;
@@ -39,13 +41,15 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "http://boards.4chan.org/b/res/350150621";
+		String url = "file:///tmp/7184697/7184697.html";
+		// String url = "http://boards.4chan.org/soc/res/7184697";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
+		ChanSpecification spec = new ChanSpecification("template/", true);
 
-		ChanManager mngr = new ChanManager("chans/");
+		ChanManager mngr = new ChanManager("chans/", "template/");
 		GenericImageBoardParser parser = mngr.getParser(url);
 		if (parser == null)
 			parser = mngr.guessParser(url);
