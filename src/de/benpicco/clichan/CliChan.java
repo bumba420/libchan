@@ -129,7 +129,7 @@ public class CliChan {
 			options.delete = commandLine.hasOption("d");
 
 			if (commandLine.hasOption("list")) {
-				ChanManager manager = new ChanManager(options.chanConfig);
+				ChanManager manager = new ChanManager(options.chanConfig, options.htmlTemplate);
 				for (Imageboard board : manager.getSupported())
 					System.out.println(board);
 				return;

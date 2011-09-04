@@ -1,9 +1,11 @@
 package de.benpicco.libchan.util;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
@@ -98,6 +100,31 @@ public class FileUtil {
 		else
 			regex = "\\/";
 		return filename.replaceAll(regex, replacement);
+	}
+
+	/**
+	 * Reads file and returns its content as a String.
+	 * 
+	 * @param file
+	 *            the file to read
+	 * @return the content of the file
+	 * @throws IOException
+	 */
+	public static String fileToString(String file) throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader(new File(file)));
+		StringBuilder out = new StringBuilder();
+
+		String read = null;
+		while (true) {
+			read = in.readLine();
+			if (read != null)
+				out.append(read + "\n");
+			else
+				break;
+		}
+
+		in.close();
+		return out.toString();
 	}
 
 	/**

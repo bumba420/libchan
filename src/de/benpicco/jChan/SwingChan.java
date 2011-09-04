@@ -71,7 +71,7 @@ public class SwingChan {
 	public SwingChan() {
 		initialize();
 		Logger.get().println(
-				"Definitions for " + new ChanManager(chanDir).getSupported().size() + " imageboards present.");
+				"Definitions for " + new ChanManager(chanDir, null).getSupported().size() + " imageboards present.");
 	}
 
 	/**

@@ -14,7 +14,7 @@ public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
 		Logger.get().println("Searching " + board + " for " + Misc.printNames(names));
 
-		ChanManager manager = new ChanManager(config);
+		ChanManager manager = new ChanManager(config, null);
 		GenericImageBoardParser parser = manager.getParser(board);
 		if (parser == null) {
 			Logger.get().error("No .chan specification for " + board + " present.");
