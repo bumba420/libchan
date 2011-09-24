@@ -139,7 +139,7 @@ class ParseItem {
 		if (itemBuilder != null)
 			itemBuilder.append(c);
 
-		if (pos >= pattern.length) {
+		if (pos >= pattern.length) { // pattern finished
 			items[item] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
 
 			reset();

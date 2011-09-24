@@ -32,7 +32,7 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 		this.o = options;
 		threads = new ArrayList<ImageBoardParser>();
 		newThreads = new ArrayList<ImageBoardParser>();
-		manager = new ChanManager(o.chanConfig);
+		manager = new ChanManager(o.chanConfig, o.htmlTemplate);
 	}
 
 	private boolean contains(List<ImageBoardParser> parsers, String url) {
