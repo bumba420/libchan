@@ -76,7 +76,7 @@ public class ArchiveOptions {
 	public String[]		vocaroo;
 
 	/**
-	 * when warning about autosage should be shown
+	 * when warning about the bump limit should be shown
 	 */
 
 	public int			autosage;
