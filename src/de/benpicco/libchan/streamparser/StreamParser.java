@@ -49,9 +49,8 @@ public class StreamParser implements Cloneable {
 				++bytesRead;
 				for (ParseItem pi : tags)
 					if (pi.match(c.data[i]))
-						for (int j = 0; j < pi.tags.length; ++j)
-							if (parsing)
-								receiver.parsedString(pi.tags[j], pi.items[j]);
+						for (int j = 0; j < pi.tags.length && parsing; ++j)
+							receiver.parsedString(pi.tags[j], pi.items[j]);
 			}
 		}
 		parsing = false;
