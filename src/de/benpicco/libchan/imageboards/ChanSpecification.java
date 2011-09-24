@@ -5,7 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,6 +17,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
+import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 public class ChanSpecification implements IParseDataReceiver {
@@ -28,17 +32,55 @@ public class ChanSpecification implements IParseDataReceiver {
 		supported.add(board);
 
 		try {
-			readConfig(file);
+			readConfig(new LineReader(new FileReader(file)));
 		} catch (FileNotFoundException e) {
-			Logger.get().error("File " + file + " does not exist.");
+			Logger.get().error("ChanSpecification File " + file + " does not exist.");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void readConfig(String file) throws IOException {
+	private String lastTag(String text, boolean first) {
+		String lastTag = "";
+		Matcher m = Pattern.compile("\\$([A-Z_]+)\\$").matcher(text);
+		while (m.find()) {
+			lastTag = m.group(1);
+			if (first)
+				break;
+		}
+		return lastTag;
+	}
+
+	public ChanSpecification(String templateDir, boolean local) {
+		file = "LOCAL_HTML";
+		supported.add(board);
+
+		LinkedList<String> lines = new LinkedList<String>();
+
+		lines.add(Tags.SITE_NAME + " local");
+		lines.add(Tags.SITE_DESC + " local files");
+		lines.add(Tags.SITE_URL + " file://");
+
+		try {
+			String image = FileUtil.fileToString(templateDir + "image.html").trim();
+			lines.add(Tags.POST + " " + image);
+			lines.add(Tags.END_IMAGE + " " + lastTag(image, false));
+
+			String post = FileUtil.fileToString(templateDir + "post.html").trim();
+			lines.add(Tags.POST + "  " + post);
+			lines.add(Tags.START_POST + " " + lastTag(post, true));
+			lines.add(Tags.END_POST + " " + lastTag(post, false));
+
+			lines.add(Tags.URL_POSTFIX + " .html");
+
+			readConfig(new LineReader(lines));
+		} catch (IOException e) {
+			Logger.get().error("Error parsing html template : " + e.getMessage());
+		}
+	}
+
+	private void readConfig(LineReader reader) throws IOException {
 		Pattern p = Pattern.compile("([A-Z_]+)(.+)");
-		BufferedReader reader = new BufferedReader(new FileReader(file));
 
 		String line = reader.readLine();
 		while (line != null) {
@@ -56,7 +98,6 @@ public class ChanSpecification implements IParseDataReceiver {
 			}
 			line = reader.readLine();
 		}
-
 	}
 
 	@Override
@@ -74,7 +115,7 @@ public class ChanSpecification implements IParseDataReceiver {
 			case INCLUDE:
 				try {
 					String include = StringUtils.substringBeforeLast(file, File.separator) + File.separator + value;
-					readConfig(include);
+					readConfig(new LineReader(new FileReader(include)));
 				} catch (IOException e) {
 					Logger.get().error("Error reading " + value + ": " + e.getMessage());
 				}
@@ -182,5 +223,28 @@ public class ChanSpecification implements IParseDataReceiver {
 		final String http = "http://";
 		final String baseUrl = http + StringUtils.substringBetween(url, http, "/");
 		return new GenericImageBoardParser(url, baseUrl, new ParserOptions(o));
+	}
+}
+
+class LineReader {
+	final BufferedReader	reader;
+	final Iterator<String>	iter;
+
+	public LineReader(Reader reader) {
+		this.reader = new BufferedReader(reader);
+		this.iter = null;
+	}
+
+	public LineReader(List<String> lines) {
+		this.reader = null;
+		this.iter = lines.iterator();
+	}
+
+	public String readLine() throws IOException {
+		if (reader != null)
+			return reader.readLine();
+		if (iter != null)
+			return iter.hasNext() ? iter.next() : null;
+		throw new IOException("No source specified.");
 	}
 }

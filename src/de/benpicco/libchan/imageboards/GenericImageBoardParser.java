@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
@@ -59,10 +60,12 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		int tries = 5;
 		while (tries-- > 0) {
-			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-			connection.setInstanceFollowRedirects(true);
-			if (lastPos > 0)
-				connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
+			URLConnection connection = new URL(url).openConnection();
+			if (connection instanceof HttpURLConnection) {
+				((HttpURLConnection) connection).setInstanceFollowRedirects(true);
+				if (lastPos > 0)
+					connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
+			}
 
 			try {
 				InputStream in = new BufferedInputStream(connection.getInputStream());
