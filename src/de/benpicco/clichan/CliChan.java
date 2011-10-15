@@ -55,6 +55,7 @@ public class CliChan {
 		cliOptions.addOption("nofollow", false, "Do not try to find a follow-up thread");
 		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
 		cliOptions.addOption("autosage", true, "postcount for bump limit warning");
+		cliOptions.addOption("joinMsg", false, "Display a notification when a new user starts posting in a thread.");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -127,6 +128,7 @@ public class CliChan {
 			options.saveImages = !commandLine.hasOption("noarchive");
 			options.recordStats = commandLine.hasOption("stats");
 			options.delete = commandLine.hasOption("d");
+			options.onJoinMsg = commandLine.hasOption("joinMsg");
 
 			if (commandLine.hasOption("list")) {
 				ChanManager manager = new ChanManager(options.chanConfig, options.htmlTemplate);

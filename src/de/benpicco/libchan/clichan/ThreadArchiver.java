@@ -71,8 +71,8 @@ public class ThreadArchiver implements NewThreadReceiver, Runnable {
 			handler.addHandler(new ArchiveHtmlHandler(target, o.htmlTemplate, o.threadFolders));
 		if (o.followUpTag != null)
 			handler.addHandler(new FollowupThreadHandler(parser, o.followUpTag, this));
-		if (o.names != null)
-			handler.addHandler(new UserNotifyHandler(o.names));
+		if (o.names != null || o.onJoinMsg)
+			handler.addHandler(new UserNotifyHandler(o.names, o.onJoinMsg));
 		if (o.recordStats)
 			handler.addHandler(new StatisticsHandler(target, o.threadFolders));
 		if (o.vocaroo != null)
