@@ -80,4 +80,9 @@ public class ArchiveOptions {
 	 */
 
 	public int			autosage;
+
+	/**
+	 * create a notification when a new user starts posting in a thread
+	 */
+	public boolean		onJoinMsg;
 }
