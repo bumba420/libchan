@@ -42,9 +42,12 @@ public class Post implements Cloneable {
 		message = Misc.unescapeHtml(message);
 
 		Iterator<Image> iter = images.iterator();
-		while (iter.hasNext())
-			if (iter.next().url == null)
+		while (iter.hasNext()) {
+			final Image img = iter.next();
+			img.cleanup();
+			if (img.url == null)
 				iter.remove();
+		}
 
 		mail = StringUtils.substringBetween(user, "<a href=\"mailto:", "\"");
 		if (user != null)
