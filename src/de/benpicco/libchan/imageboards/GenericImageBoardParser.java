@@ -167,7 +167,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		}
 
 		if (currentImage != null && (o.imageEnder.contains(tag) || currentImage.isReady())) {
-			currentImage.cleanup();
 			currentPost.addImage(currentImage);
 			currentImage = null;
 		}
@@ -195,7 +194,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			lastId = currentPost.id;
 
-			currentPost.cleanup();
 			for (Image img : currentPost.images) { // get unique filenames
 				if (img.filename == null)
 					continue;
@@ -204,6 +202,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 					dot = img.filename.length();
 				img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
 			}
+
+			currentPost.cleanup();
 			postReceiver.onAddPost(currentPost);
 
 			currentPost = null;
