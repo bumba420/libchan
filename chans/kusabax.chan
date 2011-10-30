@@ -149,6 +149,7 @@ POST	<p class="message">$POST_MESSAGE$</p>
 
 # version 0.9
 POST	<div class="file_size">$$</a>$$($$,$$, $POST_FILENAME$)$$</div>$$<div id="thumb_$$" class="post_thumb">$$<a target="_blank" href="$POST_IMGURL$"><img src="$POST_THUMBNAIL$" 
+POST	<span class="multithumb$$"><a href="$POST_IMGURL$"$$<img class="multithumb$$" src="$POST_THUMBNAIL$"
 # version 0.8
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
 POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"
@@ -163,4 +164,4 @@ START_POST	POST_FILENAME
 START_POST	POST_IMGURL
 START_POST	POST_COUNTRY
 END_POST	POST_MESSAGE
-END_IMAGE	POST_MESSAGE
+END_IMAGE	POST_THUMBNAIL
