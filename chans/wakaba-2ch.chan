@@ -1,0 +1,13 @@
+SITE_NAME	Два.ч
+SITE_DESC	Big Russian Imageboard
+SITE_URL	http://2ch.so
+
+SITE_NAME	LEETCHAN
+SITE_DESC	LEET. TACTICAL. GAMING.
+SITE_URL	http://leetchan.org
+
+BOARD_INDEX	/menu.html
+BOARD		<dd><a target="main" href="$BOARD_URL$">$BOARD_TITLE$</a></dd>
+BOARD		<a href="/$BOARD_URL$">$BOARD_TITLE$</a><br>
+
+INCLUDE		wakaba.include

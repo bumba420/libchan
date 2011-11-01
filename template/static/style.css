@@ -1,0 +1,49 @@
+a:link {text-decoration: none; color:inherit;}
+a:hover {color:#d51105;}
+
+body {
+	font-family:arial,helvetica,sans-serif;font-size:10pt;
+	background-color: #ffffee;
+	color:#800000;
+}
+
+div.post {
+	margin: 3px;
+	background-color: #f0e0d6;
+	clear:left;
+	display: inline-block;
+	box-shadow:1px 1px 10px #666;
+	padding-bottom: 15px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+div.img {
+	display: inline;
+	float: left;
+	margin: 5px;
+	padding-bottom: 10px;
+	font-size: 80%;
+}
+
+div.message {
+	clear:left;
+	margin-left: 10px;
+}
+.message a:link {text-decoration: underline; color: blue;}
+.message a:hover {}
+
+span.user {
+
+	font-weight:bold;
+	color: #487743;	
+}
+
+span.title {
+	font-weight:bold;
+	color: #d51105;
+}
+
+span.quote {
+	color: #789922;
+}

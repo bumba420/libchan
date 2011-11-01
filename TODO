@@ -1,0 +1,27 @@
+Quickfix:
+ Topic as name? - not sure if want
+
+Boards:
+ 420chan.org
+ northpole.fi
+ dobrochan.ru (hanabira)
+ lolks.ru (Kareha)
+ 2chan.net (futaba)
+ porn-chan.com (PyIB)
+ spchan.org (sjublad)
+ 4chanarchive.org
+ fchan.us
+ 2ch.su
+ swfchan.org
+
+Features:
+ alternative Client string (so we don't get blocked from e.g. BRchan)
+ posting
+
+Bugs:
+ try to find closest match
+ deletion detection is broken 
+
+Ideas:
+ [Pokechan] dashboard (add Chan)
+ use generated html as page cache ?
