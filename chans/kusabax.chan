@@ -27,8 +27,12 @@ SITE_DESC	Polish Imageboard
 SITE_URL	http://www.karachan.org
 
 SITE_NAME	BRchan
-SITE_DESC	Brazilian imageboard
+SITE_DESC	Brazilian Imageboard
 SITE_URL	http://www.brchan.org
+
+SITE_NAME	TRchan
+SITE_DESC	Turkish Imageboard
+SITE_URL	http://trchan.org
 
 SITE_NAME	Ylilauta
 SITE_DESC	Kuvattomien taidenyymien herrasmiessivusto.
