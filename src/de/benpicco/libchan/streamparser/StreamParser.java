@@ -79,9 +79,11 @@ public class StreamParser implements Cloneable {
 
 class ParseItem {
 	private int				pos			= 0;
+	private int				pos2		= -1;
 	private int				item		= 0;
 	private StringBuilder	itemBuilder	= null;
 	private int				lastItem	= 0;
+	private int				lastItem2	= 0;
 
 	final String[]			items;
 	final char[]			pattern;
@@ -116,16 +118,16 @@ class ParseItem {
 		items = new String[this.tags.length];
 	}
 
-	public boolean match(char c) {
-		if (pattern.length == 0)
-			return false;
-
+	private boolean checkMatch(char c) {
 		if (pattern[pos] == 0) {
 			if (pos > lastItem) { // we reached a new matcher/the end
 				if (itemBuilder != null)
 					items[item++] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
 				itemBuilder = new StringBuilder();
 			}
+
+			lastItem2 = 0;
+			pos2 = lastItem2;
 
 			lastItem = ++pos;
 		}
@@ -145,6 +147,36 @@ class ParseItem {
 			return true;
 		}
 		return false;
+	}
+
+	private void checkLaterMatch(char c) {
+		if (pos2 < 0)
+			return;
+
+		if (pattern[pos2] == 0) {
+			itemBuilder = null;
+			pos = pos2;
+			lastItem = 0; // lastitem < pos
+		}
+
+		if (pattern[pos2] == c)
+			++pos2;
+		else
+			pos2 = lastItem2;
+	}
+
+	/**
+	 * @param c
+	 *            Character to match
+	 * @return true when the entire pattern is complete, results can be found in
+	 *         tags and items members.
+	 */
+	public boolean match(char c) {
+		if (pattern.length == 0)
+			return false;
+
+		checkLaterMatch(c);
+		return checkMatch(c);
 	}
 
 	void reset() {
