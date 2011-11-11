@@ -41,7 +41,7 @@ public class DebugMain {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "file:///tmp/7184697/7184697.html";
+		String url = "http://krautchan.net/t/thread-18569.html";
 		// String url = "http://boards.4chan.org/soc/res/7184697";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";

@@ -120,21 +120,20 @@ class ParseItem {
 		if (pattern.length == 0)
 			return false;
 
-		if (pattern[pos] == c)
-			++pos;
-		else if (pattern[pos] == 0) {
-			if (itemBuilder != null && pos > lastItem)
-				items[item++] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
-
-			if (pos > lastItem)
+		if (pattern[pos] == 0) {
+			if (pos > lastItem) { // we reached a new matcher/the end
+				if (itemBuilder != null)
+					items[item++] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
 				itemBuilder = new StringBuilder();
+			}
 
 			lastItem = ++pos;
-			if (pattern[pos] == c)
-				++pos;
-		} else {
-			pos = lastItem;
 		}
+
+		if (pattern[pos] == c)
+			++pos;
+		else
+			pos = lastItem;
 
 		if (itemBuilder != null)
 			itemBuilder.append(c);
