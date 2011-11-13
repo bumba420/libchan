@@ -1,0 +1,25 @@
+SITE_NAME	420chan
+SITE_DESC	made for stoners by stoners
+SITE_URL	http://boards.420chan.org
+
+INCLUDE	common.include
+POST		<input$$type="checkbox" name="delete" value="$POST_ID$"
+POST		<div class="thread_$POST_THREAD$">
+POST		</span>$POST_DATE$</label> <span class="reflink">
+POST		<span class="inbetween">$POST_DATE$</span>$$</label>
+POST		<span class="filesize">$$<a$$href="$POST_IMGURL$">$POST_FILENAME$</a>$$<span class="thumbnailmsg">$$<img src="$POST_THUMBNAIL$"$$class="thumb"
+# OP
+POST		<blockquote class="po$$">$POST_MESSAGE$</blockquote>$$<table>
+# replies
+POST		<blockquote  class="po$$">$POST_MESSAGE$</blockquote>$$</td>
+
+
+BOARD_INDEX	/b
+BOARD	<li><a class='boardlink' title='$$' href='$BOARD_URL$'>$BOARD_TITLE$</a></li>
+
+URL_PREFIX	res/
+URL_POSTFIX	.php
+
+START_POST	POST_THREAD
+START_POST	POST_ID
+END_POST	POST_MESSAGE

@@ -207,7 +207,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	 */
 	public GenericImageBoardParser getImageBoardParser(String url) {
 		for (Imageboard chan : supported)
-			if (url.startsWith(chan.baseurl))
+			if (chan.baseurl != null && url.startsWith(chan.baseurl))
 				return new GenericImageBoardParser(url, chan.baseurl, new ParserOptions(o));
 		return null;
 	}
