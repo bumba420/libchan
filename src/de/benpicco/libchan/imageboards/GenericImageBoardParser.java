@@ -142,7 +142,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		case POST_FILENAME:
 			if (currentImage == null)
 				currentImage = new Image();
-			if (currentImage.filename == null)
+			if (currentImage.filename == null || currentImage.filename.endsWith(currentImage.url)
+					|| (currentImage.url != null && currentImage.url.endsWith(currentImage.filename)))
 				currentImage.filename = data;
 			break;
 		case POST_COUNTRY:

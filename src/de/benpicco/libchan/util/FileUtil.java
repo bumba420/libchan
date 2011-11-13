@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
@@ -51,10 +53,26 @@ public class FileUtil {
 		String[] path = System.getProperty("java.class.path").split(File.pathSeparator);
 		return (path[0].contains(File.separator) ? StringUtils.substringBeforeLast(path[0], File.separator) : ".")
 				+ File.separator;
+	}
 
+	public static URI encodeUrl(String url) throws URISyntaxException {
+		final String protocol = StringUtils.substringBefore(url, "://");
+		final String host = StringUtils.substringBetween(url, protocol + "://", "/");
+		final String path = StringUtils.substringBefore(url.substring((protocol + "://" + host).length()), "?");
+		final int pos = (protocol + "://" + host + path + "?").length();
+		final String param = pos < url.length() ? url.substring(pos) : null;
+
+		return new URI(protocol, host, path, param);
 	}
 
 	public static void downloadFile(String url, String filename, int tries) {
+		URI uri;
+		try {
+			uri = encodeUrl(url);
+		} catch (URISyntaxException e) {
+			Logger.get().error("Invalid URL: " + url);
+			return;
+		}
 		File file = new File(filename);
 		while (--tries >= 0)
 			try {
@@ -62,7 +80,7 @@ public class FileUtil {
 					Logger.get().println(filename + " already exists, skipping.");
 					break;
 				}
-				downloadFile(url, filename);
+				downloadFile(uri.toURL(), filename);
 				Logger.get().println("Saved " + url + " as " + filename);
 
 				break;
@@ -79,9 +97,9 @@ public class FileUtil {
 			}
 	}
 
-	public static void downloadFile(String url, String target) throws MalformedURLException, IOException {
+	private static void downloadFile(URL url, String target) throws MalformedURLException, IOException {
 		byte[] buffer = new byte[2048];
-		BufferedInputStream in = new BufferedInputStream(new URL(url).openStream());
+		BufferedInputStream in = new BufferedInputStream(url.openStream());
 		OutputStream out = new FileOutputStream(target);
 		int count = 0;
 		do {
