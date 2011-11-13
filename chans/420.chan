@@ -9,9 +9,9 @@ POST		</span>$POST_DATE$</label> <span class="reflink">
 POST		<span class="inbetween">$POST_DATE$</span>$$</label>
 POST		<span class="filesize">$$<a$$href="$POST_IMGURL$">$POST_FILENAME$</a>$$<span class="thumbnailmsg">$$<img src="$POST_THUMBNAIL$"$$class="thumb"
 # OP
-POST		<blockquote class="po$$">$POST_MESSAGE$</blockquote>$$<table>
+POST		<blockquote class="$$">$POST_MESSAGE$</blockquote>$$<table>
 # replies
-POST		<blockquote  class="po$$">$POST_MESSAGE$</blockquote>$$</td>
+POST		<blockquote  class="$$">$POST_MESSAGE$</blockquote>$$</td>
 
 
 BOARD_INDEX	/b
