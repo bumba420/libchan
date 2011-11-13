@@ -86,8 +86,10 @@ public class HtmlConverter {
 				.replace("$" + Tags.POST_TITLE + "$", post.title != null ? post.title : "")
 				.replace("$" + Tags.POST_COUNTRY + "$",
 						post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
-				.replace("$" + Tags.POST_USER + "$", user).replace("$" + Tags.POST_DATE + "$", post.date)
-				.replace("$IMAGES$", images).replace("$" + Tags.POST_MESSAGE + "$", message);
+				.replace("$" + Tags.POST_USER + "$", user)
+				.replace("$" + Tags.POST_TRIP + "$", post.tripcode != null ? post.tripcode : "")
+				.replace("$" + Tags.POST_DATE + "$", post.date).replace("$IMAGES$", images)
+				.replace("$" + Tags.POST_MESSAGE + "$", message);
 	}
 
 	public String getHeader(Post opening) {
