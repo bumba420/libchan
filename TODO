@@ -1,8 +1,7 @@
 Quickfix:
- move 'unique filenaames' logic somewhere else
+ move 'unique filenames' logic somewhere else
  
 Boards:
- 420chan.org
  northpole.fi
  dobrochan.ru (hanabira)
  lolks.ru (Kareha)
@@ -19,7 +18,6 @@ Features:
  posting
 
 Bugs:
- try to find closest match
  deletion detection is broken 
 
 Ideas:
