@@ -1,7 +1,6 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -92,17 +91,14 @@ class PostCounter implements PostHandler {
 	public void onAddPost(Post post) {
 		postCout++;
 		for (Image img : post.images) {
-			try {
-				String devzero = "/dev/null";
+			String devzero = "/dev/null";
 
-				// TODO: test on windows
-				if (System.getProperty("os.name").toLowerCase().contains("windows"))
-					devzero = "nul:nul";
+			// TODO: test on windows
+			if (System.getProperty("os.name").toLowerCase().contains("windows"))
+				devzero = "nul:nul";
 
-				FileUtil.downloadFile(img.thumbnailUrl, devzero);
-				fileCount++;
-			} catch (IOException e) {
-			}
+			FileUtil.downloadFile(img.thumbnailUrl, devzero, 1);
+			fileCount++;
 		}
 	}
 
