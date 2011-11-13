@@ -156,8 +156,8 @@ POST	<div class="file_size">$$</a>$$($$,$$, $POST_FILENAME$)$$</div>$$<div id="t
 POST	<span class="multithumb$$"><a href="$POST_IMGURL$"$$<img class="multithumb$$" src="$POST_THUMBNAIL$"
 # version 0.8
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
-POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"
-# todo: POST_FILENAME - not present in kusaba
+POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
+POST	<span class="filesize">$$onclick="javascript:expandimg($$)$$</a>$$($$,$$, $POST_FILENAME$)
 
 URL_PREFIX	res/
 URL_POSTFIX	.html
