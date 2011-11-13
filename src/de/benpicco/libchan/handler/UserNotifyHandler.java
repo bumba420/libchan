@@ -74,13 +74,9 @@ public class UserNotifyHandler implements PostProcessor {
 			String tempfile = "";
 			if (post.images.size() > 0) {
 				String url = post.images.get(0).thumbnailUrl;
-				try {
-					tempfile = FileUtil.prepareDir(System.getProperty("java.io.tmpdir") + File.separator + "libChan")
-							+ StringUtils.substringAfterLast(url, "/");
-					FileUtil.downloadFile(url, tempfile);
-				} catch (IOException e) {
-					Logger.get().error("Failed fetching thumbnail: " + e);
-				}
+				tempfile = FileUtil.prepareDir(System.getProperty("java.io.tmpdir") + File.separator + "libChan")
+						+ StringUtils.substringAfterLast(url, "/");
+				FileUtil.downloadFile(url, tempfile, 1);
 			}
 
 			sendNotification(title, post.message, tempfile);
