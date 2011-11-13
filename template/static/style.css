@@ -34,9 +34,12 @@ div.message {
 .message a:hover {}
 
 span.user {
-
 	font-weight:bold;
 	color: #487743;	
+}
+
+span.tripcode {
+	color: #487743;
 }
 
 span.title {
