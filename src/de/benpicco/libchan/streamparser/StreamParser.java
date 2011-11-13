@@ -84,6 +84,7 @@ class ParseItem {
 	private StringBuilder	itemBuilder	= null;
 	private int				lastItem	= 0;
 	private int				lastItem2	= 0;
+	private int				prevItemPos	= 0;
 
 	final String[]			items;
 	final char[]			pattern;
@@ -126,7 +127,9 @@ class ParseItem {
 				itemBuilder = new StringBuilder();
 			}
 
+			// start looking for the beginning of the same pattern again
 			lastItem2 = 0;
+			prevItemPos = 0;
 			pos2 = lastItem2;
 
 			lastItem = ++pos;
@@ -156,7 +159,8 @@ class ParseItem {
 		if (pattern[pos2] == 0) {
 			itemBuilder = null;
 			pos = pos2;
-			lastItem = 0; // lastitem < pos
+			lastItem = 0; // has to be smaller than pos
+			item = prevItemPos;
 		}
 
 		if (pattern[pos2] == c)
@@ -181,9 +185,11 @@ class ParseItem {
 
 	void reset() {
 		pos = 0;
+		pos2 = -1;
 		lastItem = 0;
 		item = 0;
 		itemBuilder = null;
+		prevItemPos = 0;
 	}
 
 	public String toString() {
