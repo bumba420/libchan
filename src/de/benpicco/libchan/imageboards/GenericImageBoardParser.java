@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
+import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
@@ -16,8 +17,6 @@ import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
-	// TODO: configurable
-	private static final String	USER_AGENT		= "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.92 Safari/535.2";
 	private final ParserOptions	o;
 	private final String		baseUrl;
 
@@ -65,7 +64,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			URLConnection connection = new URL(url).openConnection();
 			if (connection instanceof HttpURLConnection) {
 				((HttpURLConnection) connection).setInstanceFollowRedirects(true);
-				connection.setRequestProperty("User-Agent", USER_AGENT);
+				connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
 				if (lastPos > 0)
 					connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
 			}
@@ -198,14 +197,16 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			lastId = currentPost.id;
 
-			for (Image img : currentPost.images) { // get unique filenames
-				if (img.filename == null)
-					continue;
-				int dot = img.filename.lastIndexOf('.');
-				if (dot < 0)
-					dot = img.filename.length();
-				img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
-			}
+			if (GlobalOptions.useUniqueFilenames)
+				// ensure unique filenames by appending the post id
+				for (Image img : currentPost.images) {
+					if (img.filename == null)
+						continue;
+					int dot = img.filename.lastIndexOf('.');
+					if (dot < 0)
+						dot = img.filename.length();
+					img.filename = img.filename.substring(0, dot) + "_" + currentPost.id + img.filename.substring(dot);
+				}
 
 			currentPost.cleanup();
 			postReceiver.onAddPost(currentPost);
