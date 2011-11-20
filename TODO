@@ -1,5 +1,5 @@
 Quickfix:
- move 'unique filenames' logic somewhere else
+ make unique filenames and client string configurable
  
 Boards:
  northpole.fi
@@ -13,8 +13,9 @@ Boards:
  2ch.su
  swfchan.org
 
+ http://9ch.in/overscript/
+
 Features:
- alternative Client string (so we don't get blocked from e.g. BRchan)
  posting
 
 Bugs:
