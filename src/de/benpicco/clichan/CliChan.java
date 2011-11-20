@@ -15,6 +15,7 @@ import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.BoardArchiver;
 import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
@@ -56,6 +57,9 @@ public class CliChan {
 		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
 		cliOptions.addOption("autosage", true, "postcount for bump limit warning");
 		cliOptions.addOption("joinMsg", false, "Display a notification when a new user starts posting in a thread.");
+		cliOptions.addOption("keepFilenames", false,
+				"keep the original filenames and do not append the post id to ensure that they are unique");
+		cliOptions.addOption("useragent", true, "HTTP Client String");
 
 		Option o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
@@ -109,6 +113,10 @@ public class CliChan {
 				ThreadPool.setPoolSize(Integer.parseInt(commandLine.getOptionValue('t')));
 			if (commandLine.hasOption("autosage"))
 				options.autosage = Integer.parseInt(commandLine.getOptionValue("autosage"));
+			if (commandLine.hasOption("useragent"))
+				GlobalOptions.useragent = commandLine.getOptionValue("useragent");
+			if (commandLine.hasOption("keepFilenames"))
+				GlobalOptions.useUniqueFilenames = false;
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
