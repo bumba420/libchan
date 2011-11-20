@@ -1,6 +1,6 @@
-Quickfix:
- make unique filenames and client string configurable
- 
+Next Milestone:
+ posting support
+
 Boards:
  northpole.fi
  dobrochan.ru (hanabira)
@@ -14,9 +14,6 @@ Boards:
  swfchan.org
 
  http://9ch.in/overscript/
-
-Features:
- posting
 
 Bugs:
  deletion detection is broken 
