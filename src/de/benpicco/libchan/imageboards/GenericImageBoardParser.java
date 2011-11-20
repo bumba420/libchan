@@ -16,6 +16,8 @@ import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
+	// TODO: configurable
+	private static final String	USER_AGENT		= "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.92 Safari/535.2";
 	private final ParserOptions	o;
 	private final String		baseUrl;
 
@@ -63,6 +65,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			URLConnection connection = new URL(url).openConnection();
 			if (connection instanceof HttpURLConnection) {
 				((HttpURLConnection) connection).setInstanceFollowRedirects(true);
+				connection.setRequestProperty("User-Agent", USER_AGENT);
 				if (lastPos > 0)
 					connection.setRequestProperty("Range", "bytes=" + lastPos + "-");
 			}
