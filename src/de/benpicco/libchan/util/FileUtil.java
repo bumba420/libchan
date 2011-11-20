@@ -8,13 +8,17 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.channels.FileChannel;
 
 import org.apache.commons.lang3.StringUtils;
+
+import de.benpicco.libchan.clichan.GlobalOptions;
 
 public class FileUtil {
 	public static void copyFile(File sourceFile, File destFile) throws IOException {
@@ -99,7 +103,12 @@ public class FileUtil {
 
 	private static void downloadFile(URL url, String target) throws MalformedURLException, IOException {
 		byte[] buffer = new byte[2048];
-		BufferedInputStream in = new BufferedInputStream(url.openStream());
+
+		URLConnection connection = url.openConnection();
+		if (connection instanceof HttpURLConnection)
+			connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
+
+		BufferedInputStream in = new BufferedInputStream(connection.getInputStream());
 		OutputStream out = new FileOutputStream(target);
 		int count = 0;
 		do {
