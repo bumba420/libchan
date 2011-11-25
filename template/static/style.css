@@ -42,6 +42,7 @@ span.user {
 	font-weight:bold;
 	color: #487743;	
 }
+.user a:link {text-decoration: underline;}
 
 span.tripcode {
 	color: #487743;
