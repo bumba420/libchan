@@ -19,6 +19,10 @@ div.post {
 	border-bottom: solid #d9bfb7 1px;
 }
 
+div.posthl {
+	background-color: #f0c0b0;
+}
+
 div.img {
 	display: inline;
 	float: left;
