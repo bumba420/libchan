@@ -116,6 +116,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				o.parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
+				Logger.get().error(e.getMessage());
 				reset();
 				lastIdPre = 0;
 				if (tries == 0)
@@ -225,11 +226,20 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			if (refreshing) {
 				refreshing = false;
-				if (lastId != currentPost.id) { // deletion
+				// when partially downloading a page, we check wheather the
+				// first post received matches the last post from the previous
+				// run. If this isn't the case (smaller or greater) either a
+				// deletion took place or the server doesn't support partial
+				// downloading. In the later case however, the first post we
+				// receive should be the already known OP.
+				if (currentPost.id != lastId) {
 					reset();
-					o.parser.halt();
+					if (!currentPost.isFirstPost())
+						o.parser.halt();
 				}
-				currentPost = null;
+				// we skip the known post unless it's the first post (see above)
+				if (!currentPost.isFirstPost())
+					currentPost = null;
 			}
 
 			lastPos = newLastPos;
