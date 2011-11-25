@@ -84,7 +84,8 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.createPost(getTestPost());
+		parser.deletePost(3757669, "");
+		// parser.createPost(getTestPost());
 		// parser.getPosts();
 		// parser.getThreads();
 		// parser.getBoards();

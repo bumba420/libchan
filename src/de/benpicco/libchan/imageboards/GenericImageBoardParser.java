@@ -52,7 +52,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	public void createPost(Post post) throws IOException {
 		String postUrl = "http://krautchan.net/post";
 		HttpURLConnection connection = (HttpURLConnection) new URL(postUrl).openConnection();
-		connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
 
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
@@ -67,6 +66,23 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		for (int i = 0; i < post.images.size(); ++i)
 			request.setParameter("file_" + i, new File(post.images.get(i).filename), null);
+
+		request.post();
+
+		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
+	}
+
+	public void deletePost(int id, String password) throws IOException {
+		String deleteUrl = "http://krautchan.net/delete";
+		HttpURLConnection connection = (HttpURLConnection) new URL(deleteUrl).openConnection();
+
+		ClientHttpRequest request = new ClientHttpRequest(connection);
+
+		request.setParameter("board", getBoard(url).replace("/", ""));
+		request.setParameter("forward", "thread");
+
+		request.setParameter("post_" + id, "delete");
+		request.setParameter("password", password);
 
 		request.post();
 
