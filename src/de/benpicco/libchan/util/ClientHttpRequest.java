@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URLConnection;
 
+import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 
 /**
@@ -36,6 +37,7 @@ public class ClientHttpRequest {
 	 * @throws IOException
 	 */
 	public ClientHttpRequest(URLConnection connection) throws IOException {
+		connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
 		os = connection.getOutputStream();
