@@ -1,6 +1,7 @@
 package de.benpicco.libchan.imageboards;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,6 +14,7 @@ import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
+import de.benpicco.libchan.util.ClientHttpRequest;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 
@@ -45,6 +47,30 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.url = url;
 		this.baseUrl = baseUrl;
 		this.o = o;
+	}
+
+	public void createPost(Post post) throws IOException {
+		String postUrl = "http://krautchan.net/post";
+		HttpURLConnection connection = (HttpURLConnection) new URL(postUrl).openConnection();
+		connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
+
+		ClientHttpRequest request = new ClientHttpRequest(connection);
+
+		request.setParameter("forward", "thread");
+		request.setParameter("board", getBoard(url).replace("/", ""));
+		request.setParameter("parent", post.op > 0 ? post.op + "" : "");
+
+		request.setParameter("sage", post.mail);
+		request.setParameter("internal_n", post.user);
+		request.setParameter("internal_s", post.title);
+		request.setParameter("internal_t", post.message);
+
+		for (int i = 0; i < post.images.size(); ++i)
+			request.setParameter("file_" + i, new File(post.images.get(i).filename), null);
+
+		request.post();
+
+		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
 	}
 
 	@Override

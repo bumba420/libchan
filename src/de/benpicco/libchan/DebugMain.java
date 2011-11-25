@@ -10,6 +10,7 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
+import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
 import de.benpicco.libchan.interfaces.BoardHandler;
@@ -37,11 +38,30 @@ public class DebugMain {
 		archiver.run();
 	}
 
+	private static void addFile(Post post, String file) {
+		Image image = new Image();
+		image.filename = file;
+		post.addImage(image);
+	}
+
+	private static Post getTestPost() {
+		Post post = new Post();
+		post.user = "TestBernd";
+		post.mail = "sage";
+		post.message = "Die Manule dienen nur zu Testzwecken, eigentlich foll fieß wie ich hier Tierversuche durchführe!";
+		post.op = 3757648;
+
+		addFile(post, "/tmp/kc/manul_2_serious.jpg");
+		addFile(post, "/tmp/kc/manul_2_kitten_running.jpg");
+
+		return post;
+	}
+
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
 		// String url = "http://desuchan.net/a/";
-		String url = "http://krautchan.net/t/thread-18569.html";
+		String url = "http://krautchan.net/b/thread-3757648.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
@@ -64,7 +84,8 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.getPosts();
+		parser.createPost(getTestPost());
+		// parser.getPosts();
 		// parser.getThreads();
 		// parser.getBoards();
 
