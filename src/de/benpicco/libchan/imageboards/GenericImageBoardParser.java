@@ -116,7 +116,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				o.parser.parseStream(in, GenericImageBoardParser.this);
 				break;
 			} catch (IOException e) {
-				Logger.get().error(e.getMessage());
 				reset();
 				lastIdPre = 0;
 				if (tries == 0)
