@@ -9,13 +9,14 @@ body {
 
 div.post {
 	margin: 3px;
-	background-color: #f0e0d6;
 	clear:left;
 	display: inline-block;
-	box-shadow:1px 1px 10px #666;
-	padding-bottom: 15px;
-	padding-right: 15px;
-	padding-left: 15px;
+	padding: 15px;
+	padding-top: 0px;
+
+	background-color: #f0e0d6;
+	border-right: solid #d9bfb7 1px;
+	border-bottom: solid #d9bfb7 1px;
 }
 
 div.img {
