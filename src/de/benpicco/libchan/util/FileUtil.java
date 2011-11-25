@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import de.benpicco.libchan.clichan.GlobalOptions;
 
 public class FileUtil {
+
 	public static void copyFile(File sourceFile, File destFile) throws IOException {
 		if (!destFile.exists())
 			destFile.createNewFile();
@@ -160,11 +162,34 @@ public class FileUtil {
 	 * 
 	 * @param target
 	 *            new folder
-	 * @return name of the nwe folder (with closing separator)
+	 * @return name of the new folder (with closing separator)
 	 */
 	public static String prepareDir(String target) {
 		String dir = target.endsWith(File.separator) ? target : target + File.separator;
 		new File(dir).mkdir();
 		return dir;
+	}
+
+	public static long pipe(InputStream is, OutputStream os, ProgressCallback callback) throws IOException {
+		long total = 0;
+		byte[] buffer = new byte[1024];
+		int bytes = 0;
+
+		while (true) {
+			bytes = is.read(buffer);
+			if (bytes <= 0)
+				break;
+			os.write(buffer, 0, bytes);
+			total += bytes;
+
+			if (callback != null)
+				callback.written(total);
+		}
+
+		return total;
+	}
+
+	public static String getMimeType(File file) {
+		return URLConnection.getFileNameMap().getContentTypeFor(file.getName());
 	}
 }
