@@ -44,7 +44,7 @@ public class ChanManager {
 				parser.setPostHandler(pc);
 				parser.getPosts();
 				if (pc.matches()) {
-					Logger.get().println("Success!");
+					Logger.get().println("Success! (" + chan.name() + ")");
 					return parser;
 				}
 			} catch (Exception e) {

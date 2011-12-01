@@ -18,6 +18,7 @@ public class ParserOptions {
 	Tuple<String, String>	threadURL		= new Tuple<String, String>("", "");
 	String					threadMark		= "";
 	String					boardIndex		= "";
+	CreatePostInformation	cpi				= null;
 
 	public ParserOptions() {
 	}
@@ -34,5 +35,7 @@ public class ParserOptions {
 		threadURL = o.threadURL;
 		threadMark = o.threadMark;
 		boardIndex = o.boardIndex;
+		if (cpi != null)
+			cpi = o.cpi.clone();
 	}
 }
