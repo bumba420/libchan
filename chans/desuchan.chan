@@ -16,6 +16,19 @@ POST		<span class="postdate">$POST_DATE$</span>
 POST		<blockquote>$POST_MESSAGE$</blockquote>
 POST		<div class="thread" style="clear: both" $POST_THREAD$>
 
+POST		var maxFiles = $POST_MAX_FILES$;
+
+NEW_POST_URL		/post
+PARAM_NAME		internal_n
+PARAM_MAIL		sage
+PARAM_TITLE		internal_s
+PARAM_MESSAGE		internal_t
+PARAM_FILE		file_$NUM$
+PARAM_BOARD		board
+PARAM_REPLYTO		parent
+PARAM_CAPTCHA_ID	captcha_name
+PARAM_CAPTCHA_SOLUTION	captcha_secret	
+
 URL_PREFIX	thread-
 URL_POSTFIX	.html
 

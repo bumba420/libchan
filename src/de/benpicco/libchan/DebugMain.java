@@ -20,6 +20,7 @@ import de.benpicco.libchan.util.Logger;
 
 public class DebugMain {
 
+	@SuppressWarnings("unused")
 	private static void archiveThread(String url) {
 		ArchiveOptions options = new ArchiveOptions();
 		options.chanConfig = "chans/";
@@ -44,6 +45,7 @@ public class DebugMain {
 		post.addImage(image);
 	}
 
+	@SuppressWarnings("unused")
 	private static Post getTestPost() {
 		Post post = new Post();
 		post.user = "TestBernd";
@@ -83,6 +85,8 @@ public class DebugMain {
 		parser.setPostHandler(rec);
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
+
+		System.out.println("foovbar".replace("$NUM$", "0"));
 
 		parser.deletePost(3757669, "");
 		// parser.createPost(getTestPost());

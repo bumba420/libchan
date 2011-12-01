@@ -17,6 +17,7 @@ import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.ClientHttpRequest;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
+import de.benpicco.libchan.util.NotImplementedException;
 
 public class GenericImageBoardParser implements ImageBoardParser, IParseDataReceiver {
 	private final ParserOptions	o;
@@ -49,23 +50,26 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.o = o;
 	}
 
-	public void createPost(Post post) throws IOException {
-		String postUrl = "http://krautchan.net/post";
-		HttpURLConnection connection = (HttpURLConnection) new URL(postUrl).openConnection();
+	public void createPost(Post post) throws IOException, NotImplementedException {
+		if (o.cpi == null)
+			throw new NotImplementedException(
+					"So support for creating posts has been added to the imageboard found at " + url);
+
+		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.postUrl).openConnection();
 
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
-		request.setParameter("forward", "thread");
-		request.setParameter("board", getBoard(url).replace("/", ""));
-		request.setParameter("parent", post.op > 0 ? post.op + "" : "");
+		// request.setParameter("forward", "thread");
+		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
+		request.setParameter(o.cpi.replyToParam, post.op > 0 ? post.op + "" : "");
 
-		request.setParameter("sage", post.mail);
-		request.setParameter("internal_n", post.user);
-		request.setParameter("internal_s", post.title);
-		request.setParameter("internal_t", post.message);
+		request.setParameter(o.cpi.mailParam, post.mail);
+		request.setParameter(o.cpi.nameParam, post.user);
+		request.setParameter(o.cpi.titleParam, post.title);
+		request.setParameter(o.cpi.messageParam, post.message);
 
 		for (int i = 0; i < post.images.size(); ++i)
-			request.setParameter("file_" + i, new File(post.images.get(i).filename), null);
+			request.setParameter(o.cpi.fileParam.replace("$NUM$", i + ""), new File(post.images.get(i).filename), null);
 
 		request.post();
 
@@ -79,7 +83,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
 		request.setParameter("board", getBoard(url).replace("/", ""));
-		request.setParameter("forward", "thread");
+		// request.setParameter("forward", "thread");
 
 		request.setParameter("post_" + id, "delete");
 		request.setParameter("password", password);
@@ -206,6 +210,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		case POST_THREAD:
 			isFirstPost = o.threadMark.length() == 0 ? data.length() > 0 : data.contains(o.threadMark);
 			break;
+		case POST_MAX_FILES:
+			if (o.cpi != null)
+				o.cpi.maxFiles = Integer.parseInt(data);
 		case NULL:
 			break;
 		default:
