@@ -177,7 +177,6 @@ public class ChanSpecification implements IParseDataReceiver {
 				o.boardIndex = value;
 				break;
 			case POST:
-				createCPI();
 				o.parser.addTag(value);
 				break;
 			case POST_THREAD_MARK:
