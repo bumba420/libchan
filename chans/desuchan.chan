@@ -19,15 +19,19 @@ POST		<div class="thread" style="clear: both" $POST_THREAD$>
 POST		var maxFiles = $POST_MAX_FILES$;
 
 NEW_POST_URL		/post
+DEL_POST_URL		/delete
 PARAM_NAME		internal_n
 PARAM_MAIL		sage
 PARAM_TITLE		internal_s
 PARAM_MESSAGE		internal_t
 PARAM_FILE		file_$NUM$
+PARAM_DELETE		post_$ID$
+PARAM_DELETE_VAL	delete
 PARAM_BOARD		board
+PARAM_PASSWORD		password
 PARAM_REPLYTO		parent
 PARAM_CAPTCHA_ID	captcha_name
-PARAM_CAPTCHA_SOLUTION	captcha_secret	
+PARAM_CAPTCHA_SOLUTION	captcha_secret
 
 URL_PREFIX	thread-
 URL_POSTFIX	.html

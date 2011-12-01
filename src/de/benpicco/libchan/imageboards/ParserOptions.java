@@ -35,7 +35,7 @@ public class ParserOptions {
 		threadURL = o.threadURL;
 		threadMark = o.threadMark;
 		boardIndex = o.boardIndex;
-		if (cpi != null)
+		if (o.cpi != null)
 			cpi = o.cpi.clone();
 	}
 }

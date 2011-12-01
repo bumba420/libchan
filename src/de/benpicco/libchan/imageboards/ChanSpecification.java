@@ -100,6 +100,11 @@ public class ChanSpecification implements IParseDataReceiver {
 		}
 	}
 
+	private void createCPI() {
+		if (o.cpi == null)
+			o.cpi = new CreatePostInformation();
+	}
+
 	@Override
 	public void parsedString(Tags key, String data) {
 		String value = null;
@@ -172,10 +177,71 @@ public class ChanSpecification implements IParseDataReceiver {
 				o.boardIndex = value;
 				break;
 			case POST:
+				createCPI();
 				o.parser.addTag(value);
 				break;
 			case POST_THREAD_MARK:
 				o.threadMark = value;
+				break;
+			case NEW_POST_URL:
+				createCPI();
+				o.cpi.postUrl = data;
+				if (o.cpi.postUrl.startsWith("/"))
+					o.cpi.postUrl = board.baseurl + o.cpi.postUrl;
+				break;
+			case DEL_POST_URL:
+				createCPI();
+				o.cpi.deleteUrl = data;
+				if (o.cpi.deleteUrl.startsWith("/"))
+					o.cpi.deleteUrl = board.baseurl + o.cpi.deleteUrl;
+				break;
+			case PARAM_BOARD:
+				createCPI();
+				o.cpi.boardParam = data;
+				break;
+			case PARAM_PASSWORD:
+				createCPI();
+				o.cpi.passwordParam = data;
+				break;
+			case PARAM_DELETE:
+				createCPI();
+				o.cpi.deleteParam = data;
+				break;
+			case PARAM_DELETE_VAL:
+				createCPI();
+				o.cpi.deleteParamVal = data;
+				break;
+			case PARAM_CAPTCHA_ID:
+				createCPI();
+				o.cpi.paramCaptchaId = data;
+				break;
+			case PARAM_CAPTCHA_SOLUTION:
+				createCPI();
+				o.cpi.paramCaptchaSolution = data;
+				break;
+			case PARAM_FILE:
+				createCPI();
+				o.cpi.fileParam = data;
+				break;
+			case PARAM_MAIL:
+				createCPI();
+				o.cpi.mailParam = data;
+				break;
+			case PARAM_MESSAGE:
+				createCPI();
+				o.cpi.messageParam = data;
+				break;
+			case PARAM_REPLYTO:
+				createCPI();
+				o.cpi.replyToParam = data;
+				break;
+			case PARAM_NAME:
+				createCPI();
+				o.cpi.nameParam = data;
+				break;
+			case PARAM_TITLE:
+				createCPI();
+				o.cpi.titleParam = data;
 				break;
 			default:
 				if (value == null) {
