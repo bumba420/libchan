@@ -15,6 +15,7 @@ import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.ClientHttpRequest;
+import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 import de.benpicco.libchan.util.NotImplementedException;
@@ -65,6 +66,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
+		if (post.op < 0) // new thread
+			post.op = 0;
+		else if (post.op == 0) // reply
+			post.op = firstPost != null ? firstPost.id : 0;
+
 		// request.setParameter("forward", "thread");
 		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
 		request.setParameter(o.cpi.replyToParam, post.op > 0 ? post.op + "" : "");
@@ -79,7 +85,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		request.post();
 
-		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
+		FileUtil.pipe(connection.getInputStream(), System.out, null);
+		connection.getInputStream().close();
+		// o.parser.parseStream(connection.getInputStream(),
+		// GenericImageBoardParser.this);
 	}
 
 	public void deletePost(int id, String password) throws IOException, NotImplementedException {
@@ -162,8 +171,18 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		if (currentPost == null)
 			if (o.postStarter.contains(tag))
 				currentPost = new Post();
-			else
+			else {
+				// Do we really only want to parse this if there is no current
+				// post?
+				switch (tag) {
+				case POST_MAX_FILES:
+					if (o.cpi != null)
+						o.cpi.maxFiles = Integer.parseInt(data);
+					break;
+				}
+
 				return;
+			}
 
 		data = data.trim();
 
@@ -218,12 +237,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			break;
 		case POST_THREAD:
 			isFirstPost = o.threadMark.length() == 0 ? data.length() > 0 : data.contains(o.threadMark);
-			break;
-		case POST_MAX_FILES:
-			if (o.cpi != null)
-				o.cpi.maxFiles = Integer.parseInt(data);
-		case TEST:
-			Logger.get().println("TEST: '" + data + "'");
 			break;
 		case NULL:
 			break;
