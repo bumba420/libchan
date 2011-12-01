@@ -94,7 +94,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
 		// request.setParameter("forward", "thread");
 
-		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), "delete".replace("$ID$", id + ""));
+		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), o.cpi.deleteParamVal.replace("$ID$", id + ""));
 		request.setParameter(o.cpi.passwordParam, password);
 
 		request.post();
