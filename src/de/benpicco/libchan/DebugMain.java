@@ -45,7 +45,6 @@ public class DebugMain {
 		post.addImage(image);
 	}
 
-	@SuppressWarnings("unused")
 	private static Post getTestPost() {
 		Post post = new Post();
 		post.user = "TestBernd";
@@ -62,8 +61,8 @@ public class DebugMain {
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
 		Logger.add(new StdLogger());
 
-		// String url = "http://desuchan.net/a/";
-		String url = "http://krautchan.net/b/thread-3757648.html";
+		// String url = "http://7chan.org/s/res/137115.html";
+		String url = "http://krautchan.net/c/thread-145633.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
 		// String url = "http://2ch.so/p/";
 		// String url = "http://operatorchan.org/k/";
@@ -86,10 +85,15 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		System.out.println("foovbar".replace("$NUM$", "0"));
+		parser.getPosts();
+		System.out.println("MaxFiles: " + parser.getMaxFiles());
 
-		parser.deletePost(3757669, "");
-		// parser.createPost(getTestPost());
+		// try {
+		// // parser.createPost(getTestPost());
+		// parser.deletePost(3757669, "");
+		// } catch (NotImplementedException e) {
+		// Logger.get().error(e.getMessage());
+		// }
 		// parser.getPosts();
 		// parser.getThreads();
 		// parser.getBoards();

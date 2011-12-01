@@ -50,6 +50,12 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.o = o;
 	}
 
+	public int getMaxFiles() {
+		if (o.cpi == null)
+			return 0;
+		return o.cpi.maxFiles;
+	}
+
 	public void createPost(Post post) throws IOException, NotImplementedException {
 		if (o.cpi == null)
 			throw new NotImplementedException(
@@ -76,17 +82,20 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
 	}
 
-	public void deletePost(int id, String password) throws IOException {
-		String deleteUrl = "http://krautchan.net/delete";
-		HttpURLConnection connection = (HttpURLConnection) new URL(deleteUrl).openConnection();
+	public void deletePost(int id, String password) throws IOException, NotImplementedException {
+		if (o.cpi == null)
+			throw new NotImplementedException(
+					"So support for deleting posts has been added to the imageboard found at " + url);
+
+		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.deleteUrl).openConnection();
 
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
-		request.setParameter("board", getBoard(url).replace("/", ""));
+		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
 		// request.setParameter("forward", "thread");
 
-		request.setParameter("post_" + id, "delete");
-		request.setParameter("password", password);
+		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), "delete".replace("$ID$", id + ""));
+		request.setParameter(o.cpi.passwordParam, password);
 
 		request.post();
 
@@ -213,6 +222,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		case POST_MAX_FILES:
 			if (o.cpi != null)
 				o.cpi.maxFiles = Integer.parseInt(data);
+		case TEST:
+			Logger.get().println("TEST: '" + data + "'");
+			break;
 		case NULL:
 			break;
 		default:
