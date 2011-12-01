@@ -1,7 +1,10 @@
 package de.benpicco.libchan;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.benpicco.clichan.StdLogger;
 import de.benpicco.libchan.clichan.ArchiveOptions;
@@ -17,6 +20,7 @@ import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.NotImplementedException;
 
 public class DebugMain {
 
@@ -45,15 +49,15 @@ public class DebugMain {
 		post.addImage(image);
 	}
 
-	private static Post getTestPost() {
+	private static Post getTestPost(List<String> files) {
 		Post post = new Post();
 		post.user = "TestBernd";
 		post.mail = "sage";
 		post.message = "Die Manule dienen nur zu Testzwecken, eigentlich foll fieß wie ich hier Tierversuche durchführe!";
-		post.op = 3757648;
 
-		addFile(post, "/tmp/kc/manul_2_serious.jpg");
-		addFile(post, "/tmp/kc/manul_2_kitten_running.jpg");
+		if (files != null)
+			for (String file : files)
+				addFile(post, file);
 
 		return post;
 	}
@@ -88,12 +92,26 @@ public class DebugMain {
 		parser.getPosts();
 		System.out.println("MaxFiles: " + parser.getMaxFiles());
 
-		// try {
-		// // parser.createPost(getTestPost());
-		// parser.deletePost(3757669, "");
-		// } catch (NotImplementedException e) {
-		// Logger.get().error(e.getMessage());
-		// }
+		try {
+			File dir = new File("/tmp/kc/");
+			ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
+			for (File file : dir.listFiles()) {
+				if (chunk.size() < parser.getMaxFiles()) {
+					Logger.get().println("Adding " + file);
+					chunk.add(file.toString());
+				} else {
+					Logger.get().println("Uploading " + chunk.size() + " files…");
+					parser.createPost(getTestPost(chunk));
+					chunk.clear();
+					java.lang.Thread.sleep(1000);
+				}
+			}
+			Logger.get().println("Uploading " + chunk.size() + " files…");
+			parser.createPost(getTestPost(chunk));
+			// parser.deletePost(3757669, "");
+		} catch (NotImplementedException e) {
+			Logger.get().error(e.getMessage());
+		}
 		// parser.getPosts();
 		// parser.getThreads();
 		// parser.getBoards();
