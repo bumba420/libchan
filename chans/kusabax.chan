@@ -42,6 +42,10 @@ SITE_NAME	Lucid Chan
 SITE_DESC	Lucid Chan is an imageboard for discussing Lucid Dreaming, Astral Projection, and more.
 SITE_URL	http://www.lucidchan.org
 
+SITE_NAME	Soshichan
+SITE_DESC	Where the power of 9 meets the internet
+SITE_URL	http://www.soshichan.org
+
 SITE_NAME	Ponychan
 SITE_DESC	An imageboard centering around discussion of Lauren Faust's latest series, My Little Pony: Friendship Is Magic.
 SITE_URL	http://www.ponychan.net/chan
