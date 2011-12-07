@@ -17,6 +17,7 @@ POST		<blockquote>$POST_MESSAGE$</blockquote>
 POST		<div class="thread" style="clear: both" $POST_THREAD$>
 
 POST		var maxFiles = $POST_MAX_FILES$;
+POST		var boardRequiresCaptcha = $POST_HAS_CAPTCHA$;
 
 NEW_POST_URL		/post
 DEL_POST_URL		/delete
@@ -30,7 +31,9 @@ PARAM_DELETE_VAL	delete
 PARAM_BOARD		board
 PARAM_PASSWORD		password
 PARAM_REPLYTO		parent
-PARAM_CAPTCHA_ID	captcha_name
+PARAM_CAPTCHA_ID	$RANDOM$
+PARAM_CAPTCHA_ID_PARAM	captcha_name
+PARAM_CAPTCHA_URL	/captcha?id=$PARAM_CAPTCHA_ID$
 PARAM_CAPTCHA_SOLUTION	captcha_secret
 
 URL_PREFIX	thread-

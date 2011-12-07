@@ -17,6 +17,23 @@ POST		<blockquote  class="$$">$POST_MESSAGE$</blockquote>$$</td>
 BOARD_INDEX	/b
 BOARD	<li><a class='boardlink' title='$$' href='$BOARD_URL$'>$BOARD_TITLE$</a></li>
 
+
+NEW_POST_URL	/$BOARD$/taimaba.pl
+DEL_POST_URL	/$BOARD$/taimaba.pl
+PARAM_BOARD	board
+PARAM_REPLYTO	parent
+# task = post
+
+PARAM_NAME	field1
+PARAM_TITLE	field3
+PARAM_MESSAGE	field4
+PARAM_PASSWORD	password
+PARAM_MAIL	sage
+PARAM_FILE	file
+
+PARAM_DELETE            delete
+PARAM_DELETE_VAL        $ID$
+
 URL_PREFIX	res/
 URL_POSTFIX	.php
 
