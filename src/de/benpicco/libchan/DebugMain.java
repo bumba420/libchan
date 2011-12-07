@@ -53,7 +53,8 @@ public class DebugMain {
 		Post post = new Post();
 		post.user = "TestBernd";
 		post.mail = "sage";
-		post.message = "Die Manule dienen nur zu Testzwecken, eigentlich foll fieß wie ich hier Tierversuche durchführe!";
+		post.message = "wut?";
+		post.title = "test";
 
 		if (files != null)
 			for (String file : files)
@@ -62,13 +63,14 @@ public class DebugMain {
 		return post;
 	}
 
-	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException {
+	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException,
+			NotImplementedException {
 		Logger.add(new StdLogger());
 
 		// String url = "http://7chan.org/s/res/137115.html";
-		String url = "http://krautchan.net/c/thread-145633.html";
+		// String url = "http://krautchan.net/c/thread-145633.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
-		// String url = "http://2ch.so/p/";
+		String url = "http://boards.420chan.org/b/res/2186761.php";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
@@ -107,8 +109,8 @@ public class DebugMain {
 				}
 			}
 			Logger.get().println("Uploading " + chunk.size() + " files…");
-			parser.createPost(getTestPost(chunk));
-			// parser.deletePost(3757669, "");
+			// parser.createPost(getTestPost(chunk));
+			parser.deletePost(2186781, "debugpasswd");
 		} catch (NotImplementedException e) {
 			Logger.get().error(e.getMessage());
 		}
@@ -131,7 +133,7 @@ class SimplePostReceiver implements PostHandler, ThreadHandler, BoardHandler {
 	@Override
 	public void onAddPost(final Post post) {
 		postCount++;
-		System.out.println(post);
+		// System.out.println(post);
 	}
 
 	@Override

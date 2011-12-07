@@ -15,7 +15,6 @@ import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.ClientHttpRequest;
-import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 import de.benpicco.libchan.util.NotImplementedException;
@@ -62,33 +61,48 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			throw new NotImplementedException(
 					"So support for creating posts has been added to the imageboard found at " + url);
 
-		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.postUrl).openConnection();
+		final String board = getBoard(url).replace("/", "");
+
+		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.postUrl.replace("$BOARD$", board))
+				.openConnection();
+
+		Logger.get().println("Sending to " + connection.getURL());
 
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
 		if (post.op < 0) // new thread
 			post.op = 0;
-		else if (post.op == 0) // reply
-			post.op = firstPost != null ? firstPost.id : 0;
+		else if (post.op == 0) // reply?
+			post.op = firstPost != null && url.contains(firstPost.id + "") ? firstPost.id : 0;
 
-		// request.setParameter("forward", "thread");
-		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
+		Logger.get().println(post.op == 0 ? "Creating new thread." : "Creating reply to " + post.op);
+
+		request.setParameter(o.cpi.boardParam, board);
 		request.setParameter(o.cpi.replyToParam, post.op > 0 ? post.op + "" : "");
 
 		request.setParameter(o.cpi.mailParam, post.mail);
 		request.setParameter(o.cpi.nameParam, post.user);
 		request.setParameter(o.cpi.titleParam, post.title);
+
 		request.setParameter(o.cpi.messageParam, post.message);
+		request.setParameter(o.cpi.passwordParam, "debugpasswd");
+
+		request.setParameter("task", "post");
+		// request.setParameter("nofile", "on");
+
+		request.setParameter("name", "");
+		request.setParameter("name", "");
+		request.setParameter("link", "");
 
 		for (int i = 0; i < post.images.size(); ++i)
 			request.setParameter(o.cpi.fileParam.replace("$NUM$", i + ""), new File(post.images.get(i).filename), null);
 
 		request.post();
 
-		FileUtil.pipe(connection.getInputStream(), System.out, null);
+		// FileUtil.pipe(connection.getInputStream(), System.out, null);
+		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
+
 		connection.getInputStream().close();
-		// o.parser.parseStream(connection.getInputStream(),
-		// GenericImageBoardParser.this);
 	}
 
 	public void deletePost(int id, String password) throws IOException, NotImplementedException {
@@ -101,14 +115,15 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		ClientHttpRequest request = new ClientHttpRequest(connection);
 
 		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
-		// request.setParameter("forward", "thread");
-
 		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), o.cpi.deleteParamVal.replace("$ID$", id + ""));
 		request.setParameter(o.cpi.passwordParam, password);
+
+		request.setParameter("task", "delete");
 
 		request.post();
 
 		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
+		connection.getInputStream().close();
 	}
 
 	@Override
@@ -293,7 +308,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				}
 
 			currentPost.cleanup();
-			postReceiver.onAddPost(currentPost);
+			if (postReceiver != null)
+				postReceiver.onAddPost(currentPost);
 
 			currentPost = null;
 		}

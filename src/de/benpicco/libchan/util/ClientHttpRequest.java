@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URLConnection;
+import java.net.HttpURLConnection;
 
 import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.clichan.ThreadArchiver;
@@ -36,7 +36,8 @@ public class ClientHttpRequest {
 	 *            an already open URL connection
 	 * @throws IOException
 	 */
-	public ClientHttpRequest(URLConnection connection) throws IOException {
+	public ClientHttpRequest(HttpURLConnection connection) throws IOException {
+		connection.setRequestMethod("POST");
 		connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
 		connection.setDoOutput(true);
 		connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
@@ -56,9 +57,11 @@ public class ClientHttpRequest {
 		if (value == null)
 			value = "";
 
+		Logger.get().println(name + "=\"" + value + "\"");
+
 		boundary();
 		write("\r\n");
-		write("Content-Disposition: form-data;");
+		write("Content-Disposition: form-data; ");
 		write("name=\"" + name + "\";");
 
 		write("\r\n\r\n");
@@ -84,10 +87,12 @@ public class ClientHttpRequest {
 		if (file == null)
 			return;
 
+		Logger.get().println(name + "=\"" + file.getAbsolutePath() + "\"");
+
 		boundary();
 		write("\r\n");
-		write("Content-Disposition: form-data;");
-		write("name=\"" + name + "\";");
+		write("Content-Disposition: form-data; ");
+		write("name=\"" + name + "\"; ");
 
 		write("filename=\"" + file.getName() + "\"\r\n");
 		write("Content-Type: " + FileUtil.getMimeType(file));
