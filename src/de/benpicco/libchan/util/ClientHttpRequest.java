@@ -3,8 +3,11 @@ package de.benpicco.libchan.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.clichan.ThreadArchiver;
@@ -14,34 +17,52 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
  * files.
  */
 public class ClientHttpRequest {
-	private final OutputStream	os;
+	private final OutputStream		os;
+	private final HttpURLConnection	httpConnection;
+	private final boolean			urlencode;
+
+	private boolean					firstparam	= true;
 
 	private void write(String s) throws IOException {
 		os.write(s.getBytes());
 	}
 
 	// yay, pointless free text
-	final static String	boundary	= "--" + ThreadArchiver.VERSION + "FormBoundary";
+	final static String	boundary	= "--" + ClientHttpRequest.class.getName() + ThreadArchiver.VERSION
+											+ "FormBoundary";
 
 	private void boundary() throws IOException {
 		write("--");
 		write(boundary);
 	}
 
-	/**
-	 * Creates a new multipart POST HTTP request on a freshly opened
-	 * URLConnection
-	 * 
-	 * @param connection
-	 *            an already open URL connection
-	 * @throws IOException
-	 */
-	public ClientHttpRequest(HttpURLConnection connection) throws IOException {
+	private HttpURLConnection openConnection(String url, boolean urlencode) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("User-Agent", GlobalOptions.useragent);
 		connection.setDoOutput(true);
-		connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-		os = connection.getOutputStream();
+		if (urlencode)
+			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		else
+			connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+		return connection;
+	}
+
+	/**
+	 * Creates a new POST HTTP request on a freshly for the url
+	 * 
+	 * @param url
+	 *            The Request url
+	 * @param urlencode
+	 *            use either application/x-www-form-urlencoded or
+	 *            multipart/form-data (recommended for file transfers)
+	 * @throws IOException
+	 */
+	public ClientHttpRequest(String url, boolean urlencode) throws IOException {
+		httpConnection = openConnection(url, urlencode);
+		os = httpConnection.getOutputStream();
+		this.urlencode = urlencode;
 	}
 
 	/**
@@ -58,6 +79,18 @@ public class ClientHttpRequest {
 			value = "";
 
 		Logger.get().println(name + "=\"" + value + "\"");
+
+		// application/x-www-form-urlencoded
+		if (urlencode) {
+			write(firstparam ? "" : "&");
+			firstparam = false;
+			write(URLEncoder.encode(name, "UTF-8"));
+			write("=");
+			write(URLEncoder.encode(value, "UTF-8"));
+			return;
+		}
+
+		// multipart/form-data
 
 		boundary();
 		write("\r\n");
@@ -89,6 +122,18 @@ public class ClientHttpRequest {
 
 		Logger.get().println(name + "=\"" + file.getAbsolutePath() + "\"");
 
+		// application/x-www-form-urlencoded
+		if (urlencode) {
+			write(firstparam ? "?" : "&");
+			firstparam = false;
+			write(URLEncoder.encode(name, "UTF-8"));
+			write(URLEncoder.encode("=", "UTF-8"));
+			write(URLEncoder.encode(FileUtil.getFileContent(file), "UTF-8"));
+			return;
+		}
+
+		// multipart/form-data
+
 		boundary();
 		write("\r\n");
 		write("Content-Disposition: form-data; ");
@@ -116,9 +161,13 @@ public class ClientHttpRequest {
 	 * @return input stream with the server response
 	 * @throws IOException
 	 */
-	public void post() throws IOException {
-		boundary();
-		write("--\r\n");
+	public InputStream post() throws IOException {
+		if (!urlencode) {
+			boundary();
+			write("--\r\n");
+		}
 		os.close();
+
+		return httpConnection.getInputStream();
 	}
 }

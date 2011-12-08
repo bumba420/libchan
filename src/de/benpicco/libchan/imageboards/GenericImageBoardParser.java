@@ -63,12 +63,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		final String board = getBoard(url).replace("/", "");
 
-		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.postUrl.replace("$BOARD$", board))
-				.openConnection();
-
-		Logger.get().println("Sending to " + connection.getURL());
-
-		ClientHttpRequest request = new ClientHttpRequest(connection);
+		ClientHttpRequest request = new ClientHttpRequest(o.cpi.postUrl.replace("$BOARD$", board), false);
 
 		if (post.op < 0) // new thread
 			post.op = 0;
@@ -97,12 +92,12 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		for (int i = 0; i < post.images.size(); ++i)
 			request.setParameter(o.cpi.fileParam.replace("$NUM$", i + ""), new File(post.images.get(i).filename), null);
 
-		request.post();
+		InputStream is = request.post();
 
 		// FileUtil.pipe(connection.getInputStream(), System.out, null);
-		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
+		o.parser.parseStream(is, GenericImageBoardParser.this);
 
-		connection.getInputStream().close();
+		is.close();
 	}
 
 	public void deletePost(int id, String password) throws IOException, NotImplementedException {
@@ -110,9 +105,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			throw new NotImplementedException(
 					"So support for deleting posts has been added to the imageboard found at " + url);
 
-		HttpURLConnection connection = (HttpURLConnection) new URL(o.cpi.deleteUrl).openConnection();
+		final String board = getBoard(url).replace("/", "");
 
-		ClientHttpRequest request = new ClientHttpRequest(connection);
+		ClientHttpRequest request = new ClientHttpRequest(o.cpi.postUrl.replace("$BOARD$", board), true);
 
 		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
 		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), o.cpi.deleteParamVal.replace("$ID$", id + ""));
@@ -120,10 +115,10 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		request.setParameter("task", "delete");
 
-		request.post();
+		InputStream is = request.post();
 
-		o.parser.parseStream(connection.getInputStream(), GenericImageBoardParser.this);
-		connection.getInputStream().close();
+		o.parser.parseStream(is, GenericImageBoardParser.this);
+		is.close();
 	}
 
 	@Override
