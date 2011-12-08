@@ -2,8 +2,10 @@ package de.benpicco.libchan.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -22,6 +24,12 @@ import org.apache.commons.lang3.StringUtils;
 import de.benpicco.libchan.clichan.GlobalOptions;
 
 public class FileUtil {
+
+	public static String getFileContent(File file) throws FileNotFoundException, IOException {
+		ByteArrayOutputStream out = new ByteArrayOutputStream((int) file.length());
+		pipe(new FileInputStream(file), out, null);
+		return out.toString();
+	}
 
 	public static void copyFile(File sourceFile, File destFile) throws IOException {
 		if (!destFile.exists())

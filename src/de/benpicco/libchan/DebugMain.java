@@ -70,7 +70,7 @@ public class DebugMain {
 		// String url = "http://7chan.org/s/res/137115.html";
 		// String url = "http://krautchan.net/c/thread-145633.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
-		String url = "http://boards.420chan.org/b/res/2186761.php";
+		String url = "http://boards.420chan.org/b/res/2188287.php";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
@@ -97,20 +97,21 @@ public class DebugMain {
 		try {
 			File dir = new File("/tmp/kc/");
 			ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
-			for (File file : dir.listFiles()) {
-				if (chunk.size() < parser.getMaxFiles()) {
-					Logger.get().println("Adding " + file);
-					chunk.add(file.toString());
-				} else {
-					Logger.get().println("Uploading " + chunk.size() + " files…");
-					parser.createPost(getTestPost(chunk));
-					chunk.clear();
-					java.lang.Thread.sleep(1000);
+			if (dir.listFiles() != null)
+				for (File file : dir.listFiles()) {
+					if (chunk.size() < parser.getMaxFiles()) {
+						Logger.get().println("Adding " + file);
+						chunk.add(file.toString());
+					} else {
+						Logger.get().println("Uploading " + chunk.size() + " files…");
+						parser.createPost(getTestPost(chunk));
+						chunk.clear();
+						java.lang.Thread.sleep(1000);
+					}
 				}
-			}
 			Logger.get().println("Uploading " + chunk.size() + " files…");
 			// parser.createPost(getTestPost(chunk));
-			parser.deletePost(2186781, "debugpasswd");
+			parser.deletePost(2188409, "debugpasswd");
 		} catch (NotImplementedException e) {
 			Logger.get().error(e.getMessage());
 		}
