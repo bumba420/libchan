@@ -53,7 +53,7 @@ public class DebugMain {
 		Post post = new Post();
 		post.user = "TestBernd";
 		post.mail = "sage";
-		post.message = "wut?";
+		post.message = "yay!";
 		post.title = "test";
 
 		if (files != null)
@@ -63,12 +63,34 @@ public class DebugMain {
 		return post;
 	}
 
+	private static void uploadDir(String path, GenericImageBoardParser parser) throws IOException,
+			NotImplementedException, InterruptedException {
+		File dir = new File(path);
+		ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
+		if (dir.listFiles() != null)
+			for (File file : dir.listFiles()) {
+				if (file.isDirectory())
+					continue;
+
+				if (chunk.size() == parser.getMaxFiles()) {
+					Logger.get().println("Uploading " + chunk.size() + " files…");
+					parser.createPost(getTestPost(chunk));
+					chunk.clear();
+					java.lang.Thread.sleep(1000);
+				}
+				Logger.get().println("Adding " + file);
+				chunk.add(file.toString());
+			}
+		Logger.get().println("Uploading " + chunk.size() + " files…");
+		parser.createPost(getTestPost(chunk));
+	}
+
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException,
 			NotImplementedException {
 		Logger.add(new StdLogger());
 
 		// String url = "http://7chan.org/s/res/137115.html";
-		// String url = "http://krautchan.net/c/thread-145633.html";
+		// String url = "http://krautchan.net/b/thread-3814221.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
 		String url = "http://boards.420chan.org/b/res/2188287.php";
 		// String url = "http://operatorchan.org/k/";
@@ -95,23 +117,8 @@ public class DebugMain {
 		System.out.println("MaxFiles: " + parser.getMaxFiles());
 
 		try {
-			File dir = new File("/tmp/kc/");
-			ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
-			if (dir.listFiles() != null)
-				for (File file : dir.listFiles()) {
-					if (chunk.size() < parser.getMaxFiles()) {
-						Logger.get().println("Adding " + file);
-						chunk.add(file.toString());
-					} else {
-						Logger.get().println("Uploading " + chunk.size() + " files…");
-						parser.createPost(getTestPost(chunk));
-						chunk.clear();
-						java.lang.Thread.sleep(1000);
-					}
-				}
-			Logger.get().println("Uploading " + chunk.size() + " files…");
-			// parser.createPost(getTestPost(chunk));
-			parser.deletePost(2188409, "debugpasswd");
+			uploadDir("/tmp/kc", parser);
+			// parser.deletePost(3816291, "debugpasswd");
 		} catch (NotImplementedException e) {
 			Logger.get().error(e.getMessage());
 		}

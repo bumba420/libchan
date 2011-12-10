@@ -194,53 +194,17 @@ public class ChanSpecification implements IParseDataReceiver {
 				if (o.cpi.deleteUrl.startsWith("/"))
 					o.cpi.deleteUrl = board.baseurl + o.cpi.deleteUrl;
 				break;
-			case PARAM_BOARD:
+			case NEW_POST_PARMS:
 				createCPI();
-				o.cpi.boardParam = data;
+				o.cpi.postParameter.add(data);
 				break;
-			case PARAM_PASSWORD:
+			case NEW_FILE_PARMS:
 				createCPI();
-				o.cpi.passwordParam = data;
+				o.cpi.postFileParameter.add(data);
 				break;
-			case PARAM_DELETE:
+			case DEL_POST_PARMS:
 				createCPI();
-				o.cpi.deleteParam = data;
-				break;
-			case PARAM_DELETE_VAL:
-				createCPI();
-				o.cpi.deleteParamVal = data;
-				break;
-			case PARAM_CAPTCHA_ID:
-				createCPI();
-				o.cpi.paramCaptchaId = data;
-				break;
-			case PARAM_CAPTCHA_SOLUTION:
-				createCPI();
-				o.cpi.paramCaptchaSolution = data;
-				break;
-			case PARAM_FILE:
-				createCPI();
-				o.cpi.fileParam = data;
-				break;
-			case PARAM_MAIL:
-				createCPI();
-				o.cpi.mailParam = data;
-				break;
-			case PARAM_MESSAGE:
-				createCPI();
-				o.cpi.messageParam = data;
-				break;
-			case PARAM_REPLYTO:
-				createCPI();
-				o.cpi.replyToParam = data;
-				break;
-			case PARAM_NAME:
-				createCPI();
-				o.cpi.nameParam = data;
-				break;
-			case PARAM_TITLE:
-				createCPI();
-				o.cpi.titleParam = data;
+				o.cpi.delParameter.add(data);
 				break;
 			default:
 				if (value == null) {
