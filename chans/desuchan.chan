@@ -19,22 +19,26 @@ POST		<div class="thread" style="clear: both" $POST_THREAD$>
 POST		var maxFiles = $POST_MAX_FILES$;
 POST		var boardRequiresCaptcha = $POST_HAS_CAPTCHA$;
 
-NEW_POST_URL		/post
-DEL_POST_URL		/delete
-PARAM_NAME		internal_n
-PARAM_MAIL		sage
-PARAM_TITLE		internal_s
-PARAM_MESSAGE		internal_t
-PARAM_FILE		file_$NUM$
-PARAM_DELETE		post_$ID$
-PARAM_DELETE_VAL	delete
-PARAM_BOARD		board
-PARAM_PASSWORD		password
-PARAM_REPLYTO		parent
+NEW_POST_URL	/post
+NEW_POST_PARMS	parent=$POST_THREAD$
+NEW_POST_PARMS	internal_n=$POST_USER$
+NEW_POST_PARMS	sage=$POST_MAIL$
+NEW_POST_PARMS	internal_s=$POST_TITLE$
+NEW_POST_PARMS	internal_t=$POST_MESSAGE$
+NEW_POST_PARMS	board=$POST_BOARD$
+NEW_POST_PARMS	password=$POST_PASSWORD$
+
+NEW_FILE_PARMS	file_$NUM$=$POST_FILENAME$
+
 PARAM_CAPTCHA_ID	$RANDOM$
 PARAM_CAPTCHA_ID_PARAM	captcha_name
 PARAM_CAPTCHA_URL	/captcha?id=$PARAM_CAPTCHA_ID$
 PARAM_CAPTCHA_SOLUTION	captcha_secret
+
+DEL_POST_URL	/delete
+DEL_POST_PARMS	post_$POST_ID$=delete
+DEL_POST_PARMS	board=$POST_BOARD$
+DEL_POST_PARMS	password=$POST_PASSWORD$
 
 URL_PREFIX	thread-
 URL_POSTFIX	.html

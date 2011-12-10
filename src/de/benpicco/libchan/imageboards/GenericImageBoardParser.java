@@ -7,6 +7,12 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.interfaces.BoardHandler;
@@ -56,46 +62,79 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		return o.cpi.maxFiles;
 	}
 
+	private static String replaceAll(String template, Pattern pattern, Map<String, String> tokens) {
+		Matcher matcher = pattern.matcher(template);
+
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			String token = tokens.get(matcher.group(1).replace("$", "\\$"));
+			if (token == null)
+				return ""; // should we rather set token="" here?
+			matcher.appendReplacement(sb, token);
+		}
+
+		matcher.appendTail(sb);
+
+		return sb.toString();
+	}
+
 	public void createPost(Post post) throws IOException, NotImplementedException {
 		if (o.cpi == null)
 			throw new NotImplementedException(
 					"So support for creating posts has been added to the imageboard found at " + url);
 
-		final String board = getBoard(url).replace("/", "");
-
-		ClientHttpRequest request = new ClientHttpRequest(o.cpi.postUrl.replace("$BOARD$", board), false);
-
+		// If this instance is already associated with a thread, the default
+		// behavior should be to reply to this thread
 		if (post.op < 0) // new thread
 			post.op = 0;
 		else if (post.op == 0) // reply?
 			post.op = firstPost != null && url.contains(firstPost.id + "") ? firstPost.id : 0;
 
-		Logger.get().println(post.op == 0 ? "Creating new thread." : "Creating reply to " + post.op);
+		final Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("\\$" + Tags.POST_BOARD + "\\$", getBoard(url).replace("/", ""));
+		tokens.put("\\$" + Tags.POST_MAIL + "\\$", post.mail);
+		tokens.put("\\$" + Tags.POST_MESSAGE + "\\$", post.message);
+		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", "debugpasswd"); // XXX
+		tokens.put("\\$" + Tags.POST_THREAD + "\\$", post.op > 0 ? post.op + "" : "");
+		tokens.put("\\$" + Tags.POST_TITLE + "\\$", post.title);
+		tokens.put("\\$" + Tags.POST_USER + "\\$", post.user);
 
-		request.setParameter(o.cpi.boardParam, board);
-		request.setParameter(o.cpi.replyToParam, post.op > 0 ? post.op + "" : "");
+		// Create pattern of the format "%(key|value)%"
+		Pattern pattern = Pattern.compile("(" + StringUtils.join(tokens.keySet(), "|") + ")");
 
-		request.setParameter(o.cpi.mailParam, post.mail);
-		request.setParameter(o.cpi.nameParam, post.user);
-		request.setParameter(o.cpi.titleParam, post.title);
+		ClientHttpRequest request = new ClientHttpRequest(replaceAll(o.cpi.postUrl, pattern, tokens), false);
 
-		request.setParameter(o.cpi.messageParam, post.message);
-		request.setParameter(o.cpi.passwordParam, "debugpasswd");
+		for (String parameter : o.cpi.postParameter) {
+			final String inserted = replaceAll(parameter, pattern, tokens);
+			final int delim = inserted.indexOf('=');
+			if (delim > 0)
+				request.setParameter(inserted.substring(0, delim), inserted.substring(delim + 1));
+		}
 
-		request.setParameter("task", "post");
-		// request.setParameter("nofile", "on");
+		for (int i = 0; i < post.images.size(); ++i) {
+			tokens.put("\\$" + Tags.NUM + "\\$", i + "");
+			pattern = Pattern.compile("(" + StringUtils.join(tokens.keySet(), "|") + ")");
 
-		request.setParameter("name", "");
-		request.setParameter("name", "");
-		request.setParameter("link", "");
+			for (String parameter : o.cpi.postFileParameter) {
+				final String inserted = replaceAll(parameter, pattern, tokens);
+				final int delim = inserted.indexOf('=');
+				if (delim > 0) {
+					final String key = inserted.substring(0, delim);
+					final String value = inserted.substring(delim + 1);
 
-		for (int i = 0; i < post.images.size(); ++i)
-			request.setParameter(o.cpi.fileParam.replace("$NUM$", i + ""), new File(post.images.get(i).filename), null);
+					if (value.contains("$" + Tags.POST_FILENAME))
+						request.setParameter(key, new File(post.images.get(i).filename), null);
+					else
+						request.setParameter(key, value);
+				}
+			}
+		}
 
 		InputStream is = request.post();
 
-		// FileUtil.pipe(connection.getInputStream(), System.out, null);
-		o.parser.parseStream(is, GenericImageBoardParser.this);
+		// FileUtil.pipe(is, System.out, null);
+		// we have to save OP# if we do this
+		// o.parser.parseStream(is, GenericImageBoardParser.this);
 
 		is.close();
 	}
@@ -105,19 +144,27 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			throw new NotImplementedException(
 					"So support for deleting posts has been added to the imageboard found at " + url);
 
-		final String board = getBoard(url).replace("/", "");
+		final Map<String, String> tokens = new HashMap<String, String>();
+		tokens.put("\\$" + Tags.POST_ID + "\\$", id + "");
+		tokens.put("\\$" + Tags.POST_BOARD + "\\$", getBoard(url).replace("/", ""));
+		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", "debugpasswd"); // XXX
 
-		ClientHttpRequest request = new ClientHttpRequest(o.cpi.postUrl.replace("$BOARD$", board), true);
+		// Create pattern of the format "%(key|value)%"
+		Pattern pattern = Pattern.compile("(" + StringUtils.join(tokens.keySet(), "|") + ")");
 
-		request.setParameter(o.cpi.boardParam, getBoard(url).replace("/", ""));
-		request.setParameter(o.cpi.deleteParam.replace("$ID$", id + ""), o.cpi.deleteParamVal.replace("$ID$", id + ""));
-		request.setParameter(o.cpi.passwordParam, password);
+		ClientHttpRequest request = new ClientHttpRequest(replaceAll(o.cpi.deleteUrl, pattern, tokens), true);
 
-		request.setParameter("task", "delete");
+		for (String parameter : o.cpi.delParameter) {
+			final String inserted = replaceAll(parameter, pattern, tokens);
+			final int delim = inserted.indexOf('=');
+			if (delim > 0)
+				request.setParameter(inserted.substring(0, delim), inserted.substring(delim + 1));
+		}
 
 		InputStream is = request.post();
 
-		o.parser.parseStream(is, GenericImageBoardParser.this);
+		// FileUtil.pipe(is, System.out, null);
+		// o.parser.parseStream(is, GenericImageBoardParser.this);
 		is.close();
 	}
 
