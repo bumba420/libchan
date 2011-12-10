@@ -32,8 +32,7 @@ public class ClientHttpRequest {
 											+ "FormBoundary";
 
 	private void boundary() throws IOException {
-		write("--");
-		write(boundary);
+		write("--" + boundary);
 	}
 
 	private HttpURLConnection openConnection(String url, boolean urlencode) throws IOException {
@@ -80,28 +79,31 @@ public class ClientHttpRequest {
 
 		Logger.get().println(name + "=\"" + value + "\"");
 
-		// application/x-www-form-urlencoded
 		if (urlencode) {
+
+			// application/x-www-form-urlencoded
+
 			write(firstparam ? "" : "&");
 			firstparam = false;
 			write(URLEncoder.encode(name, "UTF-8"));
 			write("=");
 			write(URLEncoder.encode(value, "UTF-8"));
-			return;
+
+		} else {
+
+			// multipart/form-data
+
+			boundary();
+			write("\r\n");
+			write("Content-Disposition: form-data; ");
+			write("name=\"" + name + "\";");
+
+			write("\r\n\r\n");
+
+			write(value);
+
+			write("\r\n");
 		}
-
-		// multipart/form-data
-
-		boundary();
-		write("\r\n");
-		write("Content-Disposition: form-data; ");
-		write("name=\"" + name + "\";");
-
-		write("\r\n\r\n");
-
-		write(value);
-
-		write("\r\n");
 	}
 
 	/**
@@ -122,36 +124,40 @@ public class ClientHttpRequest {
 
 		Logger.get().println(name + "=\"" + file.getAbsolutePath() + "\"");
 
-		// application/x-www-form-urlencoded
 		if (urlencode) {
+
+			// application/x-www-form-urlencoded
+
 			write(firstparam ? "?" : "&");
 			firstparam = false;
 			write(URLEncoder.encode(name, "UTF-8"));
 			write(URLEncoder.encode("=", "UTF-8"));
 			write(URLEncoder.encode(FileUtil.getFileContent(file), "UTF-8"));
-			return;
+
+		} else {
+
+			// multipart/form-data
+
+			boundary();
+			write("\r\n");
+			write("Content-Disposition: form-data; ");
+			write("name=\"" + name + "\"; ");
+
+			write("filename=\"" + file.getName() + "\"\r\n");
+			write("Content-Type: " + FileUtil.getMimeType(file));
+
+			write("\r\n\r\n");
+
+			if (callback != null)
+				callback.setFileSize(file.length());
+
+			Logger.get().println(
+					"Uploading " + file.getName() + " (" + FileUtil.getMimeType(file) + ", " + file.length()
+							+ " bytes)");
+			Logger.get().println("wrote " + FileUtil.pipe(new FileInputStream(file), os, callback) + " bytes");
+
+			write("\r\n");
 		}
-
-		// multipart/form-data
-
-		boundary();
-		write("\r\n");
-		write("Content-Disposition: form-data; ");
-		write("name=\"" + name + "\"; ");
-
-		write("filename=\"" + file.getName() + "\"\r\n");
-		write("Content-Type: " + FileUtil.getMimeType(file));
-
-		write("\r\n\r\n");
-
-		if (callback != null)
-			callback.setFileSize(file.length());
-
-		Logger.get().println(
-				"Uploading " + file.getName() + " (" + FileUtil.getMimeType(file) + ", " + file.length() + " bytes)");
-		Logger.get().println("wrote " + FileUtil.pipe(new FileInputStream(file), os, callback) + " bytes");
-
-		write("\r\n");
 	}
 
 	/**
