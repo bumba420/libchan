@@ -54,6 +54,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.url = url;
 		this.baseUrl = baseUrl;
 		this.o = o;
+
+		if (o.cpi.postUrl.startsWith("/"))
+			o.cpi.postUrl = baseUrl + o.cpi.postUrl;
+		if (o.cpi.deleteUrl.startsWith("/"))
+			o.cpi.deleteUrl = baseUrl + o.cpi.deleteUrl;
 	}
 
 	public int getMaxFiles() {
@@ -147,7 +152,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		final Map<String, String> tokens = new HashMap<String, String>();
 		tokens.put("\\$" + Tags.POST_ID + "\\$", id + "");
 		tokens.put("\\$" + Tags.POST_BOARD + "\\$", getBoard(url).replace("/", ""));
-		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", "debugpasswd"); // XXX
+		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", password);
 
 		// Create pattern of the format "%(key|value)%"
 		Pattern pattern = Pattern.compile("(" + StringUtils.join(tokens.keySet(), "|") + ")");
