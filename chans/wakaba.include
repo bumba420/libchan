@@ -8,6 +8,23 @@ POST		<span class="$$title">$POST_TITLE$</span>
 POST		<span class="filetitle"$POST_THREAD$</span>
 POST		<blockquote>$POST_MESSAGE$</blockquote>
 
+NEW_POST_URL	/$POST_BOARD$/wakaba.pl
+NEW_POST_PARMS	task=post
+NEW_POST_PARMS	parent=$POST_THREAD$
+NEW_POST_PARMS	field1=$POST_USER$
+NEW_POST_PARMS	field2=$POST_MAIL$
+NEW_POST_PARMS	field3=$POST_TITLE$
+NEW_POST_PARMS	field4=$POST_MESSAGE$
+NEW_POST_PARMS	password=$POST_PASSWORD$
+NEW_POST_PARMS	sage=$POST_MAIL$
+
+NEW_FILE_PARMS	file=$POST_FILENAME$
+
+DEL_POST_URL	/$POST_BOARD$/wakaba.pl
+DEL_POST_PARMS	task=delete
+DEL_POST_PARMS	board=$POST_BOARD$
+DEL_POST_PARMS	delete=$POST_ID$
+
 URL_PREFIX	res/
 URL_POSTFIX	.html
 
