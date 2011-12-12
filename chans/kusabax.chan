@@ -165,6 +165,23 @@ POST	<span class="filesize">$$onclick="javascript:expandimg($$)$$</a>$$($$,$$, $
 
 POST	<label for="inputfile$POST_MAX_FILES$">
 
+NEW_POST_URL	/board.php
+NEW_POST_PARMS	board=$POST_BOARD$
+NEW_POST_PARMS	replythread=$POST_THREAD$
+NEW_POST_PARMS	name=$POST_USER$
+NEW_POST_PARMS	em=$POST_MAIL$
+NEW_POST_PARMS	subject=$POST_TITLE$
+NEW_POST_PARMS	message=$POST_MESSAGE$
+NEW_POST_PARMS	postpassword=$POST_PASSWORD$
+
+NEW_FILE_PARMS	imagefile=$POST_FILENAME$
+
+DEL_POST_URL	/board.php
+DEL_POST_PARMS	post[]=$POST_ID$
+DEL_POST_PARMS  board=$POST_BOARD$
+DEL_POST_PARMS	deletepost=Delete
+DEL_POST_PARMS	postpassword=$POST_PASSWORD$
+
 URL_PREFIX	res/
 URL_POSTFIX	.html
 
