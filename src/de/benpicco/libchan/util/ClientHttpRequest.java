@@ -62,6 +62,8 @@ public class ClientHttpRequest {
 		httpConnection = openConnection(url, urlencode);
 		os = httpConnection.getOutputStream();
 		this.urlencode = urlencode;
+
+		Logger.get().println("Posting to " + url);
 	}
 
 	/**

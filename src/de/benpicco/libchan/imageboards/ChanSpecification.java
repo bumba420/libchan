@@ -185,14 +185,10 @@ public class ChanSpecification implements IParseDataReceiver {
 			case NEW_POST_URL:
 				createCPI();
 				o.cpi.postUrl = data;
-				if (o.cpi.postUrl.startsWith("/"))
-					o.cpi.postUrl = board.baseurl + o.cpi.postUrl;
 				break;
 			case DEL_POST_URL:
 				createCPI();
 				o.cpi.deleteUrl = data;
-				if (o.cpi.deleteUrl.startsWith("/"))
-					o.cpi.deleteUrl = board.baseurl + o.cpi.deleteUrl;
 				break;
 			case NEW_POST_PARMS:
 				createCPI();
