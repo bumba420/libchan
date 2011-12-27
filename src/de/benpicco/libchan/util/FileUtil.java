@@ -76,7 +76,7 @@ public class FileUtil {
 		final int pos = (protocol + "://" + host + path + "?").length();
 		final String param = pos < url.length() ? url.substring(pos) : null;
 
-		return new URI(protocol, host, path, param);
+		return new URI(protocol, host, path, param, null);
 	}
 
 	public static void downloadFile(String url, String filename, int tries) {
@@ -95,13 +95,13 @@ public class FileUtil {
 					break;
 				}
 				downloadFile(uri.toURL(), filename);
-				Logger.get().println("Saved " + url + " as " + filename);
+				Logger.get().println("Saved " + uri + " as " + filename);
 
 				break;
 			} catch (Exception e) {
 				file.delete();
 				if (tries <= 0)
-					Logger.get().error("Failed to save " + url + " as " + filename + " (" + e + ")");
+					Logger.get().error("Failed to save " + uri + " as " + filename + " (" + e + ")");
 				else
 					try {
 						Thread.sleep(250);
