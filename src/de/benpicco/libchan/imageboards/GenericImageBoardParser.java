@@ -55,10 +55,12 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		this.baseUrl = baseUrl;
 		this.o = o;
 
-		if (o.cpi.postUrl.startsWith("/"))
-			o.cpi.postUrl = baseUrl + o.cpi.postUrl;
-		if (o.cpi.deleteUrl.startsWith("/"))
-			o.cpi.deleteUrl = baseUrl + o.cpi.deleteUrl;
+		if (o.cpi != null) {
+			if (o.cpi.postUrl.startsWith("/"))
+				o.cpi.postUrl = baseUrl + o.cpi.postUrl;
+			if (o.cpi.deleteUrl.startsWith("/"))
+				o.cpi.deleteUrl = baseUrl + o.cpi.deleteUrl;
+		}
 	}
 
 	public int getMaxFiles() {

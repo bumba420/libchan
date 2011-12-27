@@ -45,14 +45,8 @@ public class VocarrooHandler implements PostProcessor {
 
 		final String dir = folder(post);
 		final Matcher match = voccReg.matcher(post.message);
-		new java.lang.Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				while (match.find())
-					ThreadPool.addDownload(voccUrl + match.group(1), dir + post.id + "_" + match.group(1) + ".wav");
-			}
-		}).start();
+		while (match.find())
+			ThreadPool.addDownload(voccUrl + match.group(1), dir + post.id + "_" + match.group(1) + ".wav");
 	}
 
 	@Override
