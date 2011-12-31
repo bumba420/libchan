@@ -6,6 +6,10 @@ SITE_NAME	OperatorChan
 SITE_DESC	The only weapons, military, and freedom oriented imageboard on the net.
 SITE_URL	http://operatorchan.org
 
+SITE_NAME	RockstarChan
+SITE_DESC	RockstarChan is an imageboard dedicated to causing fail and cancer.
+SITE_URL	http://rockstararmy.com
+
 SITE_NAME	0chan
 SITE_DESC	One of the most popular Russian imageboards
 SITE_URL	http://www.0chan.ru
