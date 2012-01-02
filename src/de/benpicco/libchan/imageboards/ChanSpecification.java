@@ -90,6 +90,7 @@ public class ChanSpecification implements IParseDataReceiver {
 					try {
 						Tags key = Tags.valueOf(matcher.group(1));
 						String value = matcher.group().substring(matcher.end(1)).trim();
+						value = value.replace("\\n", "\n");
 						parsedString(key, value);
 					} catch (IllegalArgumentException e) {
 						Logger.get().error("Unknown Value '" + matcher.group(1) + "' in " + file);
