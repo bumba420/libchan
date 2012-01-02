@@ -1,7 +1,6 @@
 package de.benpicco.libchan.clichan;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -79,7 +78,7 @@ public class HtmlConverter {
 		for (Image img : post.images)
 			images += imgTemplate.replace("$" + Tags.POST_IMGURL + "$", StringEscapeUtils.escapeHtml4(img.url))
 					.replace("$" + Tags.POST_THUMBNAIL + "$", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
-					.replace("$" + Tags.POST_FILENAME + "$", URLEncoder.encode(img.filename));
+					.replace("$" + Tags.POST_FILENAME + "$", FileUtil.urlencode(img.filename));
 
 		return postTemplate
 				.replace("$" + Tags.POST_ID + "$", post.id + "")
