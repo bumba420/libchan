@@ -80,7 +80,7 @@ SITE_URL	http://www.gaychan.com/boards
 
 SITE_NAME	AnonIB
 SITE_DESC	Best image board! Yeah!
-SITE_URL	http://anonib.com
+SITE_URL	http://www.anonib.com
 
 SITE_NAME	Newfapchan
 SITE_DESC	the new FapChan
@@ -165,7 +165,7 @@ POST	<span class="multithumb$$"><a href="$POST_IMGURL$"$$<img class="multithumb$
 # version 0.8
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
 POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
-POST	<span class="filesize">$$onclick="javascript:expandimg($$)$$</a>$$($$,$$, $POST_FILENAME$)
+POST	<span class="filesize">$$onclick="javascript:expandimg($$)$$</a>$$($$,$$, $POST_FILENAME$\n$$)
 
 POST	<label for="inputfile$POST_MAX_FILES$">
 
