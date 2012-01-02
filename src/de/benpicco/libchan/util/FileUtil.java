@@ -198,6 +198,9 @@ public class FileUtil {
 	}
 
 	public static String getMimeType(File file) {
-		return URLConnection.getFileNameMap().getContentTypeFor(file.getName());
+		String mime = URLConnection.getFileNameMap().getContentTypeFor(file.getName());
+		if (mime == null)
+			return "application/octet-stream";
+		return mime;
 	}
 }

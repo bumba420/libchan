@@ -1,7 +1,9 @@
 package de.benpicco.clichan;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -15,14 +17,17 @@ import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.BoardArchiver;
 import de.benpicco.libchan.clichan.ChanCrawler;
 import de.benpicco.libchan.clichan.ChanManager;
+import de.benpicco.libchan.clichan.CreatePostUtil;
 import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Imageboard;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
+import de.benpicco.libchan.util.NotImplementedException;
 import de.benpicco.libchan.util.ThreadPool;
 
 public class CliChan {
+
 	public static void main(String[] args) {
 		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
@@ -37,6 +42,8 @@ public class CliChan {
 		options.threadFolders = true;
 		options.recordStats = false;
 		options.autosage = 500;
+
+		List<File> uploadFiles = null;
 
 		Logger.add(new StdLogger());
 
@@ -61,7 +68,11 @@ public class CliChan {
 				"keep the original filenames and do not append the post id to ensure that they are unique");
 		cliOptions.addOption("useragent", true, "HTTP Client String");
 
-		Option o = new Option("f", "find", true,
+		Option o = new Option("p", "post", false, "Create a new post, you may specify files or a directory to upload");
+		o.setArgs(Integer.MAX_VALUE);
+		cliOptions.addOption(o);
+
+		o = new Option("f", "find", true,
 				"Searches the imageborad for users, paramaters are usernames, seperated by spaces (use \" for names containing spaces)");
 		o.setArgs(Integer.MAX_VALUE);
 		cliOptions.addOption(o);
@@ -145,6 +156,20 @@ public class CliChan {
 				return;
 			}
 
+			if (commandLine.hasOption('p')) {
+				String[] params = commandLine.getOptionValues('p');
+				uploadFiles = new ArrayList<File>();
+				for (String param : params) {
+					File f = new File(param);
+					if (f.isDirectory()) {
+						for (File file : f.listFiles())
+							if (file.isFile())
+								uploadFiles.add(file);
+					} else
+						uploadFiles.add(f);
+				}
+			}
+
 		} catch (ParseException e) {
 			System.err.println(e.getLocalizedMessage());
 			return;
@@ -159,8 +184,30 @@ public class CliChan {
 		ThreadArchiver archiver = null;
 		BoardArchiver boardArchiver = null;
 
-		if (namesToSearch == null)
+		if (namesToSearch == null && uploadFiles == null)
 			archiver = new ThreadArchiver(options);
+		else if (uploadFiles != null) {
+			CreatePostUtil cpu = new CreatePostUtil(urls[0], options);
+			CliDialog d = new CliDialog();
+
+			try {
+				cpu.uploadFiles(d.ask("name"), d.ask("subject"), d.ask("mail"), d.ask("password", "deletepasswd"),
+						d.ask("message"), Integer.parseInt(d.ask("delay between two posts", "30")), uploadFiles);
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NotImplementedException e) {
+				Logger.get().error("No support for creating posts was added for this imageboard.");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			return;
+		}
 
 		if (options.boardInterval > 0) {
 			if (options.interval <= 0)
@@ -177,11 +224,12 @@ public class CliChan {
 			if (anchor > 0)
 				url = url.substring(0, anchor);
 
-			if (namesToSearch != null)
+			if (namesToSearch != null) // crawler mode
 				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.chanConfig);
-			else if (boardArchiver != null)
+			else if (boardArchiver != null) // archive an entire board
 				boardArchiver.addBoard(url);
 			else
+				// archive a single thread
 				archiver.addThread(url);
 		}
 

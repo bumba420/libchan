@@ -1,10 +1,7 @@
 package de.benpicco.libchan;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.benpicco.clichan.StdLogger;
 import de.benpicco.libchan.clichan.ArchiveOptions;
@@ -13,7 +10,6 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
-import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
 import de.benpicco.libchan.interfaces.BoardHandler;
@@ -43,48 +39,6 @@ public class DebugMain {
 		archiver.run();
 	}
 
-	private static void addFile(Post post, String file) {
-		Image image = new Image();
-		image.filename = file;
-		post.addImage(image);
-	}
-
-	private static Post getTestPost(List<String> files) {
-		Post post = new Post();
-		post.user = "TestBernd";
-		post.mail = "sage";
-		post.message = "yay!";
-		post.title = "test";
-
-		if (files != null)
-			for (String file : files)
-				addFile(post, file);
-
-		return post;
-	}
-
-	private static void uploadDir(String path, GenericImageBoardParser parser) throws IOException,
-			NotImplementedException, InterruptedException {
-		File dir = new File(path);
-		ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
-		if (dir.listFiles() != null)
-			for (File file : dir.listFiles()) {
-				if (file.isDirectory())
-					continue;
-
-				if (chunk.size() == parser.getMaxFiles()) {
-					Logger.get().println("Uploading " + chunk.size() + " files…");
-					parser.createPost(getTestPost(chunk));
-					chunk.clear();
-					java.lang.Thread.sleep(1000);
-				}
-				Logger.get().println("Adding " + file);
-				chunk.add(file.toString());
-			}
-		Logger.get().println("Uploading " + chunk.size() + " files…");
-		parser.createPost(getTestPost(chunk));
-	}
-
 	public static void main(final String[] args) throws MalformedURLException, IOException, InterruptedException,
 			NotImplementedException {
 		Logger.add(new StdLogger());
@@ -92,7 +46,7 @@ public class DebugMain {
 		// String url = "http://7chan.org/s/res/137115.html";
 		// String url = "http://krautchan.net/b/thread-3814221.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
-		String url = "http://boards.420chan.org/b/res/2188287.php";
+		String url = "http://krautchan.net/b/thread-3887413.html";
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
@@ -113,12 +67,11 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		parser.getPosts();
 		System.out.println("MaxFiles: " + parser.getMaxFiles());
 
 		try {
-			uploadDir("/tmp/kc", parser);
-			// parser.deletePost(3816291, "debugpasswd");
+			// uploadDir("/tmp/kc", parser);
+			parser.deletePost(961, "debugpasswd");
 		} catch (NotImplementedException e) {
 			Logger.get().error(e.getMessage());
 		}
