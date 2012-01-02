@@ -203,4 +203,9 @@ public class FileUtil {
 			return "application/octet-stream";
 		return mime;
 	}
+
+	public static String urlencode(String string) {
+		final int prefix = new File("").toURI().toASCIIString().length();
+		return new File(string).toURI().toASCIIString().substring(prefix);
+	}
 }
