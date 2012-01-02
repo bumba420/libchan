@@ -38,6 +38,8 @@ public class CreatePostUtil {
 	public void uploadFiles(String user, String title, String mail, String password, String message, int delay,
 			List<File> files) throws IOException, NotImplementedException, InterruptedException {
 		ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
+		Logger.get().println("Will upload " + files.size() + " files, " + parser.getMaxFiles() + " at a time.\n");
+
 		if (files != null)
 			for (File file : files) {
 				if (chunk.size() == parser.getMaxFiles()) {
