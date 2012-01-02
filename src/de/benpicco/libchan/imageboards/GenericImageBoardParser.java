@@ -46,6 +46,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private String				url;
 	private boolean				isFirstPost;
 
+	// to get the max file count we have to parse the page at least once.
+	private boolean				parsedOnce		= false;
+
 	private String absolute(String relUrl) {
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
 	}
@@ -63,9 +66,21 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		}
 	}
 
+	/**
+	 * Tries to determine the maximum number of files per post, if the website
+	 * has not been parsed yet it will call getPosts() to read that information.
+	 * 
+	 * @return the number of files allowed per post
+	 */
 	public int getMaxFiles() {
 		if (o.cpi == null)
 			return 0;
+		if (!parsedOnce)
+			try {
+				getPosts();
+			} catch (IOException e) {
+			}
+
 		return o.cpi.maxFiles;
 	}
 
@@ -85,7 +100,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		return sb.toString();
 	}
 
-	public void createPost(Post post) throws IOException, NotImplementedException {
+	public void createPost(Post post, String password) throws IOException, NotImplementedException {
 		if (o.cpi == null)
 			throw new NotImplementedException(
 					"So support for creating posts has been added to the imageboard found at " + url);
@@ -101,7 +116,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		tokens.put("\\$" + Tags.POST_BOARD + "\\$", getBoard(url).replace("/", ""));
 		tokens.put("\\$" + Tags.POST_MAIL + "\\$", post.mail);
 		tokens.put("\\$" + Tags.POST_MESSAGE + "\\$", post.message);
-		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", "debugpasswd"); // XXX
+		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", password);
 		tokens.put("\\$" + Tags.POST_THREAD + "\\$", post.op > 0 ? post.op + "" : "");
 		tokens.put("\\$" + Tags.POST_TITLE + "\\$", post.title);
 		tokens.put("\\$" + Tags.POST_USER + "\\$", post.user);
@@ -177,9 +192,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	@Override
 	public synchronized void getPosts() throws IOException {
-		if (postReceiver == null)
-			return;
-
 		int lastIdPre = lastId;
 		if (lastId > 0) {
 			refreshing = true;
@@ -219,7 +231,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			reset();
 			getPosts();
 		}
-		postReceiver.onPostsParsingDone();
+		if (postReceiver != null)
+			postReceiver.onPostsParsingDone();
 	}
 
 	private void reset() {
@@ -232,6 +245,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 	@Override
 	public void parsedString(Tags tag, String data) {
+		parsedOnce = true;
+
 		if (currentPost == null)
 			if (o.postStarter.contains(tag))
 				currentPost = new Post();
@@ -414,6 +429,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	public String getPage(int i) {
+		if (i == 0) // boards like kusaba don't have a page '0'
+			return url;
 		return url + i + o.threadURL.second;
 	}
 
