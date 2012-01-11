@@ -22,6 +22,10 @@ SITE_NAME	Auschan
 SITE_DESC	Australian Imageboard
 SITE_URL	http://auschan.org
 
+SITE_NAME	+31chan
+SITE_DESC	Dutch Imageboard
+SITE_URL	http://31chan.org/
+
 SITE_NAME	underfoule
 SITE_DESC	French Imageboard
 SITE_URL	http://underfoule.net
