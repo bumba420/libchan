@@ -19,7 +19,7 @@ import de.benpicco.libchan.interfaces.NewThreadReceiver;
 import de.benpicco.libchan.util.Logger;
 
 public class ThreadArchiver implements NewThreadReceiver, Runnable {
-	public final static String				VERSION	= "0.4.0";
+	public final static String				VERSION	= "0.4.0-hg";
 
 	private final ChanManager				manager;
 	private final List<ImageBoardParser>	threads;
