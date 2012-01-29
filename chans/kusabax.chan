@@ -34,6 +34,10 @@ SITE_NAME	Karachan
 SITE_DESC	Polish Imageboard
 SITE_URL	http://www.karachan.org
 
+SITE_NAME	Turulchan
+SITE_DESC	Hungarian Imageboard
+SITE_URL	http://www.turulchan.net
+
 SITE_NAME	BRchan
 SITE_DESC	Brazilian Imageboard
 SITE_URL	http://www.brchan.org
@@ -155,6 +159,8 @@ POST	<span class="postername">$POST_USER$</span>
 POST	<span class="postertrip">$POST_TRIP$</span>
 # underfoule, karachan
 POST	<span class="polandball"><img src='$POST_COUNTRY$'
+# turulchan
+POST	<input type="checkbox" name="post[]" value="$$" />$$<img src="$POST_COUNTRY$" title="$$" alt="$$" /><span class="postername"
 # version 0.8
 POST	<span class="postername">$$</span>$$\n$POST_DATE$</label>
 # version 0.9
