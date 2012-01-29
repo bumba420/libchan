@@ -50,7 +50,8 @@ public class StreamParser implements Cloneable {
 				for (ParseItem pi : tags)
 					if (pi.match(c.data[i]))
 						for (int j = 0; j < pi.tags.length && parsing; ++j)
-							receiver.parsedString(pi.tags[j], pi.items[j]);
+							if (pi.tags[j] != Tags.NULL)
+								receiver.parsedString(pi.tags[j], pi.items[j]);
 			}
 		}
 		parsing = false;
@@ -78,17 +79,17 @@ public class StreamParser implements Cloneable {
 }
 
 class ParseItem {
-	private int				pos			= 0;
-	private int				pos2		= -1;
-	private int				item		= 0;
-	private StringBuilder	itemBuilder	= null;
-	private int				lastItem	= 0;
-	private int				lastItem2	= 0;
-	private int				prevItemPos	= 0;
+	private int			pos			= 0;
+	private int			pos2		= -1;
+	private int			item		= 0;
+	private ItemBuilder	itemBuilder	= null;
+	private int			lastItem	= 0;
+	private int			lastItem2	= 0;
+	private int			prevItemPos	= 0;
 
-	final String[]			items;
-	final char[]			pattern;
-	final Tags[]			tags;
+	final String[]		items;
+	final char[]		pattern;
+	final Tags[]		tags;
 
 	ParseItem(Tags[] tags, char[] pattern) {
 		this.pattern = pattern;
@@ -124,7 +125,7 @@ class ParseItem {
 			if (pos > lastItem) { // we reached a new matcher/the end
 				if (itemBuilder != null)
 					items[item++] = itemBuilder.substring(0, itemBuilder.length() - (pos - lastItem));
-				itemBuilder = new StringBuilder();
+				itemBuilder = new ItemBuilder(tags[item] == Tags.NULL);
 			}
 
 			// start looking for the beginning of the same pattern again
@@ -202,4 +203,37 @@ class ParseItem {
 				sb.append(tags[j++]);
 		return sb.toString();
 	}
+}
+
+/**
+ * Simple wrapper around StringBuilder, discards all chars if a NULL dummy item
+ * is parsed.
+ */
+class ItemBuilder {
+	private final StringBuilder	sb;
+
+	public ItemBuilder(boolean noop) {
+		if (noop)
+			sb = null;
+		else
+			sb = new StringBuilder();
+	}
+
+	public void append(char c) {
+		if (sb != null)
+			sb.append(c);
+	}
+
+	public int length() {
+		if (sb != null)
+			return sb.length();
+		return 0;
+	}
+
+	public String substring(int i, int j) {
+		if (sb != null)
+			return sb.substring(i, j);
+		return null;
+	}
+
 }
