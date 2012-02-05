@@ -9,6 +9,7 @@ POST	<div class="thread" id="$POST_THREAD$">
 POST	<input type="checkbox" name="delete" value="$POST_ID$">
 POST	<span class="oldfiletitle">$POST_TITLE$</span>
 POST	<span class="postername">$POST_USER$</span>
+POST	<span class="postersage">$POST_USER$</span>	# TODO: mail should be sage
 POST	<span class="posterdate">$POST_DATE$</span>
 POST	<blockquote>$POST_MESSAGE$</blockquote>
 
