@@ -16,6 +16,20 @@ POST	<blockquote>$POST_MESSAGE$</blockquote>
 POST	<a id="finfo-$$"  class="fileinfo"  href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
 
+NEW_POST_URL	/brian/board.php
+NEW_POST_PARMS	board=$POST_BOARD$
+NEW_POST_PARMS	replythread=$POST_THREAD$
+NEW_POST_PARMS	subject=$POST_TITLE$
+NEW_POST_PARMS	message=$POST_MESSAGE$
+NEW_POST_PARMS	sagecheck=$POST_MAIL$
+NEW_THREAD_ID	0
+
+NEW_FILE_PARMS	imagefile=$POST_FILENAME$
+
+DEL_POST_URL	/brian/wire/recycle.php
+DEL_POST_PARMS	b=$POST_BOARD$
+DEL_POST_PARMS	p=$POST_ID$
+
 URL_PREFIX	res/
 URL_POSTFIX	.html
 
