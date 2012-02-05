@@ -21,6 +21,7 @@ import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.ClientHttpRequest;
+import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 import de.benpicco.libchan.util.NotImplementedException;
@@ -117,7 +118,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		tokens.put("\\$" + Tags.POST_MAIL + "\\$", post.mail);
 		tokens.put("\\$" + Tags.POST_MESSAGE + "\\$", post.message);
 		tokens.put("\\$" + Tags.POST_PASSWORD + "\\$", password);
-		tokens.put("\\$" + Tags.POST_THREAD + "\\$", post.op > 0 ? post.op + "" : "");
+		tokens.put("\\$" + Tags.POST_THREAD + "\\$", post.op > 0 ? post.op + "" : o.newThreadString);
 		tokens.put("\\$" + Tags.POST_TITLE + "\\$", post.title);
 		tokens.put("\\$" + Tags.POST_USER + "\\$", post.user);
 
@@ -154,9 +155,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 		InputStream is = request.post();
 
-		// FileUtil.pipe(is, System.out, null);
-		// we have to save OP# if we do this
-		// o.parser.parseStream(is, GenericImageBoardParser.this);
+		if (GlobalOptions.debug) {
+			FileUtil.pipe(is, System.out, null);
+			// we have to save OP# if we do this
+			// o.parser.parseStream(is, GenericImageBoardParser.this);
+		}
 
 		is.close();
 	}
