@@ -1,0 +1,18 @@
+SITE_NAME	britfags
+SITE_DESC	British imageboard
+SITE_URL	http://britfa.gs
+
+
+POST	<input type="checkbox" name="delete" value="$POST_ID$">
+POST	<span class="oldfiletitle">$POST_TITLE$</span>
+POST	<span class="postername">$POST_USER$</span>
+POST	<span class="posterdate">$POST_DATE$</span>
+POST	<blockquote>$POST_MESSAGE$</blockquote>
+
+POST	<a id="finfo-$$"  class="fileinfo"  href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
+POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
+
+START_POST	POST_ID
+START_POST	POST_IMGURL
+END_POST	POST_MESSAGE
+END_IMAGE	POST_MESSAGE
