@@ -2,7 +2,10 @@ SITE_NAME	britfags
 SITE_DESC	British imageboard
 SITE_URL	http://britfa.gs
 
+BOARD_INDEX	/brian/menu.html
+BOARD	<li><a href="$BOARD_URL$" class="boardlink">$BOARD_TITLE$</a></li>
 
+POST	<div class="thread" id="$POST_THREAD$">
 POST	<input type="checkbox" name="delete" value="$POST_ID$">
 POST	<span class="oldfiletitle">$POST_TITLE$</span>
 POST	<span class="postername">$POST_USER$</span>
@@ -12,6 +15,10 @@ POST	<blockquote>$POST_MESSAGE$</blockquote>
 POST	<a id="finfo-$$"  class="fileinfo"  href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
 
+URL_PREFIX	res/
+URL_POSTFIX	.html
+
+START_POST	POST_THREAD
 START_POST	POST_ID
 START_POST	POST_IMGURL
 END_POST	POST_MESSAGE
