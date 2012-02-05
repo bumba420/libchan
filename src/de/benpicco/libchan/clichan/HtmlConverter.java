@@ -76,9 +76,9 @@ public class HtmlConverter {
 
 		String images = "";
 		for (Image img : post.images)
-			images += imgTemplate.replace("$" + Tags.POST_IMGURL + "$", StringEscapeUtils.escapeHtml4(img.url))
+			images += imgTemplate.replace("$" + Tags.POST_IMGURL + "$", FileUtil.urlencode(img.url))
 					.replace("$" + Tags.POST_THUMBNAIL + "$", StringEscapeUtils.escapeHtml4(img.thumbnailUrl))
-					.replace("$" + Tags.POST_FILENAME + "$", FileUtil.urlencode(img.filename));
+					.replace("$" + Tags.POST_FILENAME + "$", StringEscapeUtils.escapeHtml4(img.filename));
 
 		return postTemplate
 				.replace("$" + Tags.POST_ID + "$", post.id + "")
