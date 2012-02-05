@@ -52,6 +52,7 @@ public class CliChan {
 		cliOptions.addOption("i", "interval", true, "thread refresh interval");
 		cliOptions.addOption("c", "config", true, "chan configuration directory");
 		cliOptions.addOption("v", "version", false, "show version");
+		cliOptions.addOption("debug", false, "enable debug output");
 		cliOptions.addOption("archiveAll", true, "Archive all threads on a board, refresh interval for the main page");
 		cliOptions.addOption("d", "deleteDeleted", false, "watch for deleted pots and remove deleted images");
 		cliOptions.addOption("tag", true, "follow-up threads tag");
@@ -128,6 +129,8 @@ public class CliChan {
 				GlobalOptions.useragent = commandLine.getOptionValue("useragent");
 			if (commandLine.hasOption("keepFilenames"))
 				GlobalOptions.useUniqueFilenames = false;
+			if (commandLine.hasOption("debug"))
+				GlobalOptions.debug = true;
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION

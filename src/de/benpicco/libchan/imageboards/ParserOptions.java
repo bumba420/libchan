@@ -19,6 +19,7 @@ public class ParserOptions {
 	String					threadMark		= "";
 	String					boardIndex		= "";
 	CreatePostInformation	cpi				= null;
+	String					newThreadString	= "";
 
 	public ParserOptions() {
 	}
@@ -35,6 +36,7 @@ public class ParserOptions {
 		threadURL = o.threadURL;
 		threadMark = o.threadMark;
 		boardIndex = o.boardIndex;
+		newThreadString = o.newThreadString;
 		if (o.cpi != null)
 			cpi = o.cpi.clone();
 	}

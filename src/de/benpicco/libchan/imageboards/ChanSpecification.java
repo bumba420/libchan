@@ -184,6 +184,9 @@ public class ChanSpecification implements IParseDataReceiver {
 			case POST_THREAD_MARK:
 				o.threadMark = value;
 				break;
+			case NEW_THREAD_ID:
+				o.newThreadString = value;
+				break;
 			case NEW_POST_URL:
 				createCPI();
 				o.cpi.postUrl = data;
