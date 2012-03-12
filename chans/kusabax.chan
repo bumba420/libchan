@@ -54,10 +54,6 @@ SITE_NAME	TRchan
 SITE_DESC	Turkish Imageboard
 SITE_URL	http://trchan.org
 
-SITE_NAME	Ylilauta
-SITE_DESC	Kuvattomien taidenyymien herrasmiessivusto.
-SITE_URL	http://ylilauta.fi
-
 SITE_NAME	Lucid Chan
 SITE_DESC	Lucid Chan is an imageboard for discussing Lucid Dreaming, Astral Projection, and more.
 SITE_URL	http://www.lucidchan.org
