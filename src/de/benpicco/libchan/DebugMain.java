@@ -8,7 +8,6 @@ import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.ChanManager;
 import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
-import de.benpicco.libchan.imageboards.ChanSpecification;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.imageboards.Thread;
@@ -50,7 +49,7 @@ public class DebugMain {
 		// String url = "http://operatorchan.org/k/";
 
 		// archiveThread(url);
-		ChanSpecification spec = new ChanSpecification("template/", true);
+		// ChanSpecification spec = new ChanSpecification("template/", true);
 
 		ChanManager mngr = new ChanManager("chans/", "template/");
 		GenericImageBoardParser parser = mngr.getParser(url);
