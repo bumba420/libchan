@@ -26,6 +26,14 @@ SITE_NAME	+31chan
 SITE_DESC	Dutch Imageboard
 SITE_URL	http://31chan.org/
 
+SITE_NAME	Querfront
+SITE_DESC	Nazi themed imageboard
+SITE_URL	http://www.querfront.com/
+
+SITE_NAME	Neuschwabenland
+SITE_DESC	Kühler Stammtisch seit 1938
+SITE_URL	http://www.neuschwabenland.org/
+
 SITE_NAME	underfoule
 SITE_DESC	French Imageboard
 SITE_URL	http://underfoule.net
@@ -171,7 +179,7 @@ POST	<p class="message">$POST_MESSAGE$</p>
 
 # version 0.9
 POST	<div class="file_size">$$</a>$$($$,$$, $POST_FILENAME$)$$</div>$$<div id="thumb_$$" class="post_thumb">$$<a target="_blank" href="$POST_IMGURL$"><img src="$POST_THUMBNAIL$" 
-POST	<span class="multithumb$$"><a href="$POST_IMGURL$"$$<img class="multithumb$$" src="$POST_THUMBNAIL$"
+POST	<span class="multithumb$$"><a href="$POST_IMGURL$"$$<img class="multithumb$$" src="$POST_THUMBNAIL$"$$title="$$ - ($$, $$, $POST_FILENAME$)"
 # version 0.8
 POST	<span id="thumb$$"><img src="$POST_THUMBNAIL$"
 POST	<span class="filesize">$$<a$$href="$POST_IMGURL$"$$>$POST_FILENAME$</a>
@@ -205,4 +213,3 @@ START_POST	POST_FILENAME
 START_POST	POST_IMGURL
 START_POST	POST_COUNTRY
 END_POST	POST_MESSAGE
-END_IMAGE	POST_THUMBNAIL
