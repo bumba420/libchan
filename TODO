@@ -2,6 +2,7 @@ Next Milestone:
  captcha support (posting)
 
 Boards:
+ ylilauta.fi (YBoard)
  northpole.fi
  dobrochan.ru (hanabira)
  lolks.ru (Kareha)
@@ -14,6 +15,7 @@ Boards:
  swfchan.org
 
  http://9ch.in/overscript/
+ http://vps.tinyboard.org/chans/rank.txt
 
 Bugs:
  deletion detection is broken 
