@@ -66,7 +66,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 			printResults();
 		threadId = post.op;
 		for (int i = 0; i < names.length; ++i)
-			if (post.user.toLowerCase().contains(names[i]))
+			if (post.user.toLowerCase().contains(names[i]) || post.date.toLowerCase().contains(names[i]))
 				occurence[i]++;
 			else if (post.message.toLowerCase().contains(names[i]))
 				mentioned[i]++;
