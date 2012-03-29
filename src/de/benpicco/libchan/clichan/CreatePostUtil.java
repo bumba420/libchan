@@ -37,6 +37,11 @@ public class CreatePostUtil {
 
 	public void uploadFiles(String user, String title, String mail, String password, String message, int delay,
 			List<File> files) throws IOException, NotImplementedException, InterruptedException {
+		if (parser == null) {
+			Logger.get().error("no suitable parser found.");
+			return;
+		}
+
 		ArrayList<String> chunk = new ArrayList<String>(parser.getMaxFiles());
 		Logger.get().println("Will upload " + files.size() + " files, " + parser.getMaxFiles() + " at a time.\n");
 
