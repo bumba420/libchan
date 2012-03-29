@@ -51,6 +51,8 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private boolean				parsedOnce		= false;
 
 	private String absolute(String relUrl) {
+		if (relUrl.startsWith("//"))
+			return "http:" + relUrl;
 		return relUrl.startsWith("/") ? baseUrl + relUrl : relUrl;
 	}
 
@@ -457,7 +459,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				switch (tag) {
 				case BOARD_URL:
 					board.url = data;
-					if (!board.url.startsWith("http://")) {
+					if (board.url.startsWith("//"))
+						board.url = "http:" + board.url;
+					else if (!board.url.startsWith("http://")) {
 						board.url = board.url.startsWith("/") ? board.url : "/" + board.url;
 						board.url = getBaseUrl() + board.url;
 					}
