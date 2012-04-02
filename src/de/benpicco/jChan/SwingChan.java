@@ -359,7 +359,7 @@ public class SwingChan {
 
 						@Override
 						public void run() {
-							ChanCrawler.lookFor(names, board, start, end, chanDir);
+							ChanCrawler.lookFor(names, board, false, start, end, chanDir);
 						}
 					};
 					new Thread(new BackgroundThread(runnable, panel_search)).start();

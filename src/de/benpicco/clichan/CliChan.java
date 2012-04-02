@@ -31,6 +31,7 @@ public class CliChan {
 	public static void main(String[] args) {
 		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
+		boolean quick = false;
 		options.target = ".";
 		options.followUpTag = "NEW THREAD";
 		options.interval = -1;
@@ -65,6 +66,8 @@ public class CliChan {
 		cliOptions.addOption("t", "threads", true, "maximum number of parallel downloads");
 		cliOptions.addOption("autosage", true, "postcount for bump limit warning");
 		cliOptions.addOption("joinMsg", false, "Display a notification when a new user starts posting in a thread.");
+		cliOptions.addOption("quick", false,
+				"(option for --find) only search on what's visible on e.g. page 1-10, not every thread");
 		cliOptions.addOption("keepFilenames", false,
 				"keep the original filenames and do not append the post id to ensure that they are unique");
 		cliOptions.addOption("useragent", true, "HTTP Client String");
@@ -131,6 +134,7 @@ public class CliChan {
 				GlobalOptions.useUniqueFilenames = false;
 			if (commandLine.hasOption("debug"))
 				GlobalOptions.debug = true;
+			quick = commandLine.hasOption("quick");
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
@@ -228,7 +232,7 @@ public class CliChan {
 				url = url.substring(0, anchor);
 
 			if (namesToSearch != null) // crawler mode
-				ChanCrawler.lookFor(namesToSearch, url, 0, 15, options.chanConfig);
+				ChanCrawler.lookFor(namesToSearch, url, quick, 0, 20, options.chanConfig);
 			else if (boardArchiver != null) // archive an entire board
 				boardArchiver.addBoard(url);
 			else
