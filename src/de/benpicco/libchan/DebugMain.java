@@ -17,6 +17,9 @@ import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.NotImplementedException;
 
+/*
+ * This is just a sandbox for testing stuff, please ignore
+ */
 public class DebugMain {
 
 	@SuppressWarnings("unused")
@@ -45,8 +48,8 @@ public class DebugMain {
 		// String url = "http://7chan.org/s/res/137115.html";
 		// String url = "http://krautchan.net/b/thread-3814221.html";
 		// String url = "http://boards.4chan.org/soc/res/8434479";
-		String url = "http://krautchan.net/b/thread-3887413.html";
-		// String url = "http://operatorchan.org/k/";
+		// String url = "http://krautchan.net/b/";
+		String url = "http://britfa.gs/b/";
 
 		// archiveThread(url);
 		// ChanSpecification spec = new ChanSpecification("template/", true);
@@ -66,15 +69,15 @@ public class DebugMain {
 		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
-		System.out.println("MaxFiles: " + parser.getMaxFiles());
+		// System.out.println("MaxFiles: " + parser.getMaxFiles());
 
-		try {
-			// uploadDir("/tmp/kc", parser);
-			parser.deletePost(961, "debugpasswd");
-		} catch (NotImplementedException e) {
-			Logger.get().error(e.getMessage());
-		}
-		// parser.getPosts();
+		// try {
+		// // uploadDir("/tmp/kc", parser);
+		// parser.deletePost(961, "debugpasswd");
+		// } catch (NotImplementedException e) {
+		// Logger.get().error(e.getMessage());
+		// }
+		parser.getPosts();
 		// parser.getThreads();
 		// parser.getBoards();
 
@@ -93,12 +96,16 @@ class SimplePostReceiver implements PostHandler, ThreadHandler, BoardHandler {
 	@Override
 	public void onAddPost(final Post post) {
 		postCount++;
+		if (post.op == post.id)
+			threadCount++;
+		System.out.println("OP: " + post.op);
 		// System.out.println(post);
 	}
 
 	@Override
 	public void onPostsParsingDone() {
 		System.out.println(postCount + " posts received.");
+		onThreadsParsingDone();
 	}
 
 	@Override

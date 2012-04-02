@@ -389,6 +389,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 		if (threadReceiver == null)
 			return;
 
+		// this doesn't look very thread-safe…
 		PostHandler oldRecceiver = postReceiver;
 		reset();
 		postReceiver = new ThreadParser();
