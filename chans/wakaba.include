@@ -6,6 +6,7 @@ POST		<span class="postertrip">$POST_TRIP$</span>$POST_DATE$</label>
 POST		<span class="$$postername"$$>$POST_USER$</span>$POST_DATE$</label>
 POST		<span class="$$title">$POST_TITLE$</span>
 POST		<span class="filetitle"$POST_THREAD$</span>
+POST		<div id="thread_$POST_THREAD$">
 POST		<blockquote>$POST_MESSAGE$</blockquote>
 
 NEW_POST_URL	/$POST_BOARD$/wakaba.pl
@@ -29,6 +30,7 @@ URL_PREFIX	res/
 URL_POSTFIX	.html
 
 START_POST	POST_ID
+START_POST	POST_THREAD
 START_POST	POST_IMGURL
 END_POST	POST_MESSAGE
 END_IMAGE	POST_MESSAGE
