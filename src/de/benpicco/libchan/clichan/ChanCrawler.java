@@ -11,7 +11,8 @@ import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 
 public class ChanCrawler {
-	public static void lookFor(final String[] names, final String board, int startpage, int endpage, String config) {
+	public static void lookFor(final String[] names, final String board, boolean fast, int startpage, int endpage,
+			String config) {
 		Logger.get().println("Searching " + board + " for " + Misc.printNames(names));
 
 		ChanManager manager = new ChanManager(config, null);
@@ -22,12 +23,13 @@ public class ChanCrawler {
 		}
 
 		for (int i = startpage; i < endpage; ++i)
-			new Thread(new PageCrawler(parser.getPage(i), manager, names)).run();
+			new Thread(new PageCrawler(parser.getPage(i), manager, names, fast)).start();
 	}
 }
 
 class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	private final String[]	names;
+	private final boolean	fast;
 	GenericImageBoardParser	threadParser	= null;
 	GenericImageBoardParser	postParser		= null;
 
@@ -35,11 +37,12 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 	int[]					mentioned;
 	int						threadId		= 0;
 
-	public PageCrawler(String page, ChanManager manager, final String[] names) {
+	public PageCrawler(String page, ChanManager manager, final String[] names, boolean fast) {
 		threadParser = manager.getParser(page);
 		threadParser.setThreadHandler(this);
 		postParser = manager.getParser(page);
 		postParser.setPostHandler(this);
+		this.fast = fast;
 		this.names = new String[names.length];
 		for (int i = 0; i < names.length; ++i)
 			this.names[i] = names[i].toLowerCase();
@@ -52,10 +55,13 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 		if (names == null)
 			return;
 		try {
-			threadParser.getThreads();
+			if (fast)
+				postParser.getPosts();
+			else
+				threadParser.getThreads();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Logger.get().error("Can't parse " + threadParser.getUrl());
+			return;
 		}
 	}
 
