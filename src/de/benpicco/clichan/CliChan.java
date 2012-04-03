@@ -12,6 +12,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 
 import de.benpicco.libchan.clichan.ArchiveOptions;
 import de.benpicco.libchan.clichan.BoardArchiver;
@@ -32,6 +33,8 @@ public class CliChan {
 		ArchiveOptions options = new ArchiveOptions();
 		String[] urls = null;
 		boolean quick = false;
+		int startPage = 0;
+		int endPage = 20;
 		options.target = ".";
 		options.followUpTag = "NEW THREAD";
 		options.interval = -1;
@@ -68,6 +71,7 @@ public class CliChan {
 		cliOptions.addOption("joinMsg", false, "Display a notification when a new user starts posting in a thread.");
 		cliOptions.addOption("quick", false,
 				"(option for --find) only search on what's visible on e.g. page 1-10, not every thread");
+		cliOptions.addOption("pages", true, "(option for --find) pages to search on (e.g. 0-10");
 		cliOptions.addOption("keepFilenames", false,
 				"keep the original filenames and do not append the post id to ensure that they are unique");
 		cliOptions.addOption("useragent", true, "HTTP Client String");
@@ -135,6 +139,12 @@ public class CliChan {
 			if (commandLine.hasOption("debug"))
 				GlobalOptions.debug = true;
 			quick = commandLine.hasOption("quick");
+
+			if (commandLine.hasOption("pages")) {
+				final String pages = commandLine.getOptionValue("pages");
+				startPage = Integer.parseInt(StringUtils.substringBefore(pages, "-"));
+				endPage = Integer.parseInt(StringUtils.substringAfter(pages, "-"));
+			}
 
 			if (commandLine.hasOption('v')) {
 				System.out.println("cliChan using libChan " + ThreadArchiver.VERSION
@@ -232,7 +242,7 @@ public class CliChan {
 				url = url.substring(0, anchor);
 
 			if (namesToSearch != null) // crawler mode
-				ChanCrawler.lookFor(namesToSearch, url, quick, 0, 20, options.chanConfig);
+				ChanCrawler.lookFor(namesToSearch, url, quick, startPage, endPage, options.chanConfig);
 			else if (boardArchiver != null) // archive an entire board
 				boardArchiver.addBoard(url);
 			else

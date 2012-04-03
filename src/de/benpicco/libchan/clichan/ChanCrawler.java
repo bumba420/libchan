@@ -13,7 +13,8 @@ import de.benpicco.libchan.util.Misc;
 public class ChanCrawler {
 	public static void lookFor(final String[] names, final String board, boolean fast, int startpage, int endpage,
 			String config) {
-		Logger.get().println("Searching " + board + " for " + Misc.printNames(names));
+		Logger.get().println(
+				"Searching " + board + " for " + Misc.printNames(names) + " on pages " + startpage + " to " + endpage);
 
 		ChanManager manager = new ChanManager(config, null);
 		GenericImageBoardParser parser = manager.getParser(board);
