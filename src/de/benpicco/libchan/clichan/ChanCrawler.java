@@ -23,7 +23,7 @@ public class ChanCrawler {
 			return;
 		}
 
-		for (int i = startpage; i < endpage; ++i)
+		for (int i = startpage; i <= endpage; ++i)
 			new Thread(new PageCrawler(parser.getPage(i), manager, names, fast)).start();
 	}
 }
