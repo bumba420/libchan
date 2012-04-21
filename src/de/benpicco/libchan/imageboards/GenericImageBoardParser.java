@@ -18,7 +18,6 @@ import de.benpicco.libchan.clichan.GlobalOptions;
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
 import de.benpicco.libchan.interfaces.PostHandler;
-import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.streamparser.IParseDataReceiver;
 import de.benpicco.libchan.util.ClientHttpRequest;
 import de.benpicco.libchan.util.FileUtil;
@@ -31,7 +30,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	private final String		baseUrl;
 
 	private PostHandler			postReceiver	= null;
-	private ThreadHandler		threadReceiver	= null;
 	private BoardHandler		boardReceiver	= null;
 
 	private Post				currentPost		= null;
@@ -363,6 +361,9 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentPost == null)
 				return;
 
+			if (currentPost.isFirstPost())
+				currentPost.threadUrl = composeUrl(currentPost);
+
 			lastId = currentPost.id;
 
 			if (GlobalOptions.useUniqueFilenames)
@@ -381,34 +382,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 				postReceiver.onAddPost(currentPost);
 
 			currentPost = null;
-		}
-	}
-
-	@Override
-	public void getThreads() throws IOException {
-		if (threadReceiver == null)
-			return;
-
-		// this doesn't look very thread-safe…
-		PostHandler oldRecceiver = postReceiver;
-		reset();
-		postReceiver = new ThreadParser();
-		getPosts();
-		postReceiver = oldRecceiver;
-	}
-
-	class ThreadParser implements PostHandler {
-
-		@Override
-		public void onAddPost(Post post) {
-			if (post.isFirstPost())
-				threadReceiver.onAddThread(new Thread(post, composeUrl(post), 0));
-			// TODO: count replies & parse omittedInfo
-		}
-
-		@Override
-		public void onPostsParsingDone() {
-			threadReceiver.onThreadsParsingDone();
 		}
 	}
 
@@ -493,12 +466,6 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	public void setPostHandler(PostHandler rec) {
 		reset();
 		postReceiver = rec;
-	}
-
-	@Override
-	public void setThreadHandler(ThreadHandler rec) {
-		reset();
-		threadReceiver = rec;
 	}
 
 	@Override

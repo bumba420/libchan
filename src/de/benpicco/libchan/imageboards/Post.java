@@ -20,6 +20,9 @@ public class Post implements Cloneable {
 	public final List<Image>	images;
 	public String				countryball;
 	public int					op;
+	public String				threadUrl;		// let's only have this at the
+												// OP post - is this a good
+												// idea?
 
 	public Post() {
 		this.images = new LinkedList<Image>();
