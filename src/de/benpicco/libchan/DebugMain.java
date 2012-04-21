@@ -10,10 +10,8 @@ import de.benpicco.libchan.clichan.ThreadArchiver;
 import de.benpicco.libchan.imageboards.Board;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
-import de.benpicco.libchan.imageboards.Thread;
 import de.benpicco.libchan.interfaces.BoardHandler;
 import de.benpicco.libchan.interfaces.PostHandler;
-import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.NotImplementedException;
 
@@ -45,11 +43,7 @@ public class DebugMain {
 			NotImplementedException {
 		Logger.add(new StdLogger());
 
-		// String url = "http://7chan.org/s/res/137115.html";
-		// String url = "http://krautchan.net/b/thread-3814221.html";
-		// String url = "http://boards.4chan.org/soc/res/8434479";
-		// String url = "http://krautchan.net/b/";
-		String url = "http://britfa.gs/b/";
+		String url = "http://www.turulchan.net/b/";
 
 		// archiveThread(url);
 		// ChanSpecification spec = new ChanSpecification("template/", true);
@@ -66,7 +60,6 @@ public class DebugMain {
 
 		SimplePostReceiver rec = new SimplePostReceiver();
 		parser.setPostHandler(rec);
-		parser.setThreadHandler(rec);
 		parser.setBoardHandler(rec);
 
 		// System.out.println("MaxFiles: " + parser.getMaxFiles());
@@ -88,7 +81,7 @@ public class DebugMain {
 	}
 }
 
-class SimplePostReceiver implements PostHandler, ThreadHandler, BoardHandler {
+class SimplePostReceiver implements PostHandler, BoardHandler {
 	int	postCount	= 0;
 	int	threadCount	= 0;
 	int	boardCount	= 0;
@@ -96,27 +89,16 @@ class SimplePostReceiver implements PostHandler, ThreadHandler, BoardHandler {
 	@Override
 	public void onAddPost(final Post post) {
 		postCount++;
-		if (post.op == post.id)
+		if (post.isFirstPost()) {
 			threadCount++;
-		System.out.println("OP: " + post.op);
+			Logger.get().println("[" + post.id + "]");
+		}
 		// System.out.println(post);
 	}
 
 	@Override
 	public void onPostsParsingDone() {
 		System.out.println(postCount + " posts received.");
-		onThreadsParsingDone();
-	}
-
-	@Override
-	public void onAddThread(Thread thread) {
-		threadCount++;
-		System.out.println(thread.getUrl());
-	}
-
-	@Override
-	public void onThreadsParsingDone() {
-		System.out.println(threadCount + " threads received.");
 	}
 
 	@Override

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
-import de.benpicco.libchan.interfaces.ThreadHandler;
 import de.benpicco.libchan.util.Logger;
 import de.benpicco.libchan.util.Misc;
 
@@ -28,7 +27,7 @@ public class ChanCrawler {
 	}
 }
 
-class PageCrawler implements Runnable, PostHandler, ThreadHandler {
+class PageCrawler implements Runnable, PostHandler {
 	private final String[]	names;
 	private final boolean	fast;
 	GenericImageBoardParser	threadParser	= null;
@@ -36,13 +35,13 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	int[]					occurence;
 	int[]					mentioned;
-	int						threadId		= 0;
+	String					threadUrl;
 
 	public PageCrawler(String page, ChanManager manager, final String[] names, boolean fast) {
-		threadParser = manager.getParser(page);
-		threadParser.setThreadHandler(this);
 		postParser = manager.getParser(page);
 		postParser.setPostHandler(this);
+		threadParser = manager.getParser(page);
+		threadParser.setPostHandler(new ThreadParser(postParser));
 		this.fast = fast;
 		this.names = new String[names.length];
 		for (int i = 0; i < names.length; ++i)
@@ -59,7 +58,7 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 			if (fast)
 				postParser.getPosts();
 			else
-				threadParser.getThreads();
+				threadParser.getPosts();
 		} catch (IOException e) {
 			Logger.get().error("Can't parse " + threadParser.getUrl());
 			return;
@@ -68,10 +67,11 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 
 	@Override
 	public void onAddPost(Post post) {
+		// TODO: re-add thread dedection for --quick
+		if (post.threadUrl != null) {
+			threadUrl = post.threadUrl;
+		}
 		// we only have one thread here
-		if (threadId > 0 && threadId != post.op)
-			printResults();
-		threadId = post.op;
 		for (int i = 0; i < names.length; ++i)
 			if (post.user.toLowerCase().contains(names[i]) || post.date.toLowerCase().contains(names[i]))
 				occurence[i]++;
@@ -84,32 +84,40 @@ class PageCrawler implements Runnable, PostHandler, ThreadHandler {
 			if (occurence[i] > 0 || mentioned[i] > 0)
 				Logger.get().println(
 						occurence[i] + " posts from " + names[i]
-								+ (mentioned[i] > 0 ? " and " + mentioned[i] + " mentions" : "") + " in "
-								+ postParser.composeUrl(threadId));
+								+ (mentioned[i] > 0 ? " and " + mentioned[i] + " mentions" : "") + " in " + threadUrl);
 		Arrays.fill(occurence, 0);
 		Arrays.fill(mentioned, 0);
-		threadId = 0;
-	}
-
-	@Override
-	public void onAddThread(final de.benpicco.libchan.imageboards.Thread thread) {
-
-		postParser.setUrl(thread.getUrl());
-		try {
-			postParser.getPosts();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		threadUrl = null;
 	}
 
 	@Override
 	public void onPostsParsingDone() {
 		printResults();
 	}
+}
+
+class ThreadParser implements PostHandler {
+	final GenericImageBoardParser	postParser;
+
+	public ThreadParser(GenericImageBoardParser postParser) {
+		this.postParser = postParser;
+	}
 
 	@Override
-	public void onThreadsParsingDone() {
+	public void onAddPost(Post post) {
+		if (!post.isFirstPost())
+			return;
+		postParser.setUrl(post.threadUrl);
+		try {
+			postParser.getPosts();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
+	@Override
+	public void onPostsParsingDone() {
+	}
+
 }

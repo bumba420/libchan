@@ -6,14 +6,15 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang3.StringUtils;
 
+import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.ImageBoardParser;
-import de.benpicco.libchan.interfaces.ThreadHandler;
+import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.FileUtil;
 import de.benpicco.libchan.util.Logger;
 
 // nasty code duplication ahead :/
 // quick & dirty version, this should be merged with ThreadArchiver
-public class BoardArchiver implements Runnable, ThreadHandler {
+public class BoardArchiver implements Runnable, PostHandler {
 
 	private final ThreadArchiver				archiver;
 	private final ArrayList<ImageBoardParser>	boards;
@@ -36,7 +37,6 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 		if (p == null)
 			Logger.get().error("No parser found for " + url);
 
-		p.setThreadHandler(this);
 		boards.add(p);
 	}
 
@@ -46,7 +46,7 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 			for (ImageBoardParser parser : boards) {
 				Logger.get().println("Refreshing " + parser.getUrl());
 				try {
-					parser.getThreads();
+					parser.getPosts();
 				} catch (IOException e) {
 					Logger.get().error("Can't refresh " + parser.getUrl());
 				}
@@ -63,21 +63,24 @@ public class BoardArchiver implements Runnable, ThreadHandler {
 	}
 
 	@Override
-	public void onAddThread(de.benpicco.libchan.imageboards.Thread thread) {
+	public void onAddPost(Post post) {
+		if (!post.isFirstPost())
+			return;
+
 		if (!options.noBoardFolders)
 			for (ImageBoardParser parser : boards)
-				if (thread.getUrl().startsWith(parser.getUrl())) {
+				if (post.threadUrl.startsWith(parser.getUrl())) {
 					String board = parser.getUrl();
 					board = board.endsWith("/") ? board.substring(0, board.length() - 1) : board;
 					board = File.separator + StringUtils.substringAfterLast(board, "/");
-					archiver.addThread(thread.getUrl(), FileUtil.prepareDir(options.target + board));
+					archiver.addThread(post.threadUrl, FileUtil.prepareDir(options.target + board));
 					return;
 				}
-		archiver.addThread(thread.getUrl());
+		archiver.addThread(post.threadUrl);
 	}
 
 	@Override
-	public void onThreadsParsingDone() {
+	public void onPostsParsingDone() {
 		if (archiver.threads() > 0 && !archiver.isRunnig())
 			new Thread(archiver).start();
 	}
