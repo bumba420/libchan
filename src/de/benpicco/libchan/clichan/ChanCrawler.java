@@ -67,8 +67,10 @@ class PageCrawler implements Runnable, PostHandler {
 
 	@Override
 	public void onAddPost(Post post) {
-		// TODO: re-add thread dedection for --quick
 		if (post.threadUrl != null) {
+			// for --quick
+			if (threadUrl != null && !threadUrl.equals(post.threadUrl))
+				printResults();
 			threadUrl = post.threadUrl;
 		}
 		// we only have one thread here
