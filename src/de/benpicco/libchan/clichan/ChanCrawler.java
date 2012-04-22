@@ -73,6 +73,12 @@ class PageCrawler implements Runnable, PostHandler {
 				printResults();
 			threadUrl = post.threadUrl;
 		}
+
+		// this should never happen, but apparently it does - so add this
+		// workaround
+		if (threadUrl == null)
+			threadUrl = postParser.getUrl();
+
 		// we only have one thread here
 		for (int i = 0; i < names.length; ++i)
 			if (post.user.toLowerCase().contains(names[i]) || post.date.toLowerCase().contains(names[i]))
