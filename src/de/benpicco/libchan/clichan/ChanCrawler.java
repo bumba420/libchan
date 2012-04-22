@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import de.benpicco.libchan.imageboards.GenericImageBoardParser;
+import de.benpicco.libchan.imageboards.Image;
 import de.benpicco.libchan.imageboards.Post;
 import de.benpicco.libchan.interfaces.PostHandler;
 import de.benpicco.libchan.util.Logger;
@@ -80,11 +81,16 @@ class PageCrawler implements Runnable, PostHandler {
 			threadUrl = postParser.getUrl();
 
 		// we only have one thread here
-		for (int i = 0; i < names.length; ++i)
+		for (int i = 0; i < names.length; ++i) {
 			if (post.user.toLowerCase().contains(names[i]) || post.date.toLowerCase().contains(names[i]))
 				occurence[i]++;
 			else if (post.message.toLowerCase().contains(names[i]))
 				mentioned[i]++;
+
+			for (Image img : post.images)
+				if (img.filename.toLowerCase().contains(names[i]))
+					mentioned[i]++;
+		}
 	}
 
 	private void printResults() {
