@@ -67,6 +67,10 @@ public class HtmlConverter {
 		return text;
 	}
 
+	private String n(String s) {
+		return s == null ? "null" : s;
+	}
+
 	public String postToHtml(Post post) {
 		final String user = post.mail == null ? post.user : "<a href=\"mailto:" + post.mail + "\">" + post.user
 				+ "</a>";
@@ -85,10 +89,10 @@ public class HtmlConverter {
 				.replace("$" + Tags.POST_TITLE + "$", post.title != null ? post.title : "")
 				.replace("$" + Tags.POST_COUNTRY + "$",
 						post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
-				.replace("$" + Tags.POST_USER + "$", user)
+				.replace("$" + Tags.POST_USER + "$", n(user))
 				.replace("$" + Tags.POST_TRIP + "$", post.tripcode != null ? post.tripcode : "")
-				.replace("$" + Tags.POST_DATE + "$", post.date).replace("$IMAGES$", images)
-				.replace("$" + Tags.POST_MESSAGE + "$", message);
+				.replace("$" + Tags.POST_DATE + "$", n(post.date)).replace("$IMAGES$", images)
+				.replace("$" + Tags.POST_MESSAGE + "$", n(message));
 	}
 
 	public String getHeader(Post opening) {
