@@ -277,6 +277,11 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 			if (currentPost.user == null)
 				currentPost.user = data;
 			break;
+		case POST_UID:
+			// maybe we rather want to introduce another field?
+			if (currentPost.user != null)
+				currentPost.user += " " + data;
+			break;
 		case POST_TRIP:
 			if (currentPost.tripcode == null)
 				currentPost.tripcode = data;
