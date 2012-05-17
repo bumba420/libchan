@@ -13,9 +13,11 @@ POST	<span class="dateTime"$$>$POST_DATE$</span>
 POST	<blockquote class="postMessage" id="m$POST_ID$">$POST_MESSAGE$</blockquote>
 
 POST	<div class="file"$$<span title="$POST_FILENAME$">$$<a class="fileThumb" href="$POST_IMGURL$" target="_blank"><img src="$POST_THUMBNAIL$"
+POST	<div class=""><span class="fileThumb"><img src="$POST_IMGURL$" alt="File deleted.">
 
 URL_PREFIX	res/
 
 START_POST	POST_USER
 START_POST	POST_THREAD
 END_POST	POST_MESSAGE
+END_IMAGE	POST_MESSAGE
