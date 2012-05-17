@@ -4,21 +4,18 @@ SITE_URL	http://boards.4chan.org
 
 BOARD	<li><a href="$BOARD_URL$" class="boardlink" title="$BOARD_TITLE$">
 
-POST	<input type=checkbox name="$POST_ID$" value=delete><span class="$POST_THREAD$title">$POST_TITLE$</span>$$<span class="$$postername">$POST_USER$</span>$$ $POST_DATE$ <span id=$$<blockquote>$POST_MESSAGE$</blockquote>
-POST	<span title="$POST_FILENAME$">$$</span>
-# There is no filename on the frontpage
-POST	)</span><br><a href="$POST_IMGURL$" target=_blank><img src=$POST_THUMBNAIL$ border=0
-# File Deleted
-POST	</a></span><br><img src="$POST_IMGURL$"
-POST	<span class="postertrip">$POST_TRIP$</span> $POST_DATE$ <span
+POST	<div class="thread" id="$POST_THREAD$">
+POST	<span class="name">$POST_USER$</span>
+POST	<span class="posteruid">$POST_UID$</span><br>
+POST	<span class="postertrip">$POST_TRIP$</span>
+POST	<span class="subject">$POST_TITLE$</span>
+POST	<span class="dateTime"$$>$POST_DATE$</span>
+POST	<blockquote class="postMessage" id="m$POST_ID$">$POST_MESSAGE$</blockquote>
 
-POST_THREAD_MARK	file
+POST	<div class="file"$$<span title="$POST_FILENAME$">$$<a class="fileThumb" href="$POST_IMGURL$" target="_blank"><img src="$POST_THUMBNAIL$"
 
 URL_PREFIX	res/
 
-START_POST	POST_FILENAME
-START_POST	POST_IMGURL
-START_POST	POST_ID
-START_POST	POST_TRIP
+START_POST	POST_USER
+START_POST	POST_THREAD
 END_POST	POST_MESSAGE
-END_IMAGE	POST_MESSAGE
