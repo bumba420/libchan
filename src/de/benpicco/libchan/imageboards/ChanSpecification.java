@@ -227,6 +227,29 @@ public class ChanSpecification implements IParseDataReceiver {
 		return file;
 	}
 
+	private String subtractString(String s, String prefix) {
+		if (s.startsWith(prefix))
+			return s.substring(prefix.length());
+		return s;
+	}
+
+	private boolean domainMatch(String baseurl, String url) {
+		baseurl = subtractString(baseurl, "http://");
+		baseurl = subtractString(baseurl, "https://");
+
+		url = subtractString(url, "http://");
+		url = subtractString(url, "https://");
+
+		if (url.startsWith(baseurl))
+			return true;
+
+		final String domain = baseurl.substring(baseurl.indexOf(".") + 1);
+		final String urlDomain = url.substring(url.indexOf(".") + 1);
+
+		return url.startsWith(domain) || (domain.indexOf('.') > 0 && urlDomain.startsWith(domain))
+				|| urlDomain.startsWith(baseurl);
+	}
+
 	/**
 	 * A ChanSpecification can be valid for many websites using the same
 	 * software. This function generates a parser for a specific site.
@@ -237,7 +260,7 @@ public class ChanSpecification implements IParseDataReceiver {
 	 */
 	public GenericImageBoardParser getImageBoardParser(String url) {
 		for (Imageboard chan : supported)
-			if (chan.baseurl != null && url.startsWith(chan.baseurl))
+			if (chan.baseurl != null && domainMatch(chan.baseurl, url))
 				return new GenericImageBoardParser(url, chan.baseurl, new ParserOptions(o));
 		return null;
 	}
