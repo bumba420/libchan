@@ -6,7 +6,8 @@ BOARD	<li><a href="$BOARD_URL$" class="boardlink" title="$BOARD_TITLE$">
 
 POST	<div class="thread" id="$POST_THREAD$">
 POST	<span class="name">$POST_USER$</span>
-POST	<span class="posteruid">$POST_UID$</span><br/>
+# this is a bit of an ugly hack, we just append UID to the name but it appears twice, so only match one of it
+POST	<span class="posteruid">$POST_UID$</span><br/><span class="subject">
 POST	<span class="postertrip">$POST_TRIP$</span>
 POST	<span class="subject">$POST_TITLE$</span>
 POST	<span class="dateTime"$$>$POST_DATE$</span>
