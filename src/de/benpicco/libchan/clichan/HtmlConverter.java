@@ -90,6 +90,7 @@ public class HtmlConverter {
 				.replace("$" + Tags.POST_COUNTRY + "$",
 						post.countryball != null ? "<img src=\"" + post.countryball + "\">" : "")
 				.replace("$" + Tags.POST_USER + "$", n(user))
+				.replace("$" + Tags.POST_UID + "$", (post.uid != null ? post.uid : ""))
 				.replace("$" + Tags.POST_TRIP + "$", post.tripcode != null ? post.tripcode : "")
 				.replace("$" + Tags.POST_DATE + "$", n(post.date)).replace("$IMAGES$", images)
 				.replace("$" + Tags.POST_MESSAGE + "$", n(message));

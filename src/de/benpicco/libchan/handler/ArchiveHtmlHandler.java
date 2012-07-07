@@ -57,7 +57,7 @@ public class ArchiveHtmlHandler implements PostProcessor {
 			threadId = post.id;
 			initialise();
 		}
-		Post localPost = localisePost(post);
+		Post localPost = Post.localisePost(post, thumbs);
 
 		if (writer == null)
 			try {
@@ -90,31 +90,6 @@ public class ArchiveHtmlHandler implements PostProcessor {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-	}
-
-	private Post localisePost(Post post) {
-		if (post.images.size() == 0)
-			return post;
-
-		Post newPost = new Post();
-		newPost.id = post.id;
-		newPost.title = post.title;
-		newPost.user = post.user;
-		newPost.mail = post.mail;
-		newPost.message = post.message;
-		newPost.date = post.date;
-		newPost.countryball = post.countryball;
-		newPost.tripcode = post.tripcode;
-
-		for (Image img : post.images) {
-			Image newImg = new Image();
-			newImg.filename = img.filename;
-			newImg.url = post.getDir() + File.separator + img.filename;
-			newImg.thumbnailUrl = thumbs + StringUtils.substringAfterLast(img.thumbnailUrl, "/");
-			newPost.addImage(newImg);
-		}
-
-		return newPost;
 	}
 
 	@Override
