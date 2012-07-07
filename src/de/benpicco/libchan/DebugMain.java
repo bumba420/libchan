@@ -43,7 +43,7 @@ public class DebugMain {
 			NotImplementedException {
 		Logger.add(new StdLogger());
 
-		String url = "http://www.turulchan.net/b/";
+		String url = "http://www.4chan.org";
 
 		// archiveThread(url);
 		// ChanSpecification spec = new ChanSpecification("template/", true);
@@ -70,9 +70,9 @@ public class DebugMain {
 		// } catch (NotImplementedException e) {
 		// Logger.get().error(e.getMessage());
 		// }
-		parser.getPosts();
+		// parser.getPosts();
 		// parser.getThreads();
-		// parser.getBoards();
+		parser.getBoards();
 
 		// while (true) {
 		// parser.getPosts();
