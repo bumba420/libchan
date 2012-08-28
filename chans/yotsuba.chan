@@ -6,7 +6,7 @@ BOARD	<li><a href="$BOARD_URL$" class="boardlink" title="$BOARD_TITLE$">
 
 POST	<div class="thread" id="$POST_THREAD$">
 POST	<span class="name">$POST_USER$</span>
-POST	<span class="posteruid">$POST_UID$</span>
+POST	<span class="posteruid $POST_UID$">
 POST	<span class="postertrip">$POST_TRIP$</span>
 POST	<span class="subject">$POST_TITLE$</span>
 POST	<span class="dateTime"$$>$POST_DATE$</span>
