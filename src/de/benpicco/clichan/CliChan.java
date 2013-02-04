@@ -3,6 +3,7 @@ package de.benpicco.clichan;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -178,13 +179,15 @@ public class CliChan {
 				uploadFiles = new ArrayList<File>();
 				for (String param : params) {
 					File f = new File(param);
-					if (f.isDirectory()) {
+					if (f.isDirectory()) { // why not recursive?
 						for (File file : f.listFiles())
 							if (file.isFile())
 								uploadFiles.add(file);
 					} else
 						uploadFiles.add(f);
 				}
+
+				Collections.sort(uploadFiles);
 			}
 
 		} catch (ParseException e) {
