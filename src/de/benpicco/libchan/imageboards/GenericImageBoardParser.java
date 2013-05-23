@@ -390,6 +390,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 	}
 
 	private String getBoard(String url) {
+		// FIXME, baseurl doesn't have to be a substring of url (e.g. no www)
 		String board = url.substring(baseUrl.length() + 1);
 
 		int slash = board.indexOf("/");
