@@ -343,7 +343,7 @@ public class GenericImageBoardParser implements ImageBoardParser, IParseDataRece
 
 			if (refreshing) {
 				refreshing = false;
-				// when partially downloading a page, we check wheather the
+				// when partially downloading a page, we check whether the
 				// first post received matches the last post from the previous
 				// run. If this isn't the case (smaller or greater) either a
 				// deletion took place or the server doesn't support partial
